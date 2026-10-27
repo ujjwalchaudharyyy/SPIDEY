@@ -54,6 +54,9 @@ async function initDB() {
       venue TEXT NOT NULL,
       campus TEXT NOT NULL DEFAULT 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
       image_url TEXT,
+      photos TEXT,
+      gallery TEXT,
+      winner_team TEXT,
       event_date TEXT NOT NULL,
       event_time TEXT NOT NULL,
       organizer_id INTEGER NOT NULL,
@@ -64,6 +67,10 @@ async function initDB() {
       FOREIGN KEY (organizer_id) REFERENCES users(id)
     )
   `);
+
+  try { db.run("ALTER TABLE events ADD COLUMN photos TEXT"); } catch (e) {}
+  try { db.run("ALTER TABLE events ADD COLUMN gallery TEXT"); } catch (e) {}
+  try { db.run("ALTER TABLE events ADD COLUMN winner_team TEXT"); } catch (e) {}
 
   // RSVPs Table
   db.run(`
@@ -129,6 +136,66 @@ async function initDB() {
     const hashedOrg = bcrypt.hashSync('org123', 10);
     db.run("INSERT INTO users (name, email, password, role, campus) VALUES (?, ?, ?, ?, ?)",
       ['Tony Stark', 'organizer@campus.edu', hashedOrg, 'organizer', 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN']);
+  }
+
+  // Seed Default Events including Smart India Hackathon
+  const eventsCountRes = db.exec("SELECT COUNT(*) FROM events");
+  const eventCount = eventsCountRes[0]?.values[0]?.[0] || 0;
+  if (eventCount === 0) {
+    const sihPhotos = JSON.stringify([
+      {
+        url: "/assets/events/sih/sih_inauguration.jpg",
+        title: "Grand Inauguration & Ribbon-Cutting Ceremony",
+        caption: "Dignitaries, leadership, and organizing faculty inaugurating Smart India Hackathon at Graphic Era."
+      },
+      {
+        url: "/assets/events/sih/sih_interaction.jpg",
+        title: "Prime Minister & AICTE Live Interaction",
+        caption: "Auditorium live address and nationwide interactive session with Prime Minister Narendra Modi and Education Minister."
+      },
+      {
+        url: "/assets/events/sih/sih_coding.jpg",
+        title: "Intense 36-Hour Non-Stop Hackathon Sprint",
+        caption: "Student teams collaborating, debugging, and building innovative software and hardware prototypes."
+      },
+      {
+        url: "/assets/events/sih/sih_presentation.jpg",
+        title: "Mentoring & Jury Technical Evaluation",
+        caption: "Teams demonstrating live project architectures and solving real-world challenges before the expert jury."
+      },
+      {
+        url: "/assets/events/sih/sih_feasibility.jpg",
+        title: "Pitch Deck & Feasibility Analysis",
+        caption: "ByteX team showcasing project viability, scalable cloud architecture, and market implementation roadmaps."
+      }
+    ]);
+
+    const sihGallery = JSON.stringify([
+      "/assets/events/sih/sih_inauguration.jpg",
+      "/assets/events/sih/sih_interaction.jpg",
+      "/assets/events/sih/sih_coding.jpg",
+      "/assets/events/sih/sih_presentation.jpg",
+      "/assets/events/sih/sih_feasibility.jpg"
+    ]);
+
+    db.run(
+      `INSERT INTO events (title, description, category, venue, campus, image_url, photos, gallery, event_date, event_time, organizer_id, organizer_name, status)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved')`,
+      [
+        "Smart India Hackathon (SIH)",
+        "Memories and highlights from Smart India Hackathon (SIH) at Graphic Era Hill University, Dehradun Campus.",
+        "Hackathon / Technical Event",
+        "Graphic Era Hill University, Dehradun Campus",
+        "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
+        "/assets/events/sih/sih_inauguration.jpg",
+        sihPhotos,
+        sihGallery,
+        "2025-12-09",
+        "09:00 AM",
+        1,
+        "Ministry of Education & MoE's Innovation Cell • GEHU Dehradun"
+      ]
+    );
   }
 
   saveDB();

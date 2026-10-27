@@ -142,6 +142,53 @@ export const DEFAULT_EVENTS = [
 
   // 3. GEHU Dehradun
   {
+    id: 13,
+    title: "Smart India Hackathon (SIH)",
+    description: "Memories and highlights from Smart India Hackathon (SIH) at Graphic Era Hill University, Dehradun Campus.",
+    category: "Hackathon / Technical Event",
+    venue: "Graphic Era Hill University, Dehradun Campus",
+    campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
+    image_url: "/assets/events/sih/sih_inauguration.jpg",
+    gallery: [
+      "/assets/events/sih/sih_inauguration.jpg",
+      "/assets/events/sih/sih_interaction.jpg",
+      "/assets/events/sih/sih_coding.jpg",
+      "/assets/events/sih/sih_presentation.jpg",
+      "/assets/events/sih/sih_feasibility.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/sih/sih_inauguration.jpg",
+        title: "Grand Inauguration & Ribbon-Cutting Ceremony",
+        caption: "Dignitaries, leadership, and organizing faculty inaugurating Smart India Hackathon at Graphic Era."
+      },
+      {
+        url: "/assets/events/sih/sih_interaction.jpg",
+        title: "Prime Minister & AICTE Live Interaction",
+        caption: "Auditorium live address and nationwide interactive session with Prime Minister Narendra Modi and Education Minister."
+      },
+      {
+        url: "/assets/events/sih/sih_coding.jpg",
+        title: "Intense 36-Hour Non-Stop Hackathon Sprint",
+        caption: "Student teams collaborating, debugging, and building innovative software and hardware prototypes."
+      },
+      {
+        url: "/assets/events/sih/sih_presentation.jpg",
+        title: "Mentoring & Jury Technical Evaluation",
+        caption: "Teams demonstrating live project architectures and solving real-world challenges before the expert jury."
+      },
+      {
+        url: "/assets/events/sih/sih_feasibility.jpg",
+        title: "Pitch Deck & Feasibility Analysis",
+        caption: "ByteX team showcasing project viability, scalable cloud architecture, and market implementation roadmaps."
+      }
+    ],
+    event_date: "2025-12-09",
+    event_time: "09:00 AM",
+    organizer_name: "Ministry of Education & MoE's Innovation Cell • GEHU Dehradun",
+    rsvp_count: 420
+  },
+  {
     id: 7,
     title: "🏆 Inter-Campus Spider-Athletics & Track League",
     description: "100m sprint, high-jump web obstacles, and tug-of-war championship between Hill University and Deemed branches.",

@@ -40,7 +40,15 @@ router.get('/', (req, res) => {
 
   query += ' ORDER BY e.event_date DESC, e.event_time ASC';
 
-  const events = queryAll(query, params);
+  const events = queryAll(query, params).map(e => {
+    if (e.photos && typeof e.photos === 'string') {
+      try { e.photos = JSON.parse(e.photos); } catch (err) {}
+    }
+    if (e.gallery && typeof e.gallery === 'string') {
+      try { e.gallery = JSON.parse(e.gallery); } catch (err) {}
+    }
+    return e;
+  });
   res.json(events);
 });
 
@@ -140,7 +148,7 @@ router.get('/stats', authenticateToken, (req, res) => {
 });
 
 router.get('/categories', (req, res) => {
-  const cats = ['Academic', 'Cultural', 'Sports', 'Technical', 'Workshop', 'Social', 'Other'];
+  const cats = ['Academic', 'Cultural', 'Sports', 'Technical', 'Workshop', 'Social', 'Hackathon / Technical Event', 'Other'];
   res.json(cats);
 });
 
