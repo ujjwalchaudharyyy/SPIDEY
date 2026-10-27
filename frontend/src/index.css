@@ -1,0 +1,168 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: 'Rajdhani', 'Inter', system-ui, sans-serif;
+  background-color: #060810;
+  color: #f1f5f9;
+  background-image: 
+    radial-gradient(circle at 10% 20%, rgba(226, 27, 36, 0.08) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(15, 82, 186, 0.12) 0%, transparent 45%),
+    linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+}
+
+/* Spider-Verse UI System matching reference design */
+@layer components {
+  /* Title Font: Chakra Petch with clean fallback */
+  .spider-heading {
+    font-family: 'Chakra Petch', sans-serif;
+    font-style: italic;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #ffffff;
+  }
+
+  .spider-subheading {
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 600;
+    color: #94a3b8;
+  }
+
+  /* Exact Card & Modal Styles as user image */
+  .spider-modal-box {
+    position: relative;
+    background-color: rgba(9, 13, 24, 0.92);
+    backdrop-filter: blur(24px);
+    border: 1px solid rgba(226, 27, 36, 0.3);
+    border-radius: 1.5rem;
+    padding: 2rem;
+    box-shadow: 0 0 45px rgba(226, 27, 36, 0.35);
+  }
+
+  /* Input fields matching screenshot: dark navy, subtle border, rounded-xl */
+  .spider-input-modern {
+    width: 100%;
+    background-color: rgba(14, 21, 38, 0.85);
+    border: 1px solid #1E293B;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+    color: #ffffff;
+    font-size: 0.875rem;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+  }
+  .spider-input-modern:hover {
+    background-color: #121B30;
+    border-color: rgba(226, 27, 36, 0.5);
+  }
+  .spider-input-modern:focus {
+    background-color: #121B30;
+    border-color: #E21B24;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(226, 27, 36, 0.25);
+  }
+  .spider-input-modern::placeholder {
+    color: #64748b;
+  }
+
+  .spider-label-modern {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: #cbd5e1;
+    margin-bottom: 0.375rem;
+  }
+
+  /* Red Pill Button matching user image: gradient, pill shape, arrow */
+  .btn-spider-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(to right, #E21B24, #e11d48, #b91c1c);
+    color: #ffffff;
+    font-family: 'Chakra Petch', sans-serif;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 0.875rem;
+    letter-spacing: 0.05em;
+    padding: 0.875rem 2rem;
+    border-radius: 9999px;
+    border: none;
+    box-shadow: 0 0 25px rgba(226, 27, 36, 0.45);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+  .btn-spider-pill:hover {
+    background: linear-gradient(to right, #ef4444, #f43f5e);
+    transform: scale(1.05);
+  }
+  .btn-spider-pill:active {
+    transform: scale(0.95);
+  }
+  .btn-spider-pill:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-spider-ghost {
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #fca5a5;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid rgba(226, 27, 36, 0.3);
+    backdrop-filter: blur(12px);
+    transition: all 0.2s ease;
+  }
+  .btn-spider-ghost:hover {
+    background-color: rgba(69, 10, 10, 0.4);
+    color: #ffffff;
+    border-color: rgba(226, 27, 36, 0.8);
+  }
+
+  .spider-card {
+    position: relative;
+    background-color: rgba(9, 13, 24, 0.88);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(226, 27, 36, 0.2);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+  }
+  .spider-card:hover {
+    border-color: rgba(226, 27, 36, 0.6);
+    box-shadow: 0 0 25px rgba(226, 27, 36, 0.45);
+  }
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #060810;
+}
+::-webkit-scrollbar-thumb {
+  background: #9A031E;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #E21B24;
+}
