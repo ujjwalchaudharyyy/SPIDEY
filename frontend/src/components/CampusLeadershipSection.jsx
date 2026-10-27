@@ -432,51 +432,6 @@ export default function CampusLeadershipSection({ activeCampus }) {
             </div>
           </SpotlightCard>
 
-          {/* ── Dehradun Director Placeholder (BELOW PHOTOS) ── */}
-          <SpotlightCard
-            glowColor="rgba(234, 179, 8, 0.2)"
-            className="bg-[#090D18]/90 border border-yellow-500/30 rounded-3xl p-6 sm:p-10 shadow-modal-glow backdrop-blur-2xl"
-          >
-            <div className="relative z-20 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
-              <div className="relative flex-shrink-0 group">
-                <div className="absolute -inset-1.5 bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-700 rounded-3xl blur-md opacity-40 group-hover:opacity-80 transition duration-700" />
-                <div className="relative w-56 h-64 sm:w-64 sm:h-72 rounded-2xl overflow-hidden border-2 border-yellow-500/60 shadow-2xl bg-[#0E1526] flex items-center justify-center">
-                  <div className="text-center space-y-3 p-6">
-                    <span className="text-6xl">🕷️</span>
-                    <p className="text-xs font-mono text-yellow-400 font-bold">DIRECTOR PHOTO</p>
-                    <p className="text-[10px] font-mono text-gray-500">Coming Soon</p>
-                  </div>
-                  <div className="absolute bottom-3 left-0 right-0 text-center">
-                    <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-yellow-950/90 border border-yellow-500 text-yellow-300">
-                      CAMPUS DIRECTOR
-                    </span>
-                  </div>
-                </div>
-              </div>
-              <div className="flex-1 space-y-4 text-left">
-                <div className="flex flex-wrap items-center gap-2.5">
-                  <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-yellow-600/20 border border-yellow-500 text-yellow-300 flex items-center gap-1.5">
-                    <span>🏛️</span> CAMPUS DIRECTOR — DEHRADUN
-                  </span>
-                  <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-[#0E1526] border border-[#1E293B] text-gray-300">
-                    📍 DEHRADUN CAMPUS
-                  </span>
-                </div>
-                <div>
-                  <h3 className="spider-heading text-2xl sm:text-3xl text-white">Director — GEHU Dehradun</h3>
-                  <p className="text-xs sm:text-sm font-mono text-yellow-400 font-semibold mt-0.5">
-                    Director — Graphic Era Hill University, Dehradun Campus
-                  </p>
-                </div>
-                <div className="p-4 rounded-2xl bg-[#0E1526] border border-yellow-500/20 flex items-center gap-3">
-                  <span className="text-2xl animate-pulse">🕷️</span>
-                  <p className="text-sm font-rajdhani text-gray-300 font-medium">
-                    Director profile and photo will be updated soon. Stay tuned for the full Dehradun leadership dossier!
-                  </p>
-                </div>
-              </div>
-            </div>
-          </SpotlightCard>
 
           {/* ── Dehradun Campus About (BELOW DIRECTOR) ── */}
           <SpotlightCard
@@ -527,29 +482,20 @@ export default function CampusLeadershipSection({ activeCampus }) {
         </div>
       )}
 
-      {/* Placeholder for Deemed only */}
+      {/* Deemed University / Other Campuses */}
       {!isBhimtal && !isHaldwani && !isDehradun && (
         <SpotlightCard
           glowColor="rgba(0, 240, 255, 0.15)"
-          className="bg-[#090D18]/90 border border-gray-700 rounded-3xl p-8 sm:p-12 shadow-2xl backdrop-blur-2xl text-left space-y-6"
+          className="bg-[#090D18]/90 border border-cyan-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl backdrop-blur-2xl text-left space-y-4"
         >
-          <div className="relative z-20 space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/60 border border-gray-700 text-gray-300 text-xs font-mono">
-              <span>🏛️</span> {activeCampus?.code}
+          <div className="relative z-20 space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-xs font-mono">
+              <span>🏛️</span> {activeCampus?.code || 'GEU DEEMED'}
             </div>
             <h3 className="spider-heading text-2xl sm:text-3xl text-white">{activeCampus?.name}</h3>
-            <p className="text-sm font-rajdhani text-gray-300 max-w-2xl">
+            <p className="text-sm font-rajdhani text-gray-300 max-w-2xl leading-relaxed">
               {activeCampus?.tagline}. Located at <strong className="text-white">{activeCampus?.location}</strong>.
             </p>
-            <div className="p-4 rounded-2xl bg-[#0E1526] border border-[#1E293B] flex items-center justify-between max-w-xl">
-              <div>
-                <span className="text-xs font-mono text-gray-400 block">Leadership &amp; Campus Profile</span>
-                <span className="text-sm font-chakra italic font-bold text-gray-200">
-                  Director profile coming soon — stay tuned! 🕷️
-                </span>
-              </div>
-              <span className="text-2xl animate-pulse">🕷️</span>
-            </div>
           </div>
         </SpotlightCard>
       )}
