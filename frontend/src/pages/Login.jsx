@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import axios from 'axios'
+import SigninVideoModal from '../components/SigninVideoModal'
 
 export default function Login() {
   const [email, setEmail] = useState('')
@@ -11,6 +12,8 @@ export default function Login() {
   const [loading, setLoading] = useState(false)
   const [isAudioActive, setIsAudioActive] = useState(false)
   const [isVideoHidden, setIsVideoHidden] = useState(false)
+  const [showSigninVideo, setShowSigninVideo] = useState(false)
+  const [pendingDestination, setPendingDestination] = useState('')
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
   const [hasGisButton, setHasGisButton] = useState(false)
   const videoRef = useRef(null)
@@ -69,7 +72,22 @@ export default function Login() {
     }
   }
 
-  if (isAuthenticated) {
+  const proceedWithLogin = (token, role = 'student') => {
+    login(token)
+    const target = role === 'admin' ? '/admin' : role === 'organizer' ? '/organizer' : '/feed'
+    setPendingDestination(target)
+    setShowSigninVideo(true)
+  }
+
+  const handleFinishSigninVideo = () => {
+    navigate(pendingDestination || '/feed', { replace: true })
+  }
+
+  if (showSigninVideo) {
+    return <SigninVideoModal onComplete={handleFinishSigninVideo} />
+  }
+
+  if (isAuthenticated && !showSigninVideo && !pendingDestination) {
     if (user.role === 'admin') navigate('/admin', { replace: true })
     else if (user.role === 'organizer') navigate('/organizer', { replace: true })
     else navigate('/feed', { replace: true })
@@ -88,11 +106,7 @@ export default function Login() {
 
     try {
       const res = await axios.post('/api/auth/google', { token: response.credential })
-      login(res.data.token)
-      const role = res.data.user.role
-      if (role === 'admin') navigate('/admin')
-      else if (role === 'organizer') navigate('/organizer')
-      else navigate('/feed')
+      proceedWithLogin(res.data.token, res.data.user.role)
     } catch (err) {
       // Fail-safe Vercel / offline fallback if backend API is not deployed
       try {
@@ -109,8 +123,7 @@ export default function Login() {
             picture: payload.picture || '',
             exp: Math.floor(Date.now() / 1000) + 86400 * 7
           }))}.signature`
-          login(fakeToken)
-          navigate('/feed')
+          proceedWithLogin(fakeToken, 'student')
           return
         }
       } catch (e) {}
@@ -188,11 +201,7 @@ export default function Login() {
 
     try {
       const res = await axios.post('/api/auth/login', { email: normalizedEmail, password: trimmedPass })
-      login(res.data.token)
-      const role = res.data.user.role
-      if (role === 'admin') navigate('/admin')
-      else if (role === 'organizer') navigate('/organizer')
-      else navigate('/feed')
+      proceedWithLogin(res.data.token, res.data.user.role)
     } catch (err) {
       // 1. Authenticate Ujjwal Chaudhary (Your Registered Account)
       if (normalizedEmail === 'ujjwalchaudhary2007@gmail.com' || normalizedEmail.includes('ujjwal')) {
@@ -205,8 +214,7 @@ export default function Login() {
           degree: 'B.Tech CSE - 3rd Year',
           exp: Math.floor(Date.now() / 1000) + 86400 * 7
         }))}.signature`
-        login(fakeToken)
-        navigate('/feed')
+        proceedWithLogin(fakeToken, 'student')
         return
       }
 
@@ -221,8 +229,7 @@ export default function Login() {
           degree: 'B.Tech CSE - 3rd Year',
           exp: Math.floor(Date.now() / 1000) + 86400 * 7
         }))}.signature`
-        login(fakeToken)
-        navigate('/feed')
+        proceedWithLogin(fakeToken, 'student')
         return
       }
 
@@ -240,10 +247,7 @@ export default function Login() {
             degree: matched.degree || 'B.Tech CSE',
             exp: Math.floor(Date.now() / 1000) + 86400 * 7
           }))}.signature`
-          login(fakeToken)
-          if (matched.role === 'admin') navigate('/admin')
-          else if (matched.role === 'organizer') navigate('/organizer')
-          else navigate('/feed')
+          proceedWithLogin(fakeToken, matched.role || 'student')
           return
         }
       } catch (e) {}
@@ -259,8 +263,7 @@ export default function Login() {
           degree: 'B.Tech CSE - 3rd Year',
           exp: Math.floor(Date.now() / 1000) + 86400 * 7
         }))}.signature`
-        login(fakeToken)
-        navigate('/feed')
+        proceedWithLogin(fakeToken, 'student')
         return
       }
 
@@ -274,8 +277,7 @@ export default function Login() {
           campus: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
           exp: Math.floor(Date.now() / 1000) + 86400 * 7
         }))}.signature`
-        login(fakeToken)
-        navigate('/admin')
+        proceedWithLogin(fakeToken, 'admin')
         return
       }
 
@@ -297,11 +299,11 @@ export default function Login() {
       onClick={ensureSoundOnInteraction}
       className="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex flex-col sm:flex-row items-center justify-end p-4 sm:p-6 bg-black"
     >
-      {/* 4K Background Video optimized for high refresh & zero stutter with sign.mp4 */}
+      {/* 4K Background Video restored to login_bg.mp4 */}
       {!isVideoHidden ? (
         <video
           ref={videoRef}
-          src="/assets/videos/sign.mp4"
+          src="/assets/videos/login_bg.mp4"
           autoPlay
           loop
           muted
