@@ -19,6 +19,12 @@ body {
   background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
 }
 
+/* Global Paragraph & Content Text Justification */
+p, .font-rajdhani, article, .text-justify-all {
+  text-align: justify;
+  text-justify: inter-word;
+}
+
 /* Spider-Verse UI System matching reference design */
 @layer components {
   /* Title Font: Chakra Petch with clean fallback */
@@ -48,74 +54,71 @@ body {
     box-shadow: 0 0 45px rgba(226, 27, 36, 0.35);
   }
 
-  /* Input fields matching screenshot: dark navy, subtle border, rounded-xl */
-  .spider-input-modern {
-    width: 100%;
-    background-color: rgba(14, 21, 38, 0.85);
-    border: 1px solid #1E293B;
-    border-radius: 0.75rem;
-    padding: 0.75rem 1rem;
-    color: #ffffff;
-    font-size: 0.875rem;
-    font-family: 'Rajdhani', sans-serif;
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
+  /* Authentic Cyber Web Border Effect */
+  .spider-border-glow {
+    position: relative;
   }
-  .spider-input-modern:hover {
-    background-color: #121B30;
-    border-color: rgba(226, 27, 36, 0.5);
-  }
-  .spider-input-modern:focus {
-    background-color: #121B30;
-    border-color: #E21B24;
-    outline: none;
-    box-shadow: 0 0 0 2px rgba(226, 27, 36, 0.25);
-  }
-  .spider-input-modern::placeholder {
-    color: #64748b;
+  .spider-border-glow::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    background: linear-gradient(90deg, #E21B24, #0F52BA, #E21B24);
+    border-radius: inherit;
+    z-index: -1;
+    opacity: 0.7;
+    animation: pulse-glow 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 
-  .spider-label-modern {
-    display: flex;
-    align-items: center;
-    gap: 0.375rem;
-    font-size: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
-    font-weight: 500;
-    color: #cbd5e1;
-    margin-bottom: 0.375rem;
-  }
-
-  /* Red Pill Button matching user image: gradient, pill shape, arrow */
+  /* Pill Buttons matching the user's reference UI */
   .btn-spider-pill {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    background: linear-gradient(to right, #E21B24, #e11d48, #b91c1c);
+    background: linear-gradient(135deg, #E21B24 0%, #9A031E 100%);
     color: #ffffff;
     font-family: 'Chakra Petch', sans-serif;
     font-style: italic;
     font-weight: 700;
-    font-size: 0.875rem;
+    text-transform: uppercase;
     letter-spacing: 0.05em;
-    padding: 0.875rem 2rem;
     border-radius: 9999px;
-    border: none;
-    box-shadow: 0 0 25px rgba(226, 27, 36, 0.45);
-    transition: all 0.3s ease;
-    cursor: pointer;
+    padding: 0.625rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(226, 27, 36, 0.45);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .btn-spider-pill:hover {
-    background: linear-gradient(to right, #ef4444, #f43f5e);
-    transform: scale(1.05);
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(226, 27, 36, 0.7);
+    filter: brightness(1.1);
   }
   .btn-spider-pill:active {
-    transform: scale(0.95);
+    transform: translateY(0);
   }
-  .btn-spider-pill:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+
+  .btn-spider-pill-blue {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    background: linear-gradient(135deg, #0F52BA 0%, #032050 100%);
+    color: #ffffff;
+    font-family: 'Chakra Petch', sans-serif;
+    font-style: italic;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: 9999px;
+    padding: 0.625rem 1.5rem;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 20px rgba(15, 82, 186, 0.45);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .btn-spider-pill-blue:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(15, 82, 186, 0.7);
+    filter: brightness(1.1);
   }
 
   .btn-spider-ghost {
