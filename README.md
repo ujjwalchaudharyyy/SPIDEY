@@ -1,11 +1,14 @@
 <div align="center">
 
-<img src="frontend/public/assets/logo.png" alt="SPIDEY Logo" width="120"/>
+<!-- ═══════════════════════════ HERO BANNER ═══════════════════════════ -->
+
+<img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/logo.png" width="100" alt="SPIDEY Logo" />
 
 # 🕷️ SPIDEY
+
 ### *Student Portal for Institutional Discovery, Events & Yardsticks*
 
-**Graphic Era University · Quad-Campus Event Hub & Multiverse Student Platform**
+> **"With great events, comes great responsibility."**
 
 <br/>
 
@@ -13,45 +16,58 @@
 [![Vite](https://img.shields.io/badge/Vite-5.0.8-646CFF?style=for-the-badge&logo=vite&logoColor=white)](https://vitejs.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 [![Node.js](https://img.shields.io/badge/Node.js-18+-339933?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![Express.js](https://img.shields.io/badge/Express.js-4.18-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
-[![SQLite](https://img.shields.io/badge/SQLite-sql.js_WASM-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sql.js.org/)
+[![Express](https://img.shields.io/badge/Express.js-4.18-000000?style=for-the-badge&logo=express&logoColor=white)](https://expressjs.com/)
+[![SQLite](https://img.shields.io/badge/SQLite-WASM-003B57?style=for-the-badge&logo=sqlite&logoColor=white)](https://sql.js.org/)
 
 <br/>
 
-[![Google OAuth](https://img.shields.io/badge/Google_OAuth_2.0-SSO-4285F4?style=flat-square&logo=google&logoColor=white)](https://developers.google.com/identity)
-[![Razorpay](https://img.shields.io/badge/Razorpay_Payments-Integrated-0C2340?style=flat-square&logo=razorpay)](https://razorpay.com/)
-[![UPI](https://img.shields.io/badge/UPI-QR_%26_UTR_Verified-FF6600?style=flat-square&logo=googlepay&logoColor=white)](https://www.npci.org.in/what-we-do/upi/product-overview)
+[![Google OAuth](https://img.shields.io/badge/Google_OAuth_2.0-4285F4?style=flat-square&logo=google&logoColor=white)](https://developers.google.com/identity)
+[![Razorpay](https://img.shields.io/badge/Razorpay-Payments-0C2340?style=flat-square&logo=razorpay)](https://razorpay.com/)
+[![UPI](https://img.shields.io/badge/UPI_QR-Verified-FF6600?style=flat-square)](https://www.npci.org.in/)
 [![Google Sheets](https://img.shields.io/badge/Google_Sheets-Live_Sync-34A853?style=flat-square&logo=google-sheets&logoColor=white)](https://workspace.google.com/)
-[![Vercel](https://img.shields.io/badge/Deployed_on-Vercel-000000?style=flat-square&logo=vercel&logoColor=white)](https://vercel.com/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square&logo=github)](https://github.com/ujjwalchaudharyyy/SPIDEY/pulls)
+[![Vercel](https://img.shields.io/badge/Deployed-Vercel-000?style=flat-square&logo=vercel)](https://vercel.com/)
+[![GitHub Stars](https://img.shields.io/github/stars/ujjwalchaudharyyy/SPIDEY?style=flat-square&logo=github&color=yellow)](https://github.com/ujjwalchaudharyyy/SPIDEY)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen?style=flat-square)](https://github.com/ujjwalchaudharyyy/SPIDEY/pulls)
 
 <br/>
 
-> *"With great events, comes great responsibility."*
-> — The SPIDEY Platform Team, Graphic Era University
-
-<br/>
-
-[🚀 Quick Start](#-installation-and-local-setup) &nbsp;·&nbsp; [📡 API Docs](#-api-documentation) &nbsp;·&nbsp; [📐 Architecture](#-system-architecture-and-data-flow) &nbsp;·&nbsp; [🤝 Contribute](#-contributing-guidelines)
+[🚀 Quick Start](#-installation-and-local-setup) &nbsp;·&nbsp;
+[📡 API Docs](#-api-documentation) &nbsp;·&nbsp;
+[📐 Architecture](#-system-architecture-and-data-flow) &nbsp;·&nbsp;
+[📸 Screenshots](#-platform-screenshots) &nbsp;·&nbsp;
+[🤝 Contribute](#-contributing-guidelines)
 
 </div>
 
 ---
 
-## 🌐 What is SPIDEY?
-
-**SPIDEY** is a full-stack, Spider-Man multiverse–themed campus event platform purpose-built for the **Graphic Era University** group of institutions across Uttarakhand, India. It unites four distinct campuses into one synchronized digital grid — replacing scattered Google Forms, paper passes, and WhatsApp notifications with a professional, secure, and feature-rich web application.
+<!-- ══════════════════════ CAMPUS RADAR SCREENSHOT ══════════════════════ -->
 
 <div align="center">
 
-| 🏔️ Bhimtal Campus | ⚡ Haldwani Campus | 🏛️ Dehradun Campus | 🎓 Deemed University |
-|:---:|:---:|:---:|:---:|
-| High-Altitude Lake View | Gateway Cyber-Robotics | Flagship Centre of Excellence | NAAC A+ Research HQ |
-| `#E21B24` Red Accent | `#0F52BA` Blue Accent | `#FFD700` Gold Accent | `#00F0FF` Cyan Accent |
+## 🌐 Quad-Campus Event Hub — One Platform, Four Campuses
+
+<img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/screenshots/campus_radar.jpg" width="90%" alt="SPIDEY Campus Radar — 3D Curved Carousel with all 4 Graphic Era campuses" />
+
+*The SPIDEY 3D Curved Campus Radar — glide between all four Graphic Era campuses with a single swipe*
 
 </div>
 
-From solo student RSVPs to 6-member hackathon squad registrations, from Razorpay checkout flows to mobile-first QR attendance scanning, SPIDEY delivers a zero-latency, production-grade experience that's equal parts functional and visually stunning.
+<br/>
+
+**SPIDEY** (*Student Portal for Institutional Discovery, Events & Yardsticks*) is a full-stack, Spider-Man multiverse–themed campus event platform built exclusively for the **Graphic Era University** group of institutions in Uttarakhand, India.
+
+It replaces scattered Google Forms, paper entry passes, and WhatsApp announcements with a secure, professional, and visually stunning web application — unifying **four campuses** under one digital grid.
+
+<div align="center">
+
+|  | 🏔️ Bhimtal | ⚡ Haldwani | 🏛️ Dehradun | 🎓 Deemed |
+|:---:|:---:|:---:|:---:|:---:|
+| **Full Name** | GEHU Bhimtal | GEHU Haldwani | GEHU Dehradun | Graphic Era Deemed University |
+| **Theme** | High-Altitude Lake View Innovation | Gateway Cyber-Robotics & Design | Flagship Centre of Excellence | NAAC A+ Research HQ |
+| **Neon Accent** | 🔴 `#E21B24` Red | 🔵 `#0F52BA` Blue | 🟡 `#FFD700` Gold | 🩵 `#00F0FF` Cyan |
+
+</div>
 
 ---
 
@@ -62,75 +78,74 @@ From solo student RSVPs to 6-member hackathon squad registrations, from Razorpay
 | A | [Problem Statement](#-problem-statement) |
 | B | [Proposed Solution](#-proposed-solution) |
 | C | [Objectives](#-objectives) |
-| D | [Key Features](#-key-features) |
-| E | [Complete Technology Stack](#-complete-technology-stack) |
-| F | [System Architecture & Data Flow](#-system-architecture-and-data-flow) |
-| G | [Project Folder Structure](#-project-folder-structure) |
-| H | [Installation & Local Setup](#-installation-and-local-setup) |
-| I | [Environment Variables](#-environment-variables) |
-| J | [API Documentation](#-api-documentation) |
-| K | [Database Design](#-database-design) |
-| L | [User Workflow](#-user-workflow) |
-| M | [Real Event Archives](#-real-event-archives) |
-| N | [Deployment Guide](#-deployment-guide) |
-| O | [Future Improvements](#-future-improvements) |
-| P | [Contributing Guidelines](#-contributing-guidelines) |
-| Q | [License & Acknowledgements](#-license-and-acknowledgements) |
+| D | [Platform Screenshots](#-platform-screenshots) |
+| E | [Key Features](#-key-features) |
+| F | [Real Event Archives](#-real-event-archives-from-campus) |
+| G | [Technology Stack](#-complete-technology-stack) |
+| H | [System Architecture](#-system-architecture-and-data-flow) |
+| I | [Project Folder Structure](#-project-folder-structure) |
+| J | [Installation & Setup](#-installation-and-local-setup) |
+| K | [Environment Variables](#-environment-variables) |
+| L | [API Documentation](#-api-documentation) |
+| M | [Database Design](#-database-design) |
+| N | [User Workflow](#-user-workflow) |
+| O | [Deployment Guide](#-deployment-guide) |
+| P | [Future Improvements](#-future-improvements) |
+| Q | [Contributing Guidelines](#-contributing-guidelines) |
+| R | [License & Acknowledgements](#-license-and-acknowledgements) |
 
 ---
 
 ## 📌 Problem Statement
 
-Graphic Era runs multiple high-energy campuses simultaneously. National hackathons, cultural mega-fests, technical symposia, and athletic championships happen every semester — yet the infrastructure for discovering, registering for, and attending these events remained fragmented:
+Graphic Era runs multiple thriving campuses simultaneously. Despite hosting national hackathons, cultural mega-fests, technical symposia, and athletic championships — the infrastructure for event discovery, registration, and attendance was dangerously fragmented:
 
 | ❌ Problem | 💢 Impact |
 |---|---|
-| **Campus Isolation** — events at Bhimtal go unnoticed in Dehradun | Low inter-campus participation and missed opportunities |
-| **Ad-hoc Google Forms** — no duplicate prevention, no team management | Organizer overload, manual Excel cleanup every event |
+| **Campus Isolation** — events at Bhimtal go unnoticed in Dehradun | Low cross-campus participation and wasted opportunities |
+| **Ad-hoc Google Forms** — no duplicate prevention, no team controls | Organizer overload, manual Excel cleanup after every event |
 | **Paper / PDF Passes** — easily forged, slow to verify at gates | Security loopholes, long queues, unauthorized entries |
-| **No Institutional Memory** — event photos lost on personal drives | Campus legacy and achievements fade over time |
-| **Disconnected UPI Payments** — screenshot matching against bank statements | Payment disputes, unverified attendees, financial chaos |
-| **No Placement Portal** — T&P data scattered across departments | Students unaware of recruiters and placed alumni networks |
+| **No Institutional Memory** — photos lost on personal phone drives | Campus legacy and achievements vanish over time |
+| **Disconnected Fee Collection** — UPI screenshot matching manually | Payment disputes, unverified attendees, financial chaos |
+| **No Placement Portal** — T&P data scattered across departments | Students unaware of active recruiters and placed alumni |
 
 ---
 
 ## 💡 Proposed Solution
 
-SPIDEY addresses every pain point above with dedicated, integrated systems:
-
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
 │  📡 3D Curved Quad-Campus Radar                                     │
-│     → Physics-based carousel gliding between all 4 campuses         │
+│     → Physics-based carousel across all 4 campuses                  │
 │     → Auto-sorts events into Past · Present · Future timelines       │
 ├─────────────────────────────────────────────────────────────────────┤
-│  🎟️ Multi-Step Team Registration Protocol                           │
-│     → Solo & squad modes (up to 6 members), track selection         │
-│     → Portrait photo upload per team member                         │
+│  📝 Multi-Step Team Registration Protocol                           │
+│     → Solo & squad modes (up to 6 members) with track selection     │
+│     → Portrait photo upload per team member via FileReader           │
 ├─────────────────────────────────────────────────────────────────────┤
 │  💳 Dual Payment Engine                                             │
-│     → Razorpay Standard Checkout + HMAC SHA-256 verification        │
+│     → Razorpay Standard Checkout + HMAC SHA-256 order verification  │
 │     → Direct UPI QR generation + 12-digit UTR bank validation       │
 ├─────────────────────────────────────────────────────────────────────┤
 │  🪪 Executive Lanyard ID Card Generator                             │
-│     → University-branded pass with portrait, roll no & QR code      │
-│     → Download, Print, Share on X / LinkedIn                        │
+│     → University-branded pass with portrait, roll no & QR           │
+│     → Download PNG · Print · Share on X / LinkedIn                  │
 ├─────────────────────────────────────────────────────────────────────┤
-│  🛡️ Mobile Gatekeeper QR Verification Terminal                      │
+│  🛡️ Mobile QR Gatekeeper Verification Terminal                      │
 │     → Public /verify route — no login needed for gate staff         │
-│     → Timestamp-logged IST attendance marking                       │
+│     → IST timestamp-logged attendance marking                       │
 ├─────────────────────────────────────────────────────────────────────┤
-│  📸 Concluded Event Photo Archives & Video Galleries                │
-│     → Fullscreen lightbox · Auto-slideshow · Keyboard nav           │
-│     → Drone surveillance 4K video player with rotation support      │
+│  📸 Past Event Photo Galleries & Drone Video Archives               │
+│     → Fullscreen lightbox · Auto-slideshow · Keyboard navigation    │
+│     → 4K drone surveillance video player with rotation              │
 ├─────────────────────────────────────────────────────────────────────┤
-│  📊 Admin High Command Dashboard                                    │
-│     → Live Google Sheets matrix · TSV export · Event approvals      │
-│     → Cross-campus analytics and registration management            │
+│  👑 Admin High Command Dashboard                                    │
+│     → Live Google Sheets matrix · TSV export · Approvals queue      │
+│     → Cross-campus analytics and real-time registration management  │
 ├─────────────────────────────────────────────────────────────────────┤
 │  🏢 Training & Placement (T&P) Intelligence Hub                     │
 │     → Recruiter directory · Placed student hall of fame             │
-│     → Super Dream / Dream package tier filtering                    │
+│     → Super Dream (≥₹20 LPA) / Dream (≥₹10 LPA) tier filtering    │
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -139,126 +154,224 @@ SPIDEY addresses every pain point above with dedicated, integrated systems:
 ## 🎯 Objectives
 
 - 🏫 **Quad-Campus Centralization** — one unified portal for all four Graphic Era institutions
-- 🎟️ **Paperless Secure Ticketing** — cryptographic QR passes tied to verified roll numbers
-- 📸 **Institutional Memory Preservation** — high-res photo archives of every past event
+- 🎟️ **Paperless Secure Ticketing** — cryptographic QR passes tied to verified student roll numbers
+- 📸 **Institutional Memory Preservation** — high-res archives of every past event
 - 🛡️ **Streamlined Gate Operations** — IST-timestamped attendance marking in one tap
-- 📴 **Offline Resilience** — comprehensive `fallbackData.js` keeps the app functional without a backend
-- 💰 **Integrated Fee Collection** — end-to-end payment traceability (Razorpay + UPI)
+- 📴 **Offline Resilience** — `fallbackData.js` (600KB) keeps the platform functional without a live backend
+- 💰 **Integrated Fee Collection** — end-to-end Razorpay + UPI payment traceability
 - 📊 **Data-Driven Administration** — real-time Google Sheets sync and cross-campus analytics
+
+---
+
+## 📸 Platform Screenshots
+
+<div align="center">
+
+### 🌐 Campus Radar — 3D Curved Carousel
+
+<img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/screenshots/campus_radar.jpg" width="88%" alt="SPIDEY Campus Radar showing 4 campus cards with neon glows" />
+
+> *Physics-based sliding between Bhimtal 🔴, Haldwani 🔵, Dehradun 🟡, and Deemed 🩵 — each with campus-specific neon accents and aerial photography*
+
+---
+
+### 📝 Multi-Step Event Registration with Team Builder
+
+<img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/screenshots/event_registration.jpg" width="88%" alt="SPIDEY Event Registration Modal — INNOVATE 1.0 AWS Ideathon with team form and payment" />
+
+> *Configurable team size (2–6 members), per-member portrait upload, track selection, and dual payment options — all in one seamless form*
+
+---
+
+### 🪪 Executive Lanyard ID Pass Generator
+
+<img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/screenshots/lanyard_pass.jpg" width="88%" alt="SPIDEY Lanyard ID Cards — University branded passes with QR codes and student photos" />
+
+> *University-branded event passes with student portrait, roll number, team details, and cryptographic QR ticket codes — downloadable, printable & shareable*
+
+---
+
+### 👑 Admin High Command Dashboard
+
+<img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/screenshots/admin_dashboard.jpg" width="88%" alt="SPIDEY Admin Dashboard — registration matrix, stats, approvals" />
+
+> *Real-time cross-campus registration matrix with stats, Google Sheets export, and approval queue — accessible only to super admins*
+
+---
+
+### 🛡️ Gatekeeper QR Verification Terminal
+
+<img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/screenshots/verify_gate.jpg" width="60%" alt="SPIDEY Gatekeeper Terminal — QR pass verification with student photo and Mark Attendance button" />
+
+> *Mobile-optimized gate terminal — security staff scan any student QR, see authentic portrait & details, and mark IST-timestamped attendance in one tap*
+
+</div>
 
 ---
 
 ## ⚡ Key Features
 
 <details>
-<summary><strong>🌐 1. Quad-Campus Radar & Timeline Engine</strong></summary>
+<summary><b>🌐 1. Quad-Campus Radar & Timeline Engine</b></summary>
+<br/>
 
-- **3D Curved Carousel** (`CurvedCampusSlider.jsx`) — smooth physics-based sliding between Bhimtal 🏔️, Haldwani ⚡, Dehradun 🏛️, and Deemed 🎓 campuses with campus-specific neon glow accents
-- **Cursor-Tracking Light Sensor Cards** (`CampusLeadershipSection.jsx`) — Stark-Tech spotlight effect on leadership portraits, following mouse position in real time
-- **Automated Date Partitioning** (`CampusTimelineView.jsx`) — dynamically classifies every event into:
-  - 🔴 **Past Events & Concluded Archives**
-  - 🟢 **Present Day / Live Now**
-  - 🔵 **Upcoming Missions & Announcements**
-- **Google Calendar Direct Link** — every event card includes a one-click intent URL pre-filling title, venue, start/end time, campus address, and attendee email
-- **Campus-Scoped Filtering** — campus selection propagates through every component ensuring Bhimtal students never see Haldwani-exclusive events
+- **3D Curved Carousel** (`CurvedCampusSlider.jsx`) — smooth physics-based sliding between all four campuses with campus-specific neon glow accents
+- **Cursor-Tracking Spotlight Cards** (`CampusLeadershipSection.jsx`) — Stark-Tech spotlight effect on leadership portraits, following mouse position in real time
+- **Automated Date Partitioning** (`CampusTimelineView.jsx`) — dynamically classifies every event into Past / Present / Future
+- **Google Calendar Web Intent** — every event card pre-fills title, venue, timings, and description into Google Calendar with a single click
+- **Campus-Scoped Filtering** — campus selection propagates through all components ensuring students only see their campus events
 
 </details>
 
 <details>
-<summary><strong>📝 2. Multi-Step Event Registration Protocol</strong></summary>
+<summary><b>📝 2. Multi-Step Event Registration Protocol</b></summary>
+<br/>
 
-- **Participation Modes** — toggle between Solo Registration and Team Registration (2–6 members)
-- **Per-Member Portrait Upload** — each teammate uploads a JPEG/PNG photo via `FileReader` stored as Base64 data URLs (max 8MB per image)
-- **Dynamic Team Slots** — adding/removing members auto-generates placeholder names and university roll numbers
-- **Event Track Selection** — configurable tracks per event type:
-  - 🤖 AI / Machine Learning Track · ☁️ Cloud & DevOps · 🌐 Web3 & Blockchain
-  - 🎸 Battle of Bands / Rock Show · 🤼 Robowars Combat · 🏸 Athletics Spardha
-- **Registration Isolation** — modal traps body scroll and keyboard focus, preventing accidental campus slider changes during form completion
-
-</details>
-
-<details>
-<summary><strong>💳 3. Integrated Payment Gateways</strong></summary>
-
-- **Razorpay Standard Checkout** — triggers native Razorpay modal (credit card, debit card, netbanking, UPI) with backend HMAC SHA-256 `order_id|payment_id` signature verification
-- **Direct UPI QR Engine** — client-side QR rendered for `chaudharyujjwal@fam` with dynamic INR amount (₹1 test · ₹10 token · full team fee)
-- **12-Digit Bank UTR Validation** — students paste their bank UTR reference, validated against Razorpay payment records
-- **Flexible Pricing** — fee = ₹199 per member; solo = ₹199; 3-member team = ₹597 auto-calculated
+- **Participation Modes** — toggle between **Solo Registration** and **Team Registration** (2–6 members)
+- **Per-Member Portrait Upload** — each team member uploads a JPEG/PNG photo via `FileReader` stored as Base64 data URLs
+- **Dynamic Team Slots** — adding/removing members auto-generates placeholder names and roll numbers
+- **Event Track Selection** — AI/ML, Cloud & DevOps, Web3, Battle of Bands, Robowars, Athletics, and more
+- **Registration Isolation** — modal traps body scroll and keyboard focus during form completion
 
 </details>
 
 <details>
-<summary><strong>🪪 4. Executive Lanyard ID Pass Generator</strong></summary>
+<summary><b>💳 3. Integrated Dual Payment Gateways</b></summary>
+<br/>
 
-- **Snake Cascade View** — all team passes render simultaneously in a vertically stacked cascade for easy review
-- **Cryptographic Ticket Codes** — auto-assigned unique IDs based on event type:
-  - `SPIDEY-XXXXX-NNN` (general events)
-  - `HTW-2027-XXXXX` (Hack The Winter)
-  - `GRAFEST-XXXXX` (Cultural Fests)
-- **QR Code** — high-density `qrcode` library generates verification URL encoded with ticket code, student name, roll number, email, campus, and team role
-- **Card Actions** — Download PNG · Print Single Card · Batch Print All · Share on X (Twitter) · Share on LinkedIn
-- **localStorage Sync** — pass data saved to `spider_verified_pass_<ticketCode>` for offline photo retrieval at gates
+- **Razorpay Standard Checkout** — triggers native Razorpay modal with HMAC SHA-256 `order_id|payment_id` backend verification
+- **Direct UPI QR Engine** — client-side QR rendered for `chaudharyujjwal@fam` with dynamic INR amount
+- **12-Digit Bank UTR Validation** — student pastes bank UTR; validated against Razorpay `fetchPayment()` API
+- **Auto Fee Calculation** — ₹199 per member; 3-member team = ₹597 calculated automatically
 
 </details>
 
 <details>
-<summary><strong>🛡️ 5. Security Gatekeeper QR Verification Terminal</strong></summary>
+<summary><b>🪪 4. Executive Lanyard ID Pass Generator</b></summary>
+<br/>
 
-- **Public Route** — `/verify` and `/verify/:code` require **zero login** — mobile-friendly for gate staff scanning on any browser
-- **3-Layer Pass Lookup** — checks `verified_passes` table → `event_registrations` table → `details_json` nested attendee arrays
-- **Photo Match Display** — shows attendee's uploaded portrait photo alongside Roll No, Campus, Degree, Team, and Track
-- **Timestamped Check-In** — one-tap button writes `"PRESENT & ADMITTED AT GATE (HH:MM:SS AM/PM)"` in IST to `verified_passes.checkin_time`
-- **Manual Code Entry** — fallback text input if QR camera scan fails
-
-</details>
-
-<details>
-<summary><strong>📸 6. Concluded Event Galleries & Video Archives</strong></summary>
-
-- **Responsive Photo Grid** — 1/2/3 column layouts adapting to viewport with hover-zoom and `#N` photo index badges
-- **Fullscreen Lightbox** — high-resolution image viewer with auto-play slideshow (2.8s interval), touch-swipe gestures, keyboard arrows, and Escape to close
-- **Event Highlights Panel** — structured festival highlights, winner team announcements, event overviews, and closing tribute banners
-- **4K Drone Surveillance Video Player** — `EventVideoModal.jsx` with 90° rotation for corrected aerial footage, fullscreen API, and volume controls
-- **Gallery Upload at Runtime** — gallery modal allows adding extra photos from local device which persist within the session
+- **Snake Cascade & Grid Views** — all team passes simultaneously displayed in a waterfall cascade
+- **Cryptographic Ticket Codes** — unique auto-assigned IDs: `SPIDEY-XXXXX`, `HTW-2027-XXXXX`, `GRAFEST-XXXXX`
+- **High-Density QR Code** — rendered via `qrcode` library, encodes full verification URL with ticket code, name, roll, campus, and role
+- **Card Actions** — ⬇ Download PNG · 🖨 Print Single · 🖨 Batch Print All · ✕ Share on X · 🔗 Share on LinkedIn
+- **localStorage Sync** — pass data saved for offline photo retrieval at gates
 
 </details>
 
 <details>
-<summary><strong>👑 7. Administrative High Command Dashboard</strong></summary>
+<summary><b>🛡️ 5. Security Gatekeeper QR Verification Terminal</b></summary>
+<br/>
 
-- **Super Admin vs Campus Admin** — super admin (`ujjwalchaudhary2007@gmail.com`) sees all 4 campuses; campus admins see their own
-- **Registration Matrix** — searchable, filterable table of all attendee records across every event and campus
-- **Google Sheets Integration** — configure per-event sheet URL and Apps Script webhook; one-click TSV export to clipboard pastes as formatted Google Sheets rows
-- **Approval Queue** — inspect organizer-submitted events with full metadata and approve or reject with custom reason
+- **Zero-Login Public Route** — `/verify` and `/verify/:code` work on any mobile browser, no credentials required
+- **3-Layer Pass Lookup** — checks `verified_passes` → `event_registrations` → `details_json` nested attendee arrays
+- **Photo Match Display** — shows student's uploaded portrait alongside Roll No, Campus, Degree, Team, and Track
+- **Timestamped Check-In** — one-tap marks `"PRESENT & ADMITTED AT GATE (HH:MM:SS AM/PM)"` in IST
+- **Manual Code Fallback** — text input if QR camera scan fails
+
+</details>
+
+<details>
+<summary><b>📸 6. Past Event Photo Galleries & Video Archives</b></summary>
+<br/>
+
+- **Responsive Photo Grid** — 1/2/3 column masonry layouts with hover-zoom and `#N` photo index badges
+- **Fullscreen Lightbox** — auto-play slideshow (2.8s interval), touch-swipe, keyboard arrows (← →), Escape to close
+- **Festival Highlights Panel** — winner announcements, event overviews, and closing tribute banners
+- **4K Drone Video Player** — `EventVideoModal.jsx` with 90° orientation rotation, fullscreen API, and volume controls
+- **Runtime Gallery Upload** — add extra event photos from local device during the session
+
+</details>
+
+<details>
+<summary><b>👑 7. Administrative High Command Dashboard</b></summary>
+<br/>
+
+- **Role Separation** — super admin (`ujjwalchaudhary2007@gmail.com`) sees all 4 campuses; campus admins see their own
+- **Registration Matrix** — searchable, filterable attendee table across all events and campuses
+- **Google Sheets Integration** — per-event sheet URL + Apps Script webhook; one-click TSV clipboard export
+- **Approval Queue** — inspect organizer proposals and approve / reject with custom feedback
 - **Platform Statistics** — total events, pending approvals, approved archives, total RSVPs, registered users
 
 </details>
 
 <details>
-<summary><strong>🏢 8. Training & Placement (T&P) Intelligence Hub</strong></summary>
+<summary><b>🏢 8. Training & Placement (T&P) Intelligence Hub</b></summary>
+<br/>
 
-- **Recruiter Directory** — interactive company cards with SVG logos (Google, Microsoft, Amazon, Adobe, TCS, Infosys, etc.) and CTC tiers
-- **Placed Student Hall of Fame** — filterable profiles by Package Tier:
-  - 🌟 **Super Dream** — ≥ ₹20 LPA
-  - ⭐ **Dream** — ≥ ₹10 LPA
+- **Recruiter Directory** — interactive company cards with logos (Google, Microsoft, Amazon, Adobe, TCS, Infosys…) and CTC packages
+- **Placed Student Hall of Fame** — filterable by 🌟 **Super Dream** (≥ ₹20 LPA) and ⭐ **Dream** (≥ ₹10 LPA)
 - **Multi-Campus Filter** — browse placements specifically for Bhimtal, Haldwani, Dehradun, or Deemed
 - **Analytics Tab** — campus-wise placement statistics and company hiring breakdowns
 
 </details>
 
 <details>
-<summary><strong>🕷️ 9. Stark-Tech Multiverse Aesthetic</strong></summary>
+<summary><b>🕷️ 9. Stark-Tech Multiverse Aesthetic</b></summary>
+<br/>
 
-- **Spider-Web Canvas Transitions** — SVG web-blast animations and `thwip.mp3` sound effect triggered at every major navigation action
-- **Cinematic Intro Modal** — first-visit video modal (`before_login.mp4`) plays automatically, stored to `sessionStorage` to avoid repeat plays
-- **Sign-In / Sign-Out Video Modals** — custom cinematic transitions on login and logout
-- **Custom Font Suite** — Chakra Petch (headers), Orbitron (stats), Rajdhani (body), JetBrains Mono (code & terminal text)
-- **Campus-Specific Neon Accents** — each campus has its own border glow, badge colour, and shadow colour applied consistently across all components
+- **Spider-Web Canvas Transitions** — SVG web-blast animations and `thwip.mp3` sound at every major navigation
+- **Cinematic First-Visit Intro** — `before_login.mp4` plays automatically once per session, gated by `sessionStorage`
+- **Sign-In / Sign-Out Video Modals** — custom cinematic transitions on authentication events
+- **Custom Font Suite** — Chakra Petch (headers), Orbitron (stats/numbers), Rajdhani (body), JetBrains Mono (terminal)
+- **Campus-Specific Neon Accents** — each campus has its own border glow, badge colour, and shadow applied consistently
 
 </details>
 
 > [!NOTE]
-> **All 9 feature suites above are fully implemented and verified in the repository.** Future roadmap items (email delivery, native mobile app, WebSocket live chat) are clearly labelled in [Future Improvements](#-future-improvements).
+> **All 9 feature suites are fully implemented and verified in the repository.** Roadmap items (email delivery, native mobile, WebSocket chat) are clearly marked in [Future Improvements](#-future-improvements).
+
+---
+
+## 📸 Real Event Archives from Campus
+
+All photos below are **authentic** — shot at actual Graphic Era University events by students and campus photography teams.
+
+<div align="center">
+
+### 🤖 Smart India Hackathon 2026 Grand Finale
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/sih/sih_inauguration.jpg" width="250" alt="SIH Inauguration"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/sih/sih_coding.jpg" width="250" alt="SIH Coding"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/sih/sih_presentation.jpg" width="250" alt="SIH Presentation"/> |
+| *Grand Inauguration* | *Coding Sprint* | *Final Presentations* |
+
+---
+
+### 🎵 Student Grafest — Haldwani Campus (Live Concerts & Cultural Fest)
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/haldwani_grafest/haldwani_grafest_1.jpg" width="250" alt="Grafest Live Performance"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/haldwani_grafest/haldwani_grafest_2.jpg" width="250" alt="Grafest Dance"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/haldwani_grafest/haldwani_grafest_5.jpg" width="250" alt="Grafest Group"/> |
+| *Live Stage Performance* | *Dance Showcase* | *Student Celebrations* |
+
+---
+
+### ☁️ INNOVATE 1.0 — AWS Ideathon (Bhimtal Campus)
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/aws_ideathon/aws_ideathon_poster.jpg" width="250" alt="AWS Ideathon Poster"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/aws_ideathon/aws_ideathon_discussions.jpg" width="250" alt="AWS Discussions"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/aws_ideathon/aws_ideathon_venue_crowd.jpg" width="250" alt="AWS Venue"/> |
+| *Official Event Poster* | *Team Discussions* | *Venue & Crowd* |
+
+---
+
+### 🏆 Watch The Code — National Hackathon (Haldwani)
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/watch_the_code_1.jpg" width="250" alt="Watch The Code"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/watch_the_code_stage.jpg" width="250" alt="Watch The Code Stage"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/watch_the_code_trophy1.jpg" width="250" alt="Watch The Code Trophy"/> |
+| *Hackathon Sprint* | *Stage Ceremony* | *Winners' Trophy* |
+
+---
+
+### 🎭 Graphite Live — Cultural Extravaganza
+
+| | | |
+|:---:|:---:|:---:|
+| <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/graphite_live_1.jpg" width="250" alt="Graphite Live 1"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/graphite_live_3.jpg" width="250" alt="Graphite Live 3"/> | <img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/events/graphite_live_5.jpg" width="250" alt="Graphite Live 5"/> |
+| *Opening Act* | *Band Performance* | *Crowd Energy* |
+
+</div>
 
 ---
 
@@ -270,7 +383,7 @@ SPIDEY addresses every pain point above with dedicated, integrated systems:
 | **React** | `^18.2.0` | Component-based SPA framework |
 | **Vite** | `^5.0.8` | Build tool with instant HMR |
 | **React Router DOM** | `^6.21.1` | Client-side routing & protected routes |
-| **Tailwind CSS** | `^3.4.0` | Utility-first styling + custom Spider-Man theme |
+| **Tailwind CSS** | `^3.4.0` | Utility-first CSS + custom Spider-Man theme |
 | **Axios** | `^1.6.2` | HTTP client for REST API communication |
 | **QRCode** | `^1.5.4` | Client-side QR code generation |
 | **PostCSS** | `^8.4.32` | CSS transformation pipeline |
@@ -280,44 +393,41 @@ SPIDEY addresses every pain point above with dedicated, integrated systems:
 | Technology | Version | Role |
 |---|---|---|
 | **Node.js** | `≥ 18.0.0` | Server runtime environment |
-| **Express.js** | `^4.18.2` | REST API server & static file hosting |
-| **CORS** | `^2.8.5` | Cross-origin request middleware |
+| **Express.js** | `^4.18.2` | REST API server & static file serving |
+| **CORS** | `^2.8.5` | Cross-origin resource sharing middleware |
 | **jsonwebtoken** | `^9.0.2` | JWT generation & 7-day token verification |
-| **bcryptjs** | `^2.4.3` | Password hashing (salted, 10 rounds) |
+| **bcryptjs** | `^2.4.3` | Salted password hashing (10 rounds) |
 | **google-auth-library** | `^9.15.1` | Google OAuth 2.0 ID token verification |
-| **Node `crypto`** | *(built-in)* | HMAC SHA-256 Razorpay signature & safe buffer compare |
+| **Node `crypto`** | *(built-in)* | HMAC SHA-256 for Razorpay signatures |
 
 ### 💾 Database & Persistence
 | Technology | Version | Role |
 |---|---|---|
-| **sql.js** | `^1.9.0` | SQLite engine compiled to WebAssembly (zero native deps) |
-| **SQLite file store** | *(binary)* | Disk snapshot every 5s → `backend/geu_spider_events.db` |
-| **Browser LocalStorage** | *(Web API)* | Verified passes, JWT session, Google Sheets config, registration cache |
-| **SessionStorage** | *(Web API)* | Intro video seen flag, preventing replay on refresh |
+| **sql.js** | `^1.9.0` | SQLite compiled to WebAssembly — zero native deps |
+| **SQLite file store** | *(binary)* | Disk snapshot every 5s → `geu_spider_events.db` |
+| **Browser LocalStorage** | *(Web API)* | JWT session, verified passes, Google Sheets config |
+| **SessionStorage** | *(Web API)* | Intro video seen flag (prevents replay on refresh) |
 
 ### 🌐 Third-Party Integrations
-| Service | Type | Purpose |
+| Service | Integration Type | Purpose |
 |---|---|---|
 | **Razorpay** | REST API + JS SDK | Payment order creation & HMAC verification |
 | **UPI / NPCI** | Intent QR URI | Direct peer-to-merchant payment |
 | **Google Identity** | OAuth 2.0 | One-tap SSO login |
 | **Google Calendar** | Web Intent URL | Pre-filled event scheduling |
 | **Google Sheets** | Apps Script Webhook | Live attendee row insertion |
-| **Google Apps Script** | Deployed Web App | Backend-free sheet automation |
 
 ### 🚀 DevOps & Tooling
 | Tool | Purpose |
 |---|---|
 | **Vercel** | Frontend SPA hosting with SPA rewrite rules |
-| **PM2** | Recommended Node.js process manager for production backend |
-| **`start.bat`** | Windows batch script for one-click dual-server launch |
-| **Git** | Version control (hosted at `github.com/ujjwalchaudharyyy/SPIDEY`) |
+| **PM2** | Node.js production process manager |
+| **`start.bat`** | Windows one-click dual-server launcher |
+| **Git + GitHub** | Version control (`ujjwalchaudharyyy/SPIDEY`) |
 
 ---
 
 ## 🏗️ System Architecture and Data Flow
-
-### High-Level Architecture
 
 ```mermaid
 flowchart TD
@@ -335,7 +445,6 @@ flowchart TD
         RegRoute["/api/events/:id\nRegister · Verify · Check-in"]
         RsvpRoute["/api/rsvp\nToggle · My RSVPs"]
         PayRoute["/api/payment\nRazorpay · UTR Verify"]
-        Health["/api/health\nUptime Probe"]
     end
 
     subgraph DB["💾 Data Layer — sql.js SQLite WASM"]
@@ -376,35 +485,38 @@ flowchart TD
 
 **1. Campus Selection → Event Timeline**
 ```
-User clicks campus tab
+User taps campus tab (Bhimtal / Haldwani / Dehradun / Deemed)
   → activeCampusIndex updates in StudentFeed.jsx
   → currentCampusEvents = events.filter(e => e.campus === activeCampus.name)
-  → CampusTimelineView sorts by event_date vs todayStr
-  → Past / Present / Future sections render automatically
+  → CampusTimelineView sorts by event_date vs todayStr ('2026-10-27')
+  → Past ·  Present · Future sections auto-render
 ```
 
-**2. Registration → Pass → Gate Verification**
+**2. Registration → Pass → Gate Check-In**
 ```
-Student fills multi-step form + uploads photos
+Student fills multi-step form + uploads portraits + pays
   → POST /api/events/:id/register
-  → Backend generates ticket code (SPIDEY-XXXXX)
-  → INSERT into event_registrations & verified_passes
+  → Backend generates SPIDEY-XXXXX ticket code
+  → INSERT into event_registrations + verified_passes
   → Async POST to Google Sheets webhook
-  → LanyardIDCard renders QR pointing to /verify?code=SPIDEY-XXXXX
-  → Gatekeeper scans QR
-  → GET /api/events/verify/:ticketCode
-  → verified_passes lookup → show student photo
-  → POST /verify/:ticketCode/checkin → mark PRESENT (IST timestamp)
+  → LanyardIDCard renders QR → /verify?code=SPIDEY-XXXXX
+  → Gatekeeper scans QR → GET /api/events/verify/SPIDEY-XXXXX
+  → verified_passes lookup → display student portrait
+  → POST /verify/:code/checkin → mark PRESENT (IST timestamp)
 ```
 
 **3. Payment Flow**
 ```
-Student selects payment method
-  → Razorpay: POST /api/payment/create-order → Razorpay SDK modal
-    → POST /api/payment/verify-payment → HMAC SHA-256 check
-  → UPI: client generates QR URI → student pays → enters 12-digit UTR
-    → checked against Razorpay fetchPayment() API
-  → On success → advance to ID card generation step
+Student selects Razorpay
+  → POST /api/payment/create-order → Razorpay SDK modal
+  → Student pays → POST /api/payment/verify-payment
+  → Backend HMAC SHA-256 check → confirmed
+  → Advance to ID card generation step ✅
+
+Student selects UPI QR
+  → Client generates UPI QR code → student pays via any UPI app
+  → Student enters 12-digit UTR reference
+  → UTR checked against Razorpay fetchPayment() → confirmed ✅
 ```
 
 ---
@@ -413,89 +525,86 @@ Student selects payment method
 
 ```
 SPIDEY/
-├── 📄 .env.example               ← Root env template (VITE + backend combined)
+├── 📄 README.md                      ← You are here
+├── 🪟 start.bat                      ← Windows one-click dual server launcher
+├── 📄 vercel.json                    ← Vercel SPA rewrite config
 ├── 📄 .gitignore
-├── 📄 README.md                  ← You are here
-├── 🪟 start.bat                  ← Windows one-click dual server launcher
-├── 📄 vercel.json                ← Vercel SPA rewrite config
 │
-├── 📂 backend/                   ← Express.js REST API
-│   ├── 📄 .env.example           ← Backend env template
-│   ├── 📄 server.js              ← Entry point: CORS, body parser, route mounts
-│   ├── 📄 db.js                  ← sql.js init, 5-table schema, 35+ seed events
-│   ├── 🗄️ geu_spider_events.db  ← SQLite binary (auto-created on first run)
+├── ⚙️ backend/
+│   ├── 📄 server.js                  ← Entry: CORS, body parser, route mounts
+│   ├── 📄 db.js                      ← sql.js init, 5-table schema, 36+ seed events
+│   ├── 🗄️ geu_spider_events.db      ← SQLite binary (auto-created on first run)
 │   ├── 📄 package.json
 │   └── 📂 routes/
-│       ├── 📄 auth.js            ← Register, login, Google OAuth, /me
-│       ├── 📄 events.js          ← Event CRUD, campuses list, approval, stats
-│       ├── 📄 registrations.js   ← Register, verify/:code, check-in, attendees
-│       ├── 📄 rsvp.js            ← Toggle RSVP, my RSVPs, RSVP status
-│       └── 📄 payment.js         ← Razorpay order, verify-payment, order-status
+│       ├── 📄 auth.js                ← Register, login, Google OAuth, /me
+│       ├── 📄 events.js              ← Event CRUD, campuses, approval, stats
+│       ├── 📄 registrations.js       ← Register, verify/:code, check-in, attendees
+│       ├── 📄 rsvp.js                ← Toggle RSVP, my RSVPs, RSVP status
+│       └── 📄 payment.js             ← Razorpay order, verify, order-status
 │
-└── 📂 frontend/                  ← React 18 + Vite SPA
-    ├── 📄 index.html             ← HTML shell with Google Fonts CDN
-    ├── 📄 vite.config.js         ← Vite bundler + dev proxy to :5000
-    ├── 📄 tailwind.config.js     ← Custom Spider-Man colors, shadows & keyframes
+└── 🖥️ frontend/
+    ├── 📄 index.html                 ← HTML shell with Google Fonts CDN
+    ├── 📄 vite.config.js             ← Vite bundler + dev proxy to :5000
+    ├── 📄 tailwind.config.js         ← Custom Spider-Man colors, shadows & keyframes
     ├── 📄 package.json
     │
     ├── 📂 public/assets/
     │   ├── 🖼️ logo.png / spiderman_*.png
-    │   ├── 🔊 thwip.mp3          ← Web-shooter sound effect
-    │   ├── 📂 campuses/          ← 4K aerial photos (bhimtal/haldwani/dehradun/deemed)
-    │   ├── 📂 leadership/        ← Chairman + campus directors portraits
-    │   ├── 📂 videos/            ← Drone footage + cinematic login/logout clips
+    │   ├── 🔊 thwip.mp3              ← Web-shooter sound effect
+    │   ├── 📸 screenshots/           ← Platform UI screenshots (README media)
+    │   ├── 📂 campuses/              ← 4K aerial photos (bhimtal/haldwani/dehradun/deemed)
+    │   ├── 📂 leadership/            ← Chairman + campus directors portraits
+    │   ├── 📂 videos/                ← Drone footage + login/logout cinematic clips
     │   └── 📂 events/
-    │       ├── 📂 aws_ideathon/     ← INNOVATE 1.0 – AWS Ideathon (Bhimtal)
-    │       ├── 📂 ganesh_chaturthi/ ← Ganesh Chaturthi Celebration (Bhimtal)
-    │       ├── 📂 prayukti/         ← PRAYUKTI 2.0 Tech Fest (Bhimtal)
-    │       ├── 📂 dussehra/         ← Dussehra Festival (Bhimtal)
-    │       ├── 📂 sih/              ← Smart India Hackathon Grand Finale
-    │       ├── 📂 grafest/          ← Student GRAFEST (Dehradun)
-    │       ├── 📂 student_grafest/  ← Student Grafest Cultural (Dehradun)
-    │       ├── 📂 haldwani_grafest/ ← Student Grafest Concerts (Haldwani)
-    │       ├── 📂 foundation_day/   ← Silver Jubilee Foundation Day
-    │       ├── 📂 sports/           ← Inter-campus athletics & cricket
-    │       └── 📂 upcoming/         ← Promotional cards for future events
+    │       ├── 📂 aws_ideathon/      ← INNOVATE 1.0 – AWS Ideathon (Bhimtal)
+    │       ├── 📂 ganesh_chaturthi/  ← Ganesh Chaturthi (Bhimtal)
+    │       ├── 📂 prayukti/          ← PRAYUKTI 2.0 Tech Fest (Bhimtal)
+    │       ├── 📂 dussehra/          ← Dussehra Festival (Bhimtal)
+    │       ├── 📂 sih/               ← Smart India Hackathon Grand Finale
+    │       ├── 📂 grafest/           ← Student GRAFEST (Dehradun)
+    │       ├── 📂 student_grafest/   ← Student Grafest Cultural (Dehradun)
+    │       ├── 📂 haldwani_grafest/  ← Student Grafest Concerts (Haldwani)
+    │       ├── 📂 foundation_day/    ← Silver Jubilee Foundation Day
+    │       └── 📂 upcoming/          ← Promotional cards for future events
     │
     └── 📂 src/
-        ├── 📄 main.jsx            ← React root renderer
-        ├── 📄 App.jsx             ← Router config + protected route declarations
-        ├── 📄 index.css           ← Global styles, custom scrollbars, spider keyframes
+        ├── 📄 main.jsx               ← React root renderer
+        ├── 📄 App.jsx                ← Router config + protected route declarations
+        ├── 📄 index.css              ← Global styles, custom scrollbars, spider keyframes
         │
         ├── 📂 components/
-        │   ├── 🧩 CurvedCampusSlider.jsx      ← 3D curved quad-campus carousel
-        │   ├── 🧩 CampusTimelineView.jsx       ← Past / Present / Future partitioner
-        │   ├── 🧩 CampusLeadershipSection.jsx  ← Spotlight sensor leadership cards
-        │   ├── 🧩 EventCard.jsx                ← Universal event preview card
-        │   ├── 🧩 EventGalleryModal.jsx        ← Photo gallery + fullscreen lightbox
-        │   ├── 🧩 EventRegistrationModal.jsx   ← Multi-step registration + payment
-        │   ├── 🧩 EventVideoModal.jsx          ← Drone video player + rotation
-        │   ├── 🧩 IntroVideoModal.jsx          ← First-visit cinematic intro
-        │   ├── 🧩 SigninVideoModal.jsx         ← Login transition animation
-        │   ├── 🧩 SignoutVideoModal.jsx        ← Logout transition animation
-        │   ├── 🧩 WebShooterTransition.jsx     ← Canvas web-blast SVG animation
-        │   ├── 🧩 Navbar.jsx                   ← Nav bar with role badges
-        │   ├── 🧩 ProtectedRoute.jsx           ← JWT role-based route guard
-        │   └── 🧩 CompanyLogo.jsx              ← T&P recruiter SVG logos
+        │   ├── 🧩 CurvedCampusSlider.jsx       ← 3D curved quad-campus carousel
+        │   ├── 🧩 CampusTimelineView.jsx        ← Past / Present / Future partitioner
+        │   ├── 🧩 CampusLeadershipSection.jsx   ← Cursor-tracking spotlight cards
+        │   ├── 🧩 EventCard.jsx                 ← Universal event preview card
+        │   ├── 🧩 EventGalleryModal.jsx         ← Photo gallery + fullscreen lightbox
+        │   ├── 🧩 EventRegistrationModal.jsx    ← Multi-step registration + payment
+        │   ├── 🧩 EventVideoModal.jsx           ← Drone video player + rotation
+        │   ├── 🧩 IntroVideoModal.jsx           ← First-visit cinematic intro
+        │   ├── 🧩 SigninVideoModal.jsx          ← Login transition
+        │   ├── 🧩 SignoutVideoModal.jsx         ← Logout transition
+        │   ├── 🧩 WebShooterTransition.jsx      ← Canvas web-blast SVG animation
+        │   ├── 🧩 Navbar.jsx                    ← Nav bar with role badges
+        │   └── 🧩 ProtectedRoute.jsx            ← JWT role-based route guard
         │
         ├── 📂 context/
-        │   └── 📄 AuthContext.jsx   ← React Context: JWT decode, login, logout
+        │   └── 📄 AuthContext.jsx    ← React Context: JWT decode, login, logout
         │
         ├── 📂 data/
-        │   └── 📄 fallbackData.js   ← 600KB offline dataset (36+ events, 4 campuses)
+        │   └── 📄 fallbackData.js    ← 600KB offline dataset (36+ events, 4 campuses)
         │
         ├── 📂 pages/
-        │   ├── 📄 Login.jsx           ← Spider-Man login + Google One-Tap SSO
-        │   ├── 📄 Register.jsx        ← Campus-aware account registration
-        │   ├── 📄 StudentFeed.jsx     ← Main campus radar + RSVP manager
-        │   ├── 📄 OrganizerDashboard.jsx ← Event proposal submission console
-        │   ├── 📄 AdminDashboard.jsx  ← High Command: approvals, registrations, sheets
-        │   ├── 📄 Placement.jsx       ← T&P recruiter + placed student portal
-        │   └── 📄 VerifyPass.jsx      ← Gatekeeper QR ticket verification
+        │   ├── 📄 Login.jsx          ← Spider-Man login + Google One-Tap SSO
+        │   ├── 📄 Register.jsx       ← Campus-aware account creation
+        │   ├── 📄 StudentFeed.jsx    ← Main campus radar + RSVP manager
+        │   ├── 📄 OrganizerDashboard.jsx ← Event proposal console
+        │   ├── 📄 AdminDashboard.jsx ← High Command: approvals, sheets, analytics
+        │   ├── 📄 Placement.jsx      ← T&P recruiter + placed student portal
+        │   └── 📄 VerifyPass.jsx     ← Gatekeeper QR verification terminal
         │
         └── 📂 utils/
-            ├── 📄 calendarUtils.js      ← Google Calendar intent URL generator
-            └── 📄 googleSheetsSync.js   ← Apps Script webhook + TSV clipboard export
+            ├── 📄 calendarUtils.js   ← Google Calendar intent URL generator
+            └── 📄 googleSheetsSync.js ← Apps Script webhook + TSV clipboard export
 ```
 
 ---
@@ -504,13 +613,13 @@ SPIDEY/
 
 ### Prerequisites
 
-| Requirement | Minimum Version | Check Command |
+| Requirement | Minimum | Check |
 |---|---|---|
 | **Node.js** | v18.0.0 | `node --version` |
 | **npm** | v9.0.0 | `npm --version` |
-| **Git** | Any recent | `git --version` |
+| **Git** | Any | `git --version` |
 
-### Option A — One-Click (Windows Only)
+### Option A — One-Click (Windows)
 
 ```cmd
 git clone https://github.com/ujjwalchaudharyyy/SPIDEY.git
@@ -518,216 +627,173 @@ cd SPIDEY
 start.bat
 ```
 
-> This opens two terminal windows: the backend on **:5000** and the frontend on **:5173**.
+> Opens two terminals automatically — backend on **:5000**, frontend on **:5173**
 
-### Option B — Manual Setup
+### Option B — Manual (All Platforms)
 
 **Terminal 1 — Backend**
 ```bash
-# Clone repository
 git clone https://github.com/ujjwalchaudharyyy/SPIDEY.git
 cd SPIDEY/backend
-
-# Install dependencies
 npm install
-
-# Configure environment
-cp .env.example .env
-# Edit .env with your credentials (JWT_SECRET is required)
-
-# Start backend server
+cp .env.example .env          # Edit .env with your secrets
 npm start
-# ✅ Backend running at http://localhost:5000
-# ✅ SQLite database initialized (geu_spider_events.db)
+# ✅  Express API running at http://localhost:5000
+# ✅  SQLite database auto-initialized (geu_spider_events.db)
 ```
 
 **Terminal 2 — Frontend**
 ```bash
 cd SPIDEY/frontend
-
-# Install dependencies
 npm install
-
-# Start development server
 npm run dev
-# ✅ Frontend running at http://localhost:5173
+# ✅  Vite SPA running at http://localhost:5173
 ```
 
-**Open in browser:** [http://localhost:5173](http://localhost:5173)
+Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ### Demo Credentials
 
-| Role | Email | Password | Access Scope |
+| Role | Email | Password | Access |
 |---|---|---|---|
 | 🔴 **Super Admin** | `admin@campus.edu` | `admin123` | All 4 campuses + Admin Dashboard |
-| 🟡 **Organizer** | Register via `/register` | Custom | Submit & manage own events |
-| 🔵 **Student** | Register or Google SSO | Custom | Browse, RSVP, register for events |
+| 🟡 **Organizer** | *(Register at `/register`)* | Custom | Submit & manage events |
+| 🔵 **Student** | *(Register or Google SSO)* | Custom | Browse, RSVP, register |
 
 > [!TIP]
-> Use **Google Sign-In** on the login page for instant access. Google-authenticated users are automatically provisioned as students. The super-admin Google account (`ujjwalchaudhary2007@gmail.com`) is automatically elevated to full Admin access.
+> Use **Google Sign-In** for instant access. Super admin Google account (`ujjwalchaudhary2007@gmail.com`) is auto-elevated to Admin role.
 
 ---
 
 ## 🔐 Environment Variables
 
-Create `.env` files from the provided `.env.example` templates. **Never commit real secrets to git.**
-
 ### `backend/.env`
 
-| Variable | Required | Default / Placeholder | Description |
+| Variable | Required | Default | Description |
 |---|---|---|---|
-| `PORT` | Optional | `5000` | Express server listen port |
-| `JWT_SECRET` | ✅ **Yes** | `campus_event_hub_secret_2024` | Cryptographic key for JWT signing (change in production!) |
-| `GOOGLE_CLIENT_ID` | Optional | `your-client-id.apps.googleusercontent.com` | Google OAuth 2.0 Web Client ID for SSO token validation |
-| `RAZORPAY_KEY_ID` | Optional | `rzp_test_YOUR_KEY_HERE` | Razorpay public key (test or live) |
-| `RAZORPAY_KEY_SECRET` | Optional | `YOUR_KEY_SECRET_HERE` | Razorpay secret for HMAC SHA-256 verification |
-| `RAZORPAY_WEBHOOK_SECRET` | Optional | `YOUR_WEBHOOK_SECRET_HERE` | For Razorpay webhook event authentication |
-| `FRONTEND_URL` | Optional | `http://localhost:5173` | Allowed CORS origin for production |
+| `PORT` | Optional | `5000` | Express server port |
+| `JWT_SECRET` | ✅ **Yes** | `campus_event_hub_secret_2024` | JWT signing secret (change in production!) |
+| `GOOGLE_CLIENT_ID` | Optional | *(your client ID)* | Google OAuth 2.0 Web Client ID |
+| `RAZORPAY_KEY_ID` | Optional | `rzp_test_...` | Razorpay public key |
+| `RAZORPAY_KEY_SECRET` | Optional | *(secret)* | Razorpay HMAC secret |
+| `FRONTEND_URL` | Optional | `http://localhost:5173` | CORS allowed origin |
 
-### `frontend/.env` (Vite)
+### `frontend/.env`
 
-| Variable | Required | Placeholder | Description |
-|---|---|---|---|
-| `VITE_GOOGLE_CLIENT_ID` | Optional | `your-client-id.apps.googleusercontent.com` | Google OAuth 2.0 Client ID exposed to browser |
+| Variable | Required | Description |
+|---|---|---|
+| `VITE_GOOGLE_CLIENT_ID` | Optional | Google OAuth Client ID for browser |
 
 > [!IMPORTANT]
-> The platform is fully functional without Google or Razorpay credentials. Those features gracefully degrade — email/password auth and UPI manual entry remain fully operational.
+> The platform works fully without Google or Razorpay keys — those features gracefully degrade to email/password auth and UPI QR manual entry.
 
 ---
 
 ## 📡 API Documentation
 
-All endpoints are served under `http://localhost:5000/api`.
+All endpoints served under `http://localhost:5000/api`.
 
 ### 🔑 Auth (`/api/auth`)
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `POST` | `/auth/register` | Public | Create student or organizer account |
-| `POST` | `/auth/login` | Public | Email + password login → JWT |
+| `POST` | `/auth/register` | Public | Create account (student / organizer) |
+| `POST` | `/auth/login` | Public | Email + password → JWT |
 | `POST` | `/auth/google` | Public | Google ID token → auto-provision + JWT |
 | `GET` | `/auth/me` | 🔒 Bearer JWT | Return current user profile |
-
-<details>
-<summary>Register Request Body</summary>
-
-```json
-{
-  "name": "Aryan Sharma",
-  "email": "aryan@gehu.ac.in",
-  "password": "secure123",
-  "role": "student",
-  "campus": "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
-  "phone": "+91 98765 43210",
-  "degree": "B.Tech CSE"
-}
-```
-</details>
-
----
 
 ### 📅 Events (`/api/events`)
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `GET` | `/events` | Public | List approved events; query: `campus`, `category`, `timeline`, `search` |
-| `GET` | `/events/campuses` | Public | Return metadata for all 4 Graphic Era campuses |
-| `GET` | `/events/categories` | Public | Return allowed event category list |
+| `GET` | `/events` | Public | List approved events (filterable by campus, category, timeline, search) |
+| `GET` | `/events/campuses` | Public | All 4 Graphic Era campus metadata |
 | `GET` | `/events/stats` | 🔒 Admin | Platform-wide statistics |
 | `GET` | `/events/pending` | 🔒 Admin | Events awaiting review |
 | `GET` | `/events/all` | 🔒 Admin | All events regardless of status |
-| `GET` | `/events/my` | 🔒 Organizer | Events submitted by current organizer |
-| `POST` | `/events/submit` | 🔒 Organizer | Submit new event proposal (status: pending) |
+| `GET` | `/events/my` | 🔒 Organizer | Events submitted by current user |
+| `POST` | `/events/submit` | 🔒 Organizer | Submit new event proposal |
 | `PUT` | `/events/:id/approve` | 🔒 Admin | Approve a pending event |
-| `PUT` | `/events/:id/reject` | 🔒 Admin | Reject with reason |
-| `DELETE` | `/events/:id` | 🔒 Admin/Owner | Delete event and its RSVPs |
-
----
+| `PUT` | `/events/:id/reject` | 🔒 Admin | Reject with custom reason |
+| `DELETE` | `/events/:id` | 🔒 Admin | Delete event |
 
 ### 🎟️ Registrations & Passes (`/api/events`)
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `POST` | `/events/:id/register` | 🔒 Student | Register for event; generates ticket code |
-| `GET` | `/events/registrations/my` | 🔒 Student | My event registrations |
+| `POST` | `/events/:id/register` | 🔒 Student | Register for event → ticket code issued |
+| `GET` | `/events/registrations/my` | 🔒 Student | My registration history |
 | `GET` | `/events/admin/all` | 🔒 Super Admin | All registrations across all campuses |
-| `GET` | `/events/:id/attendees` | 🔒 Admin/Organizer | Attendee roster for an event |
+| `GET` | `/events/:id/attendees` | 🔒 Organizer | Attendee roster for an event |
 | `GET` | `/events/verify/:ticketCode` | 🌐 **Public** | QR pass verification lookup |
 | `POST` | `/events/verify/:ticketCode/checkin` | 🌐 **Public** | Mark attendance (IST timestamp) |
-| `POST` | `/events/verify/save-passes` | 🌐 **Public** | Bulk-sync passes from frontend |
-
----
 
 ### 📌 RSVP (`/api/rsvp`)
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `POST` | `/rsvp/:eventId` | 🔒 Student | Toggle RSVP on/off |
-| `GET` | `/rsvp/my` | 🔒 Student | List all RSVPed events |
-| `GET` | `/rsvp/status/:eventId` | 🔒 JWT | Check RSVP status for a specific event |
-
----
+| `POST` | `/rsvp/:eventId` | 🔒 JWT | Toggle RSVP on/off |
+| `GET` | `/rsvp/my` | 🔒 JWT | List all RSVPed events |
+| `GET` | `/rsvp/status/:eventId` | 🔒 JWT | RSVP status for a specific event |
 
 ### 💳 Payments (`/api/payment`)
 
 | Method | Endpoint | Auth | Description |
 |---|---|---|---|
-| `POST` | `/payment/create-order` | Public | Create Razorpay order or in-memory fallback |
-| `POST` | `/payment/verify-payment` | Public | Verify HMAC SHA-256 signature |
-| `GET` | `/payment/order-status` | Public | Check if order `order_id` is confirmed paid |
-| `GET` | `/health` | Public | Server uptime check |
+| `POST` | `/payment/create-order` | Public | Create Razorpay order |
+| `POST` | `/payment/verify-payment` | Public | HMAC SHA-256 signature verify |
+| `GET` | `/payment/order-status` | Public | Check if order is confirmed paid |
+| `GET` | `/health` | Public | Server uptime probe |
 
 ---
 
 ## 🗄️ Database Design
 
-SPIDEY uses **sql.js** (SQLite compiled to WebAssembly). The database file is auto-created at `backend/geu_spider_events.db` on first run and saved to disk every 5 seconds.
-
-### Entity-Relationship Overview
+sql.js SQLite WASM, auto-saved to `backend/geu_spider_events.db` every 5 seconds.
 
 ```
-users ──────────────┬──────────────── events
-  │ id              │ organizer_id      │ id
-  │ name            │                   │ title, description
-  │ email (UNIQUE)  │                   │ category, venue
-  │ password (hash) │                   │ campus
-  │ role            │                   │ image_url
-  │ campus          │                   │ photos (JSON array)
-  │ phone, degree   │                   │ gallery (JSON array)
-  │ created_at      │                   │ highlights (JSON array)
-  │                 │                   │ overview, closing_message
-  │                 │                   │ event_date, event_time
-  │                 │                   │ status (pending/approved/rejected)
-  │                 │                   │ rejection_reason, display_date
-  ├── rsvps         │                   ├── event_registrations
-  │   user_id ──────┘                   │   event_id ──┘
-  │   event_id                          │   user_id
-  │   reminded                          │   student_name, email, phone
-  │   UNIQUE(user_id, event_id)         │   roll_no, campus, degree
-  │                                     │   ticket_code (UNIQUE)
-  │                                     │   team_name, team_size
-  │                                     │   track_info, github_link
-  │                                     │   details_json (nested attendees)
-  │                                     │
-  └── verified_passes (PK: ticket_code)
-      event_id, event_title, event_campus
-      student_name, email, roll_no, campus
-      team_name, role_in_team, track_info
-      photo_url (Base64 data URL)
-      attendance_status
-      checkin_time (IST string)
-      created_at
+users ──────────────────────────────── events
+│ id (PK)           organizer_id ─────│ id (PK)
+│ name                                 │ title, description
+│ email (UNIQUE)                       │ category, venue, campus
+│ password (bcrypt)                    │ image_url
+│ role (student/organizer/admin)       │ photos, gallery (JSON arrays)
+│ campus, phone, degree                │ highlights, overview (JSON)
+│ created_at                           │ event_date, event_time
+│                                      │ status (pending/approved/rejected)
+│                                      │ display_date, closing_message
+├── rsvps                              │
+│   user_id ─────────────────────────┐│
+│   event_id ──────────────────────┐ ││
+│   reminded                       │ ││
+│   UNIQUE(user_id, event_id)      │ ││
+│                                  │ │└─ event_registrations
+│                                  │ └──  event_id ──┘
+│                                  └────  user_id
+│                                         student_name, email, phone
+│                                         roll_no, campus, degree
+│                                         ticket_code (UNIQUE)
+│                                         team_name, team_size
+│                                         track_info, github_link
+│                                         details_json (nested attendees)
+│
+└── verified_passes (PK: ticket_code)
+    event_id, event_title, event_campus
+    student_name, email, roll_no, campus
+    team_name, role_in_team, track_info
+    photo_url (Base64 data URL)
+    attendance_status
+    checkin_time (IST string)
+    created_at
 ```
 
-### Table Summary
-
-| Table | Rows | Key Purpose |
-|---|---|---|
-| `users` | Seeded admin + new registrations | User accounts with role & campus |
-| `events` | 36+ seeded across 4 campuses | Full event metadata including JSON photo arrays |
-| `rsvps` | Per-student event interests | UNIQUE(user_id, event_id) toggle |
-| `event_registrations` | Full registration records | Ticket codes + team details + JSON attendees |
-| `verified_passes` | High-speed gate lookups | Student portrait, attendance status, IST check-in |
+| Table | Key Purpose |
+|---|---|
+| `users` | Seeded admin + all new user accounts with role & campus |
+| `events` | 36+ seeded events with JSON photo arrays across 4 campuses |
+| `rsvps` | UNIQUE(user_id, event_id) toggle for student interest tracking |
+| `event_registrations` | Full registration records, ticket codes, team JSON |
+| `verified_passes` | High-speed gate lookups — student portrait, status, IST check-in |
 
 ---
 
@@ -751,63 +817,37 @@ sequenceDiagram
     FE->>BE: POST /api/auth/login → JWT issued
     S->>FE: Select campus on 3D Curved Carousel
     FE->>BE: GET /api/events?campus=BHIMTAL
-    BE-->>FE: Events partitioned into Past / Present / Future
-    S->>FE: Click REGISTER on event card
-    S->>FE: Fill team details, upload photos, select track
-    S->>FE: Pay via Razorpay / UPI QR + enter UTR
-    FE->>BE: POST /api/payment/verify-payment
-    BE-->>FE: Payment confirmed ✅
+    BE-->>FE: Events: Past · Present · Future
+    S->>FE: Click REGISTER → fill team + upload photos
+    S->>FE: Pay via Razorpay / UPI + enter UTR
+    FE->>BE: POST /api/payment/verify-payment ✅
     FE->>BE: POST /api/events/:id/register
     BE->>DB: INSERT event_registrations + verified_passes
-    BE-->>FE: Ticket code: SPIDEY-A3X7K-294
-    FE-->>GS: Async webhook → new row in Google Sheet
-    FE->>S: Render Lanyard ID Card + QR Code
+    BE-->>GS: Async webhook row insertion
+    BE-->>FE: Ticket: SPIDEY-A3X7K-294
+    FE->>S: Render Lanyard ID Card + QR Code 🎟️
 
-    Note over G, BE: Day-of Attendance Gate
+    Note over G, BE: Day-of Gate Verification
 
-    G->>FE: Scan student's QR code (/verify?code=SPIDEY-A3X7K-294)
+    G->>FE: Scan QR → /verify?code=SPIDEY-A3X7K-294
     FE->>BE: GET /api/events/verify/SPIDEY-A3X7K-294
-    BE->>DB: Lookup verified_passes
-    BE-->>FE: Student photo, roll no, team, track ✅
-    G->>FE: Confirm identity → tap MARK ATTENDANCE
-    FE->>BE: POST /api/events/verify/SPIDEY-A3X7K-294/checkin
-    BE->>DB: UPDATE attendance_status, checkin_time (IST)
-    BE-->>G: "PRESENT & ADMITTED AT GATE (09:47:32 AM)"
+    BE->>DB: verified_passes lookup
+    BE-->>G: Student photo, roll no, team, track ✅
+    G->>FE: Tap MARK ATTENDANCE
+    FE->>BE: POST /verify/SPIDEY-A3X7K-294/checkin
+    BE->>DB: UPDATE attendance_status + checkin_time (IST)
+    BE-->>G: "PRESENT & ADMITTED AT GATE (09:47:32 AM)" ✅
 
     Note over A, GS: Administrative Operations
 
-    A->>FE: Log in to High Command Dashboard
+    A->>FE: Login → High Command Dashboard
     FE->>BE: GET /api/events/admin/all + /api/events/stats
-    BE->>DB: SELECT * JOIN registrations + events
-    BE-->>A: Cross-campus registrations matrix
-    A->>FE: Copy for Google Sheets (TSV) → paste into sheet
-    A->>FE: Review organizer proposal → APPROVE
+    BE-->>A: Cross-campus registration matrix
+    A->>FE: TSV Copy → paste into Google Sheets
+    A->>FE: Approve organizer proposal
     FE->>BE: PUT /api/events/:id/approve
     BE->>DB: UPDATE events SET status='approved'
 ```
-
----
-
-## 📸 Real Event Archives
-
-SPIDEY preserves authentic memories from actual Graphic Era campus events. All photographs are real — not stock or AI-generated.
-
-<div align="center">
-
-| Event | Campus | Category | Photos |
-|---|---|---|---|
-| 🤖 **Smart India Hackathon 2026 Grand Finale** | Dehradun | Hackathon / Technical | [`/events/sih/`](frontend/public/assets/events/sih/) |
-| 🎵 **Student GRAFEST 2026 — Pyrotechnics & Concert** | Haldwani | Cultural Fest | [`/events/haldwani_grafest/`](frontend/public/assets/events/haldwani_grafest/) |
-| 🎊 **Student Grafest — Dance & Music Showcase** | Dehradun | Student Festival | [`/events/student_grafest/`](frontend/public/assets/events/student_grafest/) |
-| 🎭 **GRAPHITE Live Cultural Extravaganza** | Bhimtal/Dehradun | Cultural | [`/events/graphite_live_*.jpg`](frontend/public/assets/events/) |
-| ⚙️ **PRAYUKTI 2.0 — Robowars & Tech Fest 2026** | Bhimtal | Technical / Cultural Fest | [`/events/prayukti/`](frontend/public/assets/events/prayukti/) |
-| ☁️ **INNOVATE 1.0 — AWS Ideathon** | Bhimtal | Technology / Ideathon | [`/events/aws_ideathon/`](frontend/public/assets/events/aws_ideathon/) |
-| 💻 **Watch The Code — National Hackathon** | Haldwani | Technical | [`/events/watch_the_code_*.jpg`](frontend/public/assets/events/) |
-| 🪔 **Dussehra Cultural Celebration** | Bhimtal | Cultural / Religious | [`/events/dussehra/`](frontend/public/assets/events/dussehra/) |
-| 🐘 **Ganesh Chaturthi Utsav** | Bhimtal | Cultural / Religious Festival | [`/events/ganesh_chaturthi/`](frontend/public/assets/events/ganesh_chaturthi/) |
-| 🏛️ **Silver Jubilee Foundation Day** | Dehradun | University Event | [`/events/foundation_day/`](frontend/public/assets/events/foundation_day/) |
-
-</div>
 
 ---
 
@@ -815,39 +855,30 @@ SPIDEY preserves authentic memories from actual Graphic Era campus events. All p
 
 ### Frontend — Vercel (Recommended)
 
-The root `vercel.json` rewrites all paths to the SPA:
-
+The root `vercel.json` handles SPA routing:
 ```json
 {
-  "version": 2,
   "rewrites": [{ "source": "/(.*)", "destination": "/frontend/index.html" }]
 }
 ```
 
-Steps:
-1. Push your repository to GitHub
-2. Import project in [vercel.com/new](https://vercel.com/new)
-3. Set **Root Directory** → `frontend`
-4. Set **Framework Preset** → `Vite`
-5. Add Environment Variables → `VITE_GOOGLE_CLIENT_ID`
-6. Deploy ✅
+1. Push repo to GitHub
+2. Import at [vercel.com/new](https://vercel.com/new)
+3. **Root Directory** → `frontend` · **Framework** → `Vite`
+4. Add env var: `VITE_GOOGLE_CLIENT_ID`
+5. Deploy ✅
 
 > [!NOTE]
-> When deployed to Vercel without a backend, the frontend automatically falls back to `fallbackData.js` — all 36+ events, campus data, and T&P information remain fully viewable without any API calls.
+> Without a backend, the frontend auto-falls back to `fallbackData.js` — all 36+ events and campus data remain fully viewable with zero API calls.
 
 ### Backend — VPS / Railway / Render
 
 ```bash
-# On your production server
 cd SPIDEY/backend
 npm install --production
-
-# Set environment variables
 export PORT=5000
-export JWT_SECRET="your-strong-secret-here-change-this"
-export FRONTEND_URL="https://your-frontend-domain.vercel.app"
-
-# Recommended: use PM2 process manager
+export JWT_SECRET="your-strong-secret-here"
+export FRONTEND_URL="https://your-vercel-domain.vercel.app"
 npm install -g pm2
 pm2 start server.js --name spidey-backend
 pm2 save && pm2 startup
@@ -857,77 +888,69 @@ pm2 save && pm2 startup
 
 ## 🔮 Future Improvements
 
-The following enhancements are **proposed** — they are not yet implemented:
-
 | Priority | Feature | Description |
 |---|---|---|
-| 🔴 High | **Automated Email Delivery** | Nodemailer / SendGrid to send PDF lanyard passes directly to student Gmail after registration |
-| 🔴 High | **Certificate Generation** | Digitally verifiable PDF participation and winner certificates for concluded events |
-| 🟡 Medium | **Native Mobile Gatekeeper App** | React Native companion with continuous barcode scanning stream for campus security turnstiles |
-| 🟡 Medium | **WebSocket Live Updates** | Real-time team formation, announcements, and leaderboard updates during live hackathons |
-| 🟡 Medium | **Event Capacity Limits** | Hard registration caps per event with real-time seat counter |
-| 🟢 Low | **Student Community Feed** | Campus-specific social posts, club announcements, and discussion threads |
-| 🟢 Low | **Dark/Light Theme Toggle** | Optional light mode alongside the current Spider-Man dark aesthetic |
+| 🔴 High | **Automated Email Delivery** | Nodemailer / SendGrid — PDF lanyard passes sent directly to student Gmail |
+| 🔴 High | **Digital Certificates** | Verifiable PDF participation and winner certificates for past events |
+| 🟡 Medium | **Native Mobile Gate App** | React Native barcode scanner for continuous QR scanning at turnstiles |
+| 🟡 Medium | **WebSocket Live Updates** | Real-time team formation, leaderboard, and announcements during hackathons |
+| 🟡 Medium | **Event Seat Caps** | Hard registration limits per event with real-time seat counter |
+| 🟢 Low | **Student Community Feed** | Campus-specific social posts and club announcement threads |
+| 🟢 Low | **Dark/Light Theme Toggle** | Optional light mode alongside the Spider-Man dark aesthetic |
 
 ---
 
 ## 🤝 Contributing Guidelines
 
-Contributions from Graphic Era students, faculty members, and open-source enthusiasts are warmly welcomed!
+Contributions from Graphic Era students, faculty, and open-source enthusiasts are welcome!
 
 ```bash
-# 1. Fork the repository on GitHub
-#    → https://github.com/ujjwalchaudharyyy/SPIDEY/fork
-
+# 1. Fork → https://github.com/ujjwalchaudharyyy/SPIDEY/fork
 # 2. Clone your fork
 git clone https://github.com/<YOUR_USERNAME>/SPIDEY.git
-cd SPIDEY
 
-# 3. Create a feature branch
-git checkout -b feature/your-amazing-feature
+# 3. Create feature branch
+git checkout -b feature/your-feature-name
 
-# 4. Make your changes and commit (use conventional commits)
+# 4. Commit with conventional format
 git commit -m "feat: add WebSocket live hackathon leaderboard"
-git commit -m "fix: resolve QR code rendering on iOS Safari"
-git commit -m "docs: add event category descriptions to README"
+git commit -m "fix: resolve QR rendering on iOS Safari"
+git commit -m "docs: update API endpoint descriptions"
 
-# 5. Push to your branch
-git push origin feature/your-amazing-feature
-
-# 6. Open a Pull Request against main
+# 5. Push and open a PR against main
+git push origin feature/your-feature-name
 ```
 
-**Code Style Notes:**
-- Keep React components functional with hooks — no class components
-- Follow the existing file naming convention (`PascalCase.jsx`)
-- Do not modify `fallbackData.js` event entries without also updating `backend/db.js` seed data
-- Test with both a live backend and in offline fallback mode before submitting
+**Code Guidelines:**
+- Functional React components with hooks only (no class components)
+- Follow existing file naming: `PascalCase.jsx`, `camelCase.js`
+- Update both `fallbackData.js` **and** `backend/db.js` when adding events
+- Test in both online (with backend) and offline (fallback) modes
 
 ---
 
 ## 📜 License and Acknowledgements
 
-### License
+This is an institutional academic platform developed for and by the **Graphic Era University** student community. Educational, evaluation, and hackathon demonstration use is permitted.
 
-This is an institutional academic platform developed for and by the **Graphic Era University** student community. All rights are reserved by the original contributors. Educational, evaluation, and hackathon demonstration use is permitted.
-
-### 🙏 Acknowledgements
+### 👥 Core Contributors
 
 <div align="center">
 
-| 👤 Contributor | GitHub Handle | Commits |
-|---|---|---|
-| Ujjwal Chaudhary | [@ujjwalchaudharyyy](https://github.com/ujjwalchaudharyyy) | 42+ |
-| Tushar Gahlaut | @Tushar_Gahlout | 18+ |
-| Sumit Sanwal | @Sumit Sanwal | 11+ |
-| Sapna Bisht | @Sapna Bisht | 10+ |
+| 👤 Contributor | Role | GitHub |
+|:---:|:---:|:---:|
+| **Ujjwal Chaudhary** | Lead Developer | [@ujjwalchaudharyyy](https://github.com/ujjwalchaudharyyy) |
+| **Tushar Gahlaut** | Frontend Developer | @Tushar_Gahlout |
+| **Sumit Sanwal** | Backend Developer | @Sumit_Sanwal |
+| **Sapna Bisht** | UI/UX & Content | @Sapna_Bisht |
 
 </div>
 
-**Special Thanks:**
-- 🏛️ **Prof. (Dr.) Kamal Ghanshala** — Founder & President, Graphic Era Educational Society, for visionary institutional leadership
-- 🎓 **Campus Directors** of Bhimtal, Haldwani, Dehradun, and Deemed University campuses
-- 🤝 **Student Activity Councils, IEEE Student Branches, AWS Cloud Club (GEHU BTL)** for authentic event collaboration and photography
+### 🙏 Special Thanks
+
+- 🏛️ **Prof. (Dr.) Kamal Ghanshala** — Founder & President, Graphic Era Educational Society
+- 🎓 **Campus Directors** of Bhimtal, Haldwani, Dehradun & Deemed University campuses
+- 🤝 **Student Activity Councils, IEEE Student Branches, AWS Cloud Club (GEHU BTL)** — for authentic event collaboration and photography
 - 💻 **Open-Source Libraries** — `sql.js`, `React`, `Vite`, `Tailwind CSS`, `Express.js`, `QRCode`, `Razorpay SDK`
 
 ---
@@ -936,13 +959,18 @@ This is an institutional academic platform developed for and by the **Graphic Er
 
 **⭐ If SPIDEY helped you, please star the repository!**
 
-[![GitHub Stars](https://img.shields.io/github/stars/ujjwalchaudharyyy/SPIDEY?style=social)](https://github.com/ujjwalchaudharyyy/SPIDEY)
-[![GitHub Forks](https://img.shields.io/github/forks/ujjwalchaudharyyy/SPIDEY?style=social)](https://github.com/ujjwalchaudharyyy/SPIDEY/fork)
+[![GitHub Stars](https://img.shields.io/github/stars/ujjwalchaudharyyy/SPIDEY?style=for-the-badge&logo=github&color=yellow)](https://github.com/ujjwalchaudharyyy/SPIDEY)
+[![GitHub Forks](https://img.shields.io/github/forks/ujjwalchaudharyyy/SPIDEY?style=for-the-badge&logo=github&color=blue)](https://github.com/ujjwalchaudharyyy/SPIDEY/fork)
+[![GitHub Issues](https://img.shields.io/github/issues/ujjwalchaudharyyy/SPIDEY?style=for-the-badge&logo=github&color=red)](https://github.com/ujjwalchaudharyyy/SPIDEY/issues)
 
 <br/>
 
-*Built with 🕷️ Spidey-Sense, pride, and late-night chai ☕ for Graphic Era University.*
+*Built with 🕷️ Spidey-Sense, passion, and late-night chai ☕ for Graphic Era University.*
 
-**Graphic Era Hill University · Bhimtal · Haldwani · Dehradun · Deemed University**
+**Bhimtal 🏔️ · Haldwani ⚡ · Dehradun 🏛️ · Deemed 🎓**
+
+<br/>
+
+<img src="https://raw.githubusercontent.com/ujjwalchaudharyyy/SPIDEY/main/frontend/public/assets/spiderman_action.png" width="80" alt="Spider-Man"/>
 
 </div>
