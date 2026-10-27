@@ -2,6 +2,7 @@
 import EventRegistrationModal from './EventRegistrationModal'
 import EventGalleryModal from './EventGalleryModal'
 import EventVideoModal from './EventVideoModal'
+import { createGoogleCalendarUrl } from '../utils/calendarUtils'
 
 const categoryStyles = {
   Academic: 'bg-blue-950/60 text-blue-300 border-blue-500/40',
@@ -143,6 +144,21 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const todayStr = '2026-10-27'
   const isPast = event.event_date < todayStr
   const isPresent = event.event_date === todayStr
+
+  // Calculate days until event
+  const getDaysUntil = () => {
+    if (!event.event_date) return 999
+    const today = new Date('2026-10-27T00:00:00')
+    const evDate = new Date(`${event.event_date}T00:00:00`)
+    const diff = evDate.getTime() - today.getTime()
+    return Math.ceil(diff / (1000 * 60 * 60 * 24))
+  }
+  const daysUntil = getDaysUntil()
+
+  // Strict deadline: Registration closes 5-6 days before the event date
+  // For ongoing event today (like Graphite on 2026-10-27), daysUntil is 0 -> registration closed!
+  const isRegistrationClosed = isPast || isPresent || (daysUntil >= 0 && daysUntil <= 5)
+  const isRegistrationOpen = !isPast && !isRegistrationClosed
   const hasGallery = (event.gallery && event.gallery.length > 0) || (event.photos && event.photos.length > 0)
   const hasVideo = !!event.video_url
 
@@ -412,13 +428,23 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             {(!event.status || event.status === 'approved') && !isPast && (
               <div className="space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setShowRegisterModal(true)}
-                    className="py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white shadow-spider-glow flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                  >
-                    <span>≡ƒÄƒ∩╕Å REGISTER</span>
-                  </button>
+                  {isRegistrationOpen ? (
+                    <button
+                      type="button"
+                      onClick={() => setShowRegisterModal(true)}
+                      className="py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white shadow-spider-glow flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                    >
+                      <span>🎟️ REGISTER</span>
+                    </button>
+                  ) : isPresent ? (
+                    <div className="py-2.5 px-2 rounded-xl text-[10px] sm:text-xs font-mono font-bold bg-amber-950/70 border border-amber-500/60 text-amber-300 text-center flex items-center justify-center gap-1 shadow-inner">
+                      <span>🔴 LIVE TODAY (REG CLOSED)</span>
+                    </div>
+                  ) : (
+                    <div className="py-2.5 px-2 rounded-xl text-[10px] sm:text-xs font-mono font-bold bg-red-950/60 border border-red-500/40 text-red-300 text-center flex items-center justify-center gap-1" title="Registrations strictly close 5 days prior to event date">
+                      <span>🔒 REG CLOSED (5-DAY RULE)</span>
+                    </div>
+                  )}
 
                   <button
                     type="button"
@@ -443,6 +469,18 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                     )}
                   </button>
                 </div>
+
+                {/* Google Calendar Direct Link */}
+                <a
+                  href={createGoogleCalendarUrl(event)}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-full py-1.5 px-3 rounded-xl text-[11px] font-chakra font-semibold bg-[#0A0D15] hover:bg-[#121624] text-blue-300 hover:text-blue-200 border border-blue-900/40 flex items-center justify-center gap-1.5 transition-all"
+                  title="Add this event to your Google Calendar"
+                >
+                  <span>📅</span>
+                  <span>Add to Google Calendar</span>
+                </a>
 
                 {hasGallery && (
                   <button

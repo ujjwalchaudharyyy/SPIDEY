@@ -2,6 +2,7 @@ import React, { useState, useRef } from 'react'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import { syncRegistrationToGoogleSheet } from '../utils/googleSheetsSync'
+import { createGoogleCalendarUrl } from '../utils/calendarUtils'
 
 // ─── Graphite'26-Style Animated 3D Character Avatar ───
 // Red-glowing Spider-Man inspired character with gender variants
@@ -312,6 +313,15 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
 
       {/* ─── Action Buttons Below Card ─── */}
       <div className="w-full mt-3 flex flex-col gap-1.5">
+        <a
+          href={createGoogleCalendarUrl(event, attendee?.email)}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full py-2.5 rounded-lg bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-md border border-blue-400/40"
+        >
+          <span className="text-base">📅</span>
+          <span>ADD TO GOOGLE CALENDAR</span>
+        </a>
         <button
           type="button"
           onClick={handleShareTwitter}
@@ -343,6 +353,20 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
 
 export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const { user, token } = useAuth()
+
+  const todayStr = '2026-10-27'
+  const isPast = event.event_date < todayStr
+  const isPresent = event.event_date === todayStr
+
+  const getDaysUntil = () => {
+    if (!event.event_date) return 999
+    const today = new Date('2026-10-27T00:00:00')
+    const evDate = new Date(`${event.event_date}T00:00:00`)
+    const diff = evDate.getTime() - today.getTime()
+    return Math.ceil(diff / (1000 * 60 * 60 * 24))
+  }
+  const daysUntil = getDaysUntil()
+  const isRegistrationClosed = isPast || isPresent || (daysUntil >= 0 && daysUntil <= 5)
 
   // Detect event type
   const isHackTheWinter = event.title?.toLowerCase().includes('winter')
@@ -634,6 +658,17 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
         {/* STEP 1: Registration Form */}
         {currentStep === 'form' && (
           <form onSubmit={handleProceedToPayment} className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
+            {isRegistrationClosed && (
+              <div className="p-3.5 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs space-y-1">
+                <p className="font-bold flex items-center gap-1.5 text-sm text-red-300">
+                  <span>🚫</span>
+                  <span>Registration Closed for this Event</span>
+                </p>
+                <p className="text-[11px] text-gray-300 leading-relaxed">
+                  Graphic Era university guidelines: Registrations strictly close 5-6 days prior to the event date. Past and ongoing events do not accept new registrations.
+                </p>
+              </div>
+            )}
             {error && (
               <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs flex items-center gap-2">
                 <span>⚠️</span>
@@ -817,9 +852,17 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                 <button type="button" onClick={onClose} className="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold cursor-pointer">
                   Cancel
                 </button>
-                <button type="submit" className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5">
-                  <span>Proceed to Payment</span>
-                  <span>{'\u27A4'}</span>
+                <button
+                  type="submit"
+                  disabled={isRegistrationClosed}
+                  className={`px-5 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${
+                    isRegistrationClosed
+                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
+                      : 'bg-red-600 hover:bg-red-500 text-white cursor-pointer'
+                  }`}
+                >
+                  <span>{isRegistrationClosed ? 'Registration Closed' : 'Proceed to Payment'}</span>
+                  {!isRegistrationClosed && <span>➔</span>}
                 </button>
               </div>
             </div>
@@ -959,6 +1002,26 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                 <div><span className="text-gray-600 uppercase">Venue</span> <span className="text-gray-300 ml-1">{event.campus?.split(' ').slice(-1)[0] || 'GEHU'} campus</span></div>
                 <div><span className="text-gray-600 uppercase">TxnID</span> <span className="text-emerald-400 ml-1 font-mono">{transactionId}</span></div>
               </div>
+
+            {/* Google Calendar Quick Sync Banner */}
+            <div className="mx-5 my-2 p-3 rounded-xl bg-blue-950/40 border border-blue-500/30 flex items-center justify-between text-xs">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">📅</span>
+                <div>
+                  <p className="font-bold text-blue-200">Google Calendar Direct Link Ready</p>
+                  <p className="text-[10px] text-gray-400">Card ke neeche &quot;ADD TO GOOGLE CALENDAR&quot; click karke date mark karein.</p>
+                </div>
+              </div>
+              <a
+                href={createGoogleCalendarUrl(event, generatedTickets[activeCardIndex]?.email || leaderEmail)}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="py-1.5 px-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-semibold flex items-center gap-1"
+              >
+                <span>Open Calendar</span>
+                <span>➔</span>
+              </a>
+            </div>
             </div>
 
             {/* Card Navigation Tabs (if multiple members) */}

@@ -13,6 +13,20 @@ import {
   GOOGLE_APPS_SCRIPT_TEMPLATE
 } from '../utils/googleSheetsSync'
 
+
+// Helper to match campuses reliably regardless of casing, abbreviation or formatting
+export function isCampusMatch(camp1, camp2) {
+  if (!camp1 || !camp2) return false
+  const c1 = String(camp1).toLowerCase().trim()
+  const c2 = String(camp2).toLowerCase().trim()
+  if (c1 === c2) return true
+  if (c1.includes('bhimtal') && c2.includes('bhimtal')) return true
+  if (c1.includes('haldwani') && c2.includes('haldwani')) return true
+  if (c1.includes('dehradun') && c2.includes('dehradun')) return true
+  if (c1.includes('deemed') && c2.includes('deemed')) return true
+  return false
+}
+
 const CAMPUSES = [
   {
     key: 'campus_bhimtal',
@@ -826,7 +840,7 @@ export default function AdminDashboard() {
             >
               <span>⏳ Pending Review</span>
               <span className="px-1.5 py-0.5 rounded-full bg-black/30 text-[10px]">
-                {pendingEvents.length}
+                {accessiblePendingEvents.length}
               </span>
             </button>
 
@@ -898,7 +912,7 @@ export default function AdminDashboard() {
           <div className="space-y-6">
 
             {/* SUPER ADMIN: 4 Campus Master Spreadsheets Cards */}
-            {isSuperAdmin && (
+            {isSuperAdmin ? (
               <div className="bg-[#121622]/90 border border-gray-800 rounded-2xl p-4 sm:p-5">
                 <div className="flex items-center justify-between mb-3">
                   <div>
@@ -913,7 +927,7 @@ export default function AdminDashboard() {
                   {selectedCampusFilter !== 'ALL' && (
                     <button
                       onClick={() => setSelectedCampusFilter('ALL')}
-                      className="px-2.5 py-1 rounded-lg bg-red-600/80 hover:bg-red-500 text-white text-[11px] font-semibold transition"
+                      className="px-2.5 py-1 rounded-lg bg-red-600/80 hover:bg-red-500 text-white text-[11px] font-semibold transition cursor-pointer"
                     >
                       Clear Campus Filter (Show All)
                     </button>
@@ -976,7 +990,7 @@ export default function AdminDashboard() {
                           </button>
                           <button
                             onClick={() => exportToCSV(`${camp.shortName}_Master`, camp.registrations)}
-                            className="py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] transition"
+                            className="py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] transition cursor-pointer"
                             title="Download Campus CSV"
                           >
                             📥
@@ -986,6 +1000,75 @@ export default function AdminDashboard() {
                     )
                   })}
                 </div>
+              </div>
+            ) : (
+              <div className="bg-[#121622]/90 border border-blue-500/30 rounded-2xl p-4 sm:p-5">
+                {(() => {
+                  const myCamp = campusSummary.find(c => isCampusMatch(c.name, user?.campus)) || {
+                    shortName: user?.campus || 'Campus',
+                    name: user?.campus || 'Campus',
+                    icon: '🏢',
+                    badgeBg: 'bg-blue-950 text-blue-300 border-blue-500/30',
+                    registrationsCount: accessibleRegistrations.length,
+                    eventsCount: accessibleEvents.length,
+                    registrations: accessibleRegistrations,
+                    sheetUrl: getCampusSheetUrl('campus', user?.campus || 'Campus')
+                  }
+                  return (
+                    <div>
+                      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
+                        <div>
+                          <span className="text-[10px] font-mono uppercase tracking-wider text-blue-400 font-bold">CAMPUS MASTER DIRECTORY</span>
+                          <h3 className="text-base font-bold text-white flex items-center gap-2 mt-0.5">
+                            <span>{myCamp.icon || '🏢'}</span>
+                            <span>{myCamp.name} — MASTER SPREADSHEET</span>
+                          </h3>
+                          <p className="text-xs text-gray-400 mt-1">
+                            Aapke campus ({myCamp.shortName}) ke sabhi events ki master spreadsheet aur complete CSV download.
+                          </p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <a
+                            href={myCamp.sheetUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="py-2 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-md"
+                          >
+                            <span>📊</span>
+                            <span>Open Google Sheet</span>
+                          </a>
+                          <button
+                            onClick={() => exportToCSV(`${myCamp.shortName}_Master_Registrations`, accessibleRegistrations)}
+                            className="py-2 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 transition shadow-md cursor-pointer"
+                          >
+                            <span>📥</span>
+                            <span>Download Campus CSV ({accessibleRegistrations.length})</span>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-black/40 p-3 rounded-xl border border-gray-800">
+                        <div>
+                          <p className="text-[10px] text-gray-500 uppercase font-mono">Total Registrations</p>
+                          <p className="text-xl font-bold text-white">{accessibleRegistrations.length}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-gray-500 uppercase font-mono">Campus Events</p>
+                          <p className="text-xl font-bold text-emerald-400">{accessibleEvents.length}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-gray-500 uppercase font-mono">Sync Status</p>
+                          <p className="text-xs font-bold text-emerald-400 mt-1 flex items-center gap-1">
+                            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span> Live Real-Time
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] text-gray-500 uppercase font-mono">Authorized Admin Scope</p>
+                          <p className="text-xs font-bold text-cyan-300 mt-1 truncate">Strictly {myCamp.shortName}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )
+                })()}
               </div>
             )}
 
@@ -1516,7 +1599,7 @@ export default function AdminDashboard() {
               <div className="flex justify-center py-16">
                 <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
-            ) : pendingEvents.length === 0 ? (
+            ) : accessiblePendingEvents.length === 0 ? (
               <div className="bg-[#121622] border border-gray-800 rounded-2xl p-12 text-center">
                 <p className="text-3xl mb-2">✓</p>
                 <h3 className="text-sm font-semibold text-white">All Caught Up!</h3>
@@ -1524,7 +1607,7 @@ export default function AdminDashboard() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {pendingEvents.map(event => (
+                {accessiblePendingEvents.map(event => (
                   <EventCard
                     key={event.id}
                     event={event}
@@ -1542,16 +1625,26 @@ export default function AdminDashboard() {
         {/* Tab 3: All Campus Events */}
         {tab === 'all' && (
           <div>
-            <div className="flex items-center justify-between mb-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4">
               <div>
                 <h3 className="text-base font-bold text-white">All Campus Events</h3>
                 <p className="text-xs text-gray-400">
-                  {isSuperAdmin ? 'Sabhi 4 campuses ke active and past events.' : `${user?.campus} ke active and past events.`}
+                  {isSuperAdmin ? 'Sabhi 4 campuses ke active, ongoing aur past events.' : `${user?.campus} ke active, ongoing aur past events.`}
                 </p>
               </div>
-              <span className="text-xs font-mono text-gray-400">
-                Total: {accessibleEvents.length} Events
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-mono text-gray-400">
+                  Total: {accessibleEvents.length} Events
+                </span>
+                <button
+                  type="button"
+                  onClick={() => exportToCSV(isSuperAdmin ? 'All_Campuses_Master' : `${user?.campus || 'Campus'}_All_Events`, accessibleRegistrations)}
+                  className="px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow transition cursor-pointer"
+                >
+                  <span>📥</span>
+                  <span>Download All Events CSV ({accessibleRegistrations.length})</span>
+                </button>
+              </div>
             </div>
 
             {loading ? (
@@ -1560,18 +1653,35 @@ export default function AdminDashboard() {
               </div>
             ) : accessibleEvents.length === 0 ? (
               <div className="bg-[#121622] border border-gray-800 rounded-2xl p-12 text-center">
-                <p className="text-xs text-gray-400">No events found.</p>
+                <p className="text-xs text-gray-400">No events found for this campus scope.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {accessibleEvents.map(event => (
-                  <EventCard
-                    key={event.id}
-                    event={event}
-                    showStatus={true}
-                    onDelete={handleDelete}
-                  />
-                ))}
+                {accessibleEvents.map(event => {
+                  const evRegs = registrationsByEvent[String(event.id)] || []
+                  return (
+                    <div key={event.id} className="flex flex-col space-y-2">
+                      <EventCard
+                        event={event}
+                        showStatus={true}
+                        onDelete={handleDelete}
+                      />
+                      <div className="bg-[#121622] border border-gray-800 rounded-xl p-2.5 flex items-center justify-between">
+                        <span className="text-[11px] font-mono text-gray-300">
+                          📥 <span className="font-bold text-white">{evRegs.length}</span> registrations
+                        </span>
+                        <button
+                          type="button"
+                          onClick={() => exportToCSV(event.title, evRegs)}
+                          className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow transition cursor-pointer"
+                          title="Download CSV for this event"
+                        >
+                          <span>📥 Download CSV</span>
+                        </button>
+                      </div>
+                    </div>
+                  )
+                })}
               </div>
             )}
           </div>
