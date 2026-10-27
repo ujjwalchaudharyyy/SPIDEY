@@ -61,6 +61,16 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
     onSelectCampus(nextIdx)
   }
 
+  // Preload all campus photos into browser cache for zero-lag smooth 3D carousel
+  useEffect(() => {
+    campuses.forEach(c => {
+      if (c.image) {
+        const img = new Image()
+        img.src = c.image
+      }
+    })
+  }, [campuses])
+
   // Keyboard navigation for curve slider
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -233,7 +243,7 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
                     willChange: 'transform, opacity',
                     backfaceVisibility: 'hidden',
                     WebkitBackfaceVisibility: 'hidden',
-                    transition: 'all 0.65s cubic-bezier(0.22, 1, 0.36, 1)'
+                    transition: 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease-out'
                   }}
                   className={`absolute w-[92vw] max-w-[800px] h-[390px] sm:h-[450px] md:h-[490px] cursor-pointer rounded-3xl overflow-hidden border backdrop-blur-2xl transition-all group ${
                     isCenter
@@ -245,7 +255,10 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
                   <img
                     src={campus.image}
                     alt={campus.name}
-                    className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105"
+                    loading="eager"
+                    decoding="async"
+                    style={{ transform: 'translateZ(0)' }}
+                    className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover:scale-105 will-change-transform"
                   />
 
                   {/* Elegant Vignette Overlay (Top & Bottom only so photo remains bright and clear) */}

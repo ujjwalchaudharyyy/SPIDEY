@@ -36,8 +36,55 @@ export default function EventGalleryModal({ event, onClose }) {
 
   const [photos, setPhotos] = useState(initialPhotos)
   const [lightboxIndex, setLightboxIndex] = useState(null)
+  const [isPlaying, setIsPlaying] = useState(false)
   const [uploadNotice, setUploadNotice] = useState('')
   const fileInputRef = useRef(null)
+  const touchStartRef = useRef(null)
+
+  // Preload all gallery photos into browser cache for instantaneous transitions
+  useEffect(() => {
+    photos.forEach(p => {
+      if (p.url) {
+        const img = new Image()
+        img.src = p.url
+      }
+    })
+  }, [photos])
+
+  // Synchronize photos when event prop changes
+  useEffect(() => {
+    const list = (event.photos && event.photos.length > 0)
+      ? event.photos
+      : (event.gallery && event.gallery.length > 0)
+      ? event.gallery
+      : [
+          {
+            url: event.image_url || '/assets/campuses/dehradun.png',
+            title: event.title,
+            caption: event.description
+          }
+        ]
+    const mapped = list.map((item, idx) => {
+      if (typeof item === 'string') {
+        return {
+          url: item,
+          title: `${event.title} - Photo #${idx + 1}`,
+          caption: `Captured highlight #${idx + 1} from ${event.title}`
+        }
+      }
+      return item
+    })
+    setPhotos(mapped)
+  }, [event])
+
+  // Auto-play slideshow timer for lightbox
+  useEffect(() => {
+    if (!isPlaying || lightboxIndex === null) return
+    const timer = setInterval(() => {
+      setLightboxIndex(prev => (prev < photos.length - 1 ? prev + 1 : 0))
+    }, 2800)
+    return () => clearInterval(timer)
+  }, [isPlaying, lightboxIndex, photos.length])
 
   // Close modal on Escape if lightbox is closed; otherwise close lightbox
   useEffect(() => {
@@ -45,6 +92,7 @@ export default function EventGalleryModal({ event, onClose }) {
       if (e.key === 'Escape') {
         if (lightboxIndex !== null) {
           setLightboxIndex(null)
+          setIsPlaying(false)
         } else {
           onClose()
         }
@@ -53,6 +101,9 @@ export default function EventGalleryModal({ event, onClose }) {
           setLightboxIndex((prev) => (prev > 0 ? prev - 1 : photos.length - 1))
         } else if (e.key === 'ArrowRight') {
           setLightboxIndex((prev) => (prev < photos.length - 1 ? prev + 1 : 0))
+        } else if (e.key === ' ') {
+          e.preventDefault()
+          setIsPlaying(p => !p)
         }
       }
     }
@@ -69,13 +120,28 @@ export default function EventGalleryModal({ event, onClose }) {
   }, [])
 
   const handlePrev = (e) => {
-    e.stopPropagation()
+    e?.stopPropagation?.()
     setLightboxIndex((prev) => (prev > 0 ? prev - 1 : photos.length - 1))
   }
 
   const handleNext = (e) => {
-    e.stopPropagation()
+    e?.stopPropagation?.()
     setLightboxIndex((prev) => (prev < photos.length - 1 ? prev + 1 : 0))
+  }
+
+  const handleLightboxTouchStart = (e) => {
+    touchStartRef.current = e.touches[0].clientX
+  }
+
+  const handleLightboxTouchEnd = (e) => {
+    if (touchStartRef.current === null) return
+    const diff = touchStartRef.current - e.changedTouches[0].clientX
+    if (diff > 40) {
+      handleNext(e)
+    } else if (diff < -40) {
+      handlePrev(e)
+    }
+    touchStartRef.current = null
   }
 
   // Handle client-side file upload for immediate interactive preview
@@ -283,12 +349,14 @@ export default function EventGalleryModal({ event, onClose }) {
                 className="group relative bg-[#0E1526]/80 hover:bg-[#121B30] border border-[#1E293B] hover:border-amber-400/80 rounded-2xl overflow-hidden shadow-lg transition-all duration-300 hover:shadow-[0_0_25px_rgba(255,215,0,0.25)] flex flex-col cursor-pointer"
               >
                 {/* Photo Preview Container */}
-                <div className="relative aspect-[4/3] w-full overflow-hidden bg-black">
+                <div className="relative aspect-[4/3] w-full overflow-hidden bg-[#0A0F1D]">
                   <img
                     src={photo.url}
-                    alt={photo.title || `Hackathon Photo ${index + 1}`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    loading="lazy"
+                    alt={photo.title || `Event Photo ${index + 1}`}
+                    className="w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-105 will-change-transform"
+                    loading="eager"
+                    decoding="async"
+                    style={{ transform: 'translateZ(0)' }}
                   />
                   {/* Subtle Gradient Shade */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 opacity-60 group-hover:opacity-40 transition-opacity" />
@@ -390,8 +458,21 @@ export default function EventGalleryModal({ event, onClose }) {
             </div>
 
             <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setIsPlaying(p => !p)}
+                className={`px-3 py-1.5 rounded-xl text-xs font-chakra italic font-bold tracking-wider transition-all flex items-center gap-1.5 cursor-pointer shadow-sm ${
+                  isPlaying
+                    ? 'bg-amber-400 text-black border border-amber-300 font-bold animate-pulse'
+                    : 'bg-black/80 hover:bg-white/10 text-gray-200 border border-gray-700'
+                }`}
+                title={isPlaying ? "Pause auto slideshow (Space)" : "Play auto slideshow (Space)"}
+              >
+                <span>{isPlaying ? '⏸ PAUSE' : '▶ AUTO-PLAY'}</span>
+              </button>
+
               <a
-                href={photos[lightboxIndex].url}
+                href={photos[lightboxIndex]?.url}
                 target="_blank"
                 rel="noreferrer"
                 className="px-3 py-1.5 rounded-xl text-xs font-mono bg-gray-900 hover:bg-gray-800 text-gray-300 border border-gray-700 transition-colors"
@@ -401,7 +482,10 @@ export default function EventGalleryModal({ event, onClose }) {
               </a>
               <button
                 type="button"
-                onClick={() => setLightboxIndex(null)}
+                onClick={() => {
+                  setLightboxIndex(null)
+                  setIsPlaying(false)
+                }}
                 className="w-10 h-10 rounded-full bg-red-950/80 hover:bg-red-600 border border-red-500/50 text-white font-mono font-bold flex items-center justify-center transition-all shadow-spider-glow cursor-pointer"
                 title="Close Lightbox (Esc)"
               >
@@ -410,35 +494,51 @@ export default function EventGalleryModal({ event, onClose }) {
             </div>
           </div>
 
-          {/* Lightbox Center Image Showcase with Navigation Arrows */}
+          {/* Lightbox Center Image Showcase with Navigation Arrows & Touch Swipe */}
           <div
             onClick={(e) => e.stopPropagation()}
-            className="relative flex-1 flex items-center justify-center my-3 overflow-hidden select-none"
+            onTouchStart={handleLightboxTouchStart}
+            onTouchEnd={handleLightboxTouchEnd}
+            className="relative flex-1 flex items-center justify-center my-2 overflow-hidden select-none"
           >
             {/* Prev Button */}
             <button
               type="button"
               onClick={handlePrev}
-              className="absolute left-2 sm:left-4 z-10 w-12 h-12 rounded-full bg-black/80 hover:bg-amber-500 hover:text-black border border-white/20 text-white flex items-center justify-center text-xl transition-all shadow-xl backdrop-blur-md cursor-pointer"
+              className="absolute left-2 sm:left-4 z-20 w-12 h-12 rounded-full bg-black/80 hover:bg-amber-500 hover:text-black border border-white/20 text-white flex items-center justify-center text-xl transition-all shadow-xl backdrop-blur-md cursor-pointer"
               title="Previous photo (Left Arrow)"
             >
               ❮
             </button>
 
-            {/* Main High-Res Image Display */}
-            <div className="max-w-5xl max-h-[72vh] flex items-center justify-center p-2">
-              <img
-                src={photos[lightboxIndex].url}
-                alt={photos[lightboxIndex].title || 'Hackathon Photo'}
-                className="max-h-[68vh] sm:max-h-[72vh] max-w-full object-contain rounded-2xl border border-white/10 shadow-2xl transition-all duration-300"
-              />
+            {/* Main High-Res Image Display — Pre-mounted GPU Crossfade */}
+            <div className="relative w-full max-w-5xl h-[66vh] sm:h-[72vh] flex items-center justify-center p-2">
+              {photos.map((item, idx) => (
+                <img
+                  key={idx}
+                  src={item.url}
+                  alt={item.title || event.title}
+                  loading="eager"
+                  decoding="async"
+                  className={`absolute max-h-[66vh] sm:max-h-[72vh] max-w-full object-contain rounded-2xl border border-white/10 shadow-2xl transition-all duration-300 ease-out will-change-[opacity,transform] ${
+                    idx === lightboxIndex
+                      ? 'opacity-100 scale-100 pointer-events-auto z-10'
+                      : 'opacity-0 scale-95 pointer-events-none z-0'
+                  }`}
+                  style={{
+                    transform: 'translateZ(0)',
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden'
+                  }}
+                />
+              ))}
             </div>
 
             {/* Next Button */}
             <button
               type="button"
               onClick={handleNext}
-              className="absolute right-2 sm:right-4 z-10 w-12 h-12 rounded-full bg-black/80 hover:bg-amber-500 hover:text-black border border-white/20 text-white flex items-center justify-center text-xl transition-all shadow-xl backdrop-blur-md cursor-pointer"
+              className="absolute right-2 sm:right-4 z-20 w-12 h-12 rounded-full bg-black/80 hover:bg-amber-500 hover:text-black border border-white/20 text-white flex items-center justify-center text-xl transition-all shadow-xl backdrop-blur-md cursor-pointer"
               title="Next photo (Right Arrow)"
             >
               ❯

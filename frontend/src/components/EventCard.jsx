@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import EventRegistrationModal from './EventRegistrationModal'
 import EventGalleryModal from './EventGalleryModal'
 
@@ -42,26 +42,63 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const [showRegisterModal, setShowRegisterModal] = useState(false)
   const [registeredTicket, setRegisteredTicket] = useState(null)
   const [showGalleryModal, setShowGalleryModal] = useState(false)
-  const [activePhotoIndex, setActivePhotoIndex] = useState(0)
 
-  // Gallery array for in-card slider
+  // Robust gallery extraction from both event.gallery and event.photos
   const gallery = (event.gallery && event.gallery.length > 0)
     ? event.gallery
+    : (event.photos && event.photos.length > 0)
+    ? event.photos.map(p => (typeof p === 'string' ? p : p.url))
     : (event.image_url ? [event.image_url] : ['/assets/campuses/bhimtal.png'])
   const hasMultiplePhotos = gallery.length > 1
 
+  // Preload all gallery photos into browser cache for zero-latency instant transitions
+  useEffect(() => {
+    gallery.forEach(url => {
+      if (url && typeof url === 'string') {
+        const img = new Image()
+        img.src = url
+      }
+    })
+  }, [gallery])
+
   // Separate index for in-card sliding (independent of modal)
   const [cardPhotoIdx, setCardPhotoIdx] = useState(0)
+  const [isHovered, setIsHovered] = useState(false)
+  const cardTouchStartX = useRef(null)
+
+  // Smooth auto-cycling on hover when card has multiple photos
+  useEffect(() => {
+    if (!hasMultiplePhotos || !isHovered) return
+    const timer = setInterval(() => {
+      setCardPhotoIdx(prev => (prev === gallery.length - 1 ? 0 : prev + 1))
+    }, 2200)
+    return () => clearInterval(timer)
+  }, [hasMultiplePhotos, isHovered, gallery.length])
 
   const cardPrev = useCallback((e) => {
-    e.stopPropagation()
+    e?.stopPropagation?.()
     setCardPhotoIdx(prev => (prev === 0 ? gallery.length - 1 : prev - 1))
   }, [gallery.length])
 
   const cardNext = useCallback((e) => {
-    e.stopPropagation()
+    e?.stopPropagation?.()
     setCardPhotoIdx(prev => (prev === gallery.length - 1 ? 0 : prev + 1))
   }, [gallery.length])
+
+  const handleCardTouchStart = (e) => {
+    cardTouchStartX.current = e.touches[0].clientX
+  }
+
+  const handleCardTouchEnd = (e) => {
+    if (cardTouchStartX.current === null) return
+    const diff = cardTouchStartX.current - e.changedTouches[0].clientX
+    if (diff > 35) {
+      cardNext(e)
+    } else if (diff < -35) {
+      cardPrev(e)
+    }
+    cardTouchStartX.current = null
+  }
 
   // Keyboard nav for modal
   useEffect(() => {
@@ -105,14 +142,34 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
         <div
           className="relative h-52 w-full overflow-hidden bg-black cursor-pointer select-none"
           onClick={handleOpenGallery}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+          onTouchStart={handleCardTouchStart}
+          onTouchEnd={handleCardTouchEnd}
         >
-          {/* Sliding Image — uses cardPhotoIdx */}
-          <img
-            src={gallery[cardPhotoIdx] || '/assets/campuses/bhimtal.png'}
-            alt={event.title}
-            className="w-full h-full object-cover transition-all duration-500"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#090D18] via-transparent to-black/50" />
+          {/* Pre-rendered Hardware-Accelerated Photo Layers */}
+          <div className="absolute inset-0 w-full h-full bg-black">
+            {gallery.map((photoUrl, idx) => (
+              <img
+                key={idx}
+                src={photoUrl}
+                alt={`${event.title} - Photo ${idx + 1}`}
+                loading="eager"
+                decoding="async"
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ease-out will-change-[opacity] ${
+                  idx === cardPhotoIdx
+                    ? 'opacity-100 z-10 scale-100'
+                    : 'opacity-0 z-0 pointer-events-none scale-105'
+                }`}
+                style={{
+                  transform: 'translateZ(0)',
+                  backfaceVisibility: 'hidden',
+                  WebkitBackfaceVisibility: 'hidden'
+                }}
+              />
+            ))}
+          </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#090D18] via-transparent to-black/50 z-10 pointer-events-none" />
 
           {/* Badges on top of image */}
           <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 gap-1.5 flex-wrap">
