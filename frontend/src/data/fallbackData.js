@@ -3411,7 +3411,49 @@ export const DEFAULT_REGISTRATIONS = [
     details_json: { registrationSource: "Portal" },
     created_at: "2026-11-14T09:00:00.000Z"
   }
+
+  {
+    id: 601,
+    event_id: 33,
+    event_title: 'INNOVATE 1.0 – AWS Ideathon',
+    event_category: 'Technology / Innovation / Ideathon',
+    event_campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+    student_name: 'Aarav Sharma',
+    student_email: 'aarav.sharma@gmail.com',
+    phone: '+91 98765 12345',
+    degree: 'B.Tech CSE - 3rd Year',
+    roll_no: 'GEHU-2024-BHM-112',
+    campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+    ticket_code: 'PASS-33-BHM-1601',
+    team_name: 'Team Aarav Squad',
+    team_size: '3',
+    track_info: 'Technology / Innovation / Ideathon Specialization',
+    github_link: null,
+    details_json: { registrationSource: "Official Portal Registration" },
+    created_at: "2026-10-28T01:00:00.000Z"
+  },
+  {
+    id: 602,
+    event_id: 33,
+    event_title: 'INNOVATE 1.0 – AWS Ideathon',
+    event_category: 'Technology / Innovation / Ideathon',
+    event_campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+    student_name: 'Ananya Joshi',
+    student_email: 'ananya.joshi@gmail.com',
+    phone: '+91 98234 56789',
+    degree: 'B.Tech AI/ML - 2nd Year',
+    roll_no: 'GEHU-2025-HAL-204',
+    campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+    ticket_code: 'PASS-33-BHM-1602',
+    team_name: 'Solo Entry',
+    team_size: '1',
+    track_info: 'Technology / Innovation / Ideathon Specialization',
+    github_link: null,
+    details_json: { registrationSource: "Official Portal Registration" },
+    created_at: "2026-10-28T01:00:00.000Z"
+  },
 ];
+
 
 
 export const DEFAULT_GOOGLE_SHEETS = {
@@ -3445,60 +3487,269 @@ export const DEFAULT_GOOGLE_SHEETS = {
     autoSync: true
   },
 
+  // --- Individual Event Spreadsheets (All Events) ---
+  1: {
+    eventId: 1,
+    eventName: "\ud83c\udfd4\ufe0f Himalayan Web-Drone Flight & Aerial Photography",
+    sheetId: "1GEHU_1_Himalayan_Web_Drone_Flight_Aerial_Photog_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_1_Himalayan_Web_Drone_Flight_Aerial_Photog_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_1_AutoSync/exec",
+    autoSync: true
+  },
+  2: {
+    eventId: 2,
+    eventName: "Graphite 2026: The Ultimate Spider-Man Themed Hackathon \ud83d\udd78\ufe0f\u26a1",
+    sheetId: "1GEHU_2_Graphite_2026_The_Ultimate_Spider_Man_Th_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_2_Graphite_2026_The_Ultimate_Spider_Man_Th_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_2_AutoSync/exec",
+    autoSync: true
+  },
+  3: {
+    eventId: 3,
+    eventName: "\ud83d\udd77\ufe0f Multiverse Hackathon ",
+    sheetId: "1GEHU_3_Multiverse_Hackathon_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_3_Multiverse_Hackathon_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_3_AutoSync/exec",
+    autoSync: true
+  },
+  4: {
+    eventId: 4,
+    eventName: "\u26a1 Watch The Code: National Level Hackathon",
+    sheetId: "1GEHU_4_Watch_The_Code_National_Level_Hackathon_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_4_Watch_The_Code_National_Level_Hackathon_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_4_AutoSync/exec",
+    autoSync: true
+  },
+  5: {
+    eventId: 5,
+    eventName: "\ud83c\udfad Web-Head Comic, Animation & Graphic Arts Battle",
+    sheetId: "1GEHU_5_Web_Head_Comic_Animation_Graphic_Arts_Ba_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_5_Web_Head_Comic_Animation_Graphic_Arts_Ba_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_5_AutoSync/exec",
+    autoSync: true
+  },
+  6: {
+    eventId: 6,
+    eventName: "\ud83d\udd25 Spider-Man 2099 Neon EDM Carnival",
+    sheetId: "1GEHU_6_Spider_Man_2099_Neon_EDM_Carnival_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_6_Spider_Man_2099_Neon_EDM_Carnival_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_6_AutoSync/exec",
+    autoSync: true
+  },
+  7: {
+    eventId: 7,
+    eventName: "\ud83c\udfc6 Inter-Campus Spider-Athletics & Track League",
+    sheetId: "1GEHU_7_Inter_Campus_Spider_Athletics_Track_Leag_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_7_Inter_Campus_Spider_Athletics_Track_Leag_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_7_AutoSync/exec",
+    autoSync: true
+  },
+  8: {
+    eventId: 8,
+    eventName: "\ud83e\uddec Oscorp Genetics & Bio-Tech Summit 2026",
+    sheetId: "1GEHU_8_Oscorp_Genetics_Bio_Tech_Summit_2026_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_8_Oscorp_Genetics_Bio_Tech_Summit_2026_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_8_AutoSync/exec",
+    autoSync: true
+  },
+  9: {
+    eventId: 9,
+    eventName: "\ud83d\ude80 Grafest ",
+    sheetId: "1GEHU_9_Grafest_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_9_Grafest_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_9_AutoSync/exec",
+    autoSync: true
+  },
+  10: {
+    eventId: 10,
+    eventName: "\ud83d\udee0\ufe0f Parker Nano-Materials & Structural Workshop",
+    sheetId: "1GEHU_10_Parker_Nano_Materials_Structural_Worksho_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_10_Parker_Nano_Materials_Structural_Worksho_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_10_AutoSync/exec",
+    autoSync: true
+  },
+  11: {
+    eventId: 11,
+    eventName: "\ud83c\udf10 Spider-Net Quantum Cybersecurity CTF",
+    sheetId: "1GEHU_11_Spider_Net_Quantum_Cybersecurity_CTF_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_11_Spider_Net_Quantum_Cybersecurity_CTF_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_11_AutoSync/exec",
+    autoSync: true
+  },
+  12: {
+    eventId: 12,
+    eventName: "\ud83c\udfce\ufe0f Formula Web-Speed Electric Kart Championship",
+    sheetId: "1GEHU_12_Formula_Web_Speed_Electric_Kart_Champion_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_12_Formula_Web_Speed_Electric_Kart_Champion_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_12_AutoSync/exec",
+    autoSync: true
+  },
   13: {
     eventId: 13,
-    eventName: "Hack The Winter '27 (Himalayan Edition)",
-    sheetId: "1HTW2027_Himalayan_Winter_Hackathon_Registry",
-    sheetUrl: "",
-    webhookUrl: "https://script.google.com/macros/s/AKfycbz_HTW2027_AutoSync/exec",
+    eventName: "\u2744\ufe0f Hack The Winter Hackathon ",
+    sheetId: "1GEHU_13_Hack_The_Winter_Hackathon_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_13_Hack_The_Winter_Hackathon_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_13_AutoSync/exec",
     autoSync: true
   },
   14: {
     eventId: 14,
-    eventName: "AstroVerse Space-Tech & Galactic Exploration",
-    sheetId: "1ASTRO2026_SpaceTech_Stargazing_Registry",
-    sheetUrl: "",
-    webhookUrl: "https://script.google.com/macros/s/AKfycbz_ASTRO2026_AutoSync/exec",
+    eventName: "\ud83c\udf0c AstroVerse: Himalayan Space-Tech & Galactic Exploration Fest",
+    sheetId: "1GEHU_14_AstroVerse_Himalayan_Space_Tech_Galactic_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_14_AstroVerse_Himalayan_Space_Tech_Galactic_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_14_AutoSync/exec",
     autoSync: true
   },
   15: {
     eventId: 15,
-    eventName: "Infotsav '26 Flagship Technical Fest",
-    sheetId: "1INFOTSAV2026_Robowars_Coding_Registry",
-    sheetUrl: "",
-    webhookUrl: "https://script.google.com/macros/s/AKfycbz_INFOTSAV_AutoSync/exec",
+    eventName: "\u26a1 Infotsav ",
+    sheetId: "1GEHU_15_Infotsav_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_15_Infotsav_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_15_AutoSync/exec",
     autoSync: true
   },
   16: {
     eventId: 16,
-    eventName: "Spardha '26 Inter-Campus Sports League",
-    sheetId: "1SPARDHA2026_InterCampus_Sports_Registry",
-    sheetUrl: "",
-    webhookUrl: "https://script.google.com/macros/s/AKfycbz_SPARDHA_AutoSync/exec",
+    eventName: "\ud83c\udfc6 Spardha ",
+    sheetId: "1GEHU_16_Spardha_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_16_Spardha_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_16_AutoSync/exec",
     autoSync: true
   },
   17: {
     eventId: 17,
-    eventName: "Grafest '26 Bhimtal Winter Cultural Fest",
-    sheetId: "1GRAFEST2026_Bhimtal_Concert_VIP_Registry",
-    sheetUrl: "",
-    webhookUrl: "https://script.google.com/macros/s/AKfycbz_GRAFEST_AutoSync/exec",
+    eventName: "\ud83c\udfad Grafest ",
+    sheetId: "1GEHU_17_Grafest_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_17_Grafest_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_17_AutoSync/exec",
     autoSync: true
   },
   18: {
     eventId: 18,
-    eventName: "Kalakriti & Goonj Youth Arts & Theatre",
-    sheetId: "1KALAKRITI2026_Youth_Theatre_Arts_Registry",
-    sheetUrl: "",
-    webhookUrl: "https://script.google.com/macros/s/AKfycbz_KALAKRITI_AutoSync/exec",
+    eventName: "\ud83c\udfa8 Kalakriti & Goonj: Youth Arts, Theatre & Folk Conclave",
+    sheetId: "1GEHU_18_Kalakriti_Goonj_Youth_Arts_Theatre_Folk__Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_18_Kalakriti_Goonj_Youth_Arts_Theatre_Folk__Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_18_AutoSync/exec",
     autoSync: true
   },
   19: {
     eventId: 19,
-    eventName: "AeroTrek Himalayan Eco-Drone Expedition",
-    sheetId: "1AEROTREK2026_Drone_AerialSurvey_Registry",
-    sheetUrl: "",
-    webhookUrl: "https://script.google.com/macros/s/AKfycbz_AEROTREK_AutoSync/exec",
+    eventName: "\ud83d\ude81 AeroTrek: Himalayan Eco-Drone & Aerial Survey Expedition",
+    sheetId: "1GEHU_19_AeroTrek_Himalayan_Eco_Drone_Aerial_Surv_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_19_AeroTrek_Himalayan_Eco_Drone_Aerial_Surv_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_19_AutoSync/exec",
     autoSync: true
-  }
+  },
+  20: {
+    eventId: 20,
+    eventName: "\ud83d\udd25 Dussehra Mahotsav & Ravan Dahan 2026 \u2014 Victory of Light",
+    sheetId: "1GEHU_20_Dussehra_Mahotsav_Ravan_Dahan_2026_Victo_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_20_Dussehra_Mahotsav_Ravan_Dahan_2026_Victo_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_20_AutoSync/exec",
+    autoSync: true
+  },
+  21: {
+    eventId: 21,
+    eventName: "\ud83c\udfad Student Grafest 2026 \u2014 Classical & Modern Dance Showcase",
+    sheetId: "1GEHU_21_Student_Grafest_2026_Classical_Modern_Da_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_21_Student_Grafest_2026_Classical_Modern_Da_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_21_AutoSync/exec",
+    autoSync: true
+  },
+  22: {
+    eventId: 22,
+    eventName: "Smart India Hackathon (SIH)",
+    sheetId: "1GEHU_22_Smart_India_Hackathon_SIH_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_22_Smart_India_Hackathon_SIH_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_22_AutoSync/exec",
+    autoSync: true
+  },
+  23: {
+    eventId: 23,
+    eventName: "13th Foundation Day Celebration",
+    sheetId: "1GEHU_23_13th_Foundation_Day_Celebration_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_23_13th_Foundation_Day_Celebration_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_23_AutoSync/exec",
+    autoSync: true
+  },
+  24: {
+    eventId: 24,
+    eventName: "Student GRAFEST 2026",
+    sheetId: "1GEHU_24_Student_GRAFEST_2026_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_24_Student_GRAFEST_2026_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_24_AutoSync/exec",
+    autoSync: true
+  },
+  25: {
+    eventId: 25,
+    eventName: "\ud83c\udfa8 Terai Youth Conclave & Literary Arts Gala ",
+    sheetId: "1GEHU_25_Terai_Youth_Conclave_Literary_Arts_Gala_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_25_Terai_Youth_Conclave_Literary_Arts_Gala_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_25_AutoSync/exec",
+    autoSync: true
+  },
+  26: {
+    eventId: 26,
+    eventName: "\u26bd Kumaon Premier Inter-College Sports Carnival",
+    sheetId: "1GEHU_26_Kumaon_Premier_Inter_College_Sports_Carn_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_26_Kumaon_Premier_Inter_College_Sports_Carn_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_26_AutoSync/exec",
+    autoSync: true
+  },
+  27: {
+    eventId: 27,
+    eventName: "\ud83c\udf10 Doon CyberShield ",
+    sheetId: "1GEHU_27_Doon_CyberShield_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_27_Doon_CyberShield_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_27_AutoSync/exec",
+    autoSync: true
+  },
+  28: {
+    eventId: 28,
+    eventName: "\ud83c\udfad Doon Valley Youth Theatre & Acoustic Music Fest ",
+    sheetId: "1GEHU_28_Doon_Valley_Youth_Theatre_Acoustic_Music_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_28_Doon_Valley_Youth_Theatre_Acoustic_Music_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_28_AutoSync/exec",
+    autoSync: true
+  },
+  29: {
+    eventId: 29,
+    eventName: "\ud83c\udff8 Spardha Inter-University Badminton & Table Tennis Open",
+    sheetId: "1GEHU_29_Spardha_Inter_University_Badminton_Table_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_29_Spardha_Inter_University_Badminton_Table_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_29_AutoSync/exec",
+    autoSync: true
+  },
+  30: {
+    eventId: 30,
+    eventName: "\u26a1 InnovateGEU ",
+    sheetId: "1GEHU_30_InnovateGEU_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_30_InnovateGEU_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_30_AutoSync/exec",
+    autoSync: true
+  },
+  31: {
+    eventId: 31,
+    eventName: "\ud83c\udfc6 All-India Inter-University Cricket Championship 2026",
+    sheetId: "1GEHU_31_All_India_Inter_University_Cricket_Champ_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_31_All_India_Inter_University_Cricket_Champ_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_31_AutoSync/exec",
+    autoSync: true
+  },
+  32: {
+    eventId: 32,
+    eventName: "\ud83c\udfb6 Swarotsav ",
+    sheetId: "1GEHU_32_Swarotsav_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_32_Swarotsav_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_32_AutoSync/exec",
+    autoSync: true
+  },
+  33: {
+    eventId: 33,
+    eventName: "INNOVATE 1.0 \u2013 AWS Ideathon",
+    sheetId: "1GEHU_33_INNOVATE_10_AWS_Ideathon_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GEHU_33_INNOVATE_10_AWS_Ideathon_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_EVENT_33_AutoSync/exec",
+    autoSync: true
+  },
 };

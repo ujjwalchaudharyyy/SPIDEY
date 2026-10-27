@@ -18,8 +18,6 @@ const CAMPUSES = [
     key: 'campus_bhimtal',
     name: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
     shortName: 'Bhimtal Campus',
-    adminName: 'Admin Bhimtal',
-    adminEmail: 'admin.bhimtal@gehu.ac.in',
     icon: '🏔️',
     color: 'from-blue-600 to-indigo-700',
     borderColor: 'border-blue-500/40',
@@ -29,8 +27,6 @@ const CAMPUSES = [
     key: 'campus_haldwani',
     name: 'GRAPHIC ERA HILL UNIVERSITY HALDWANI',
     shortName: 'Haldwani Campus',
-    adminName: 'Admin Haldwani',
-    adminEmail: 'admin.haldwani@gehu.ac.in',
     icon: '🌊',
     color: 'from-cyan-600 to-teal-700',
     borderColor: 'border-cyan-500/40',
@@ -40,8 +36,6 @@ const CAMPUSES = [
     key: 'campus_dehradun',
     name: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
     shortName: 'Dehradun Campus',
-    adminName: 'Admin Dehradun',
-    adminEmail: 'admin.dehradun@gehu.ac.in',
     icon: '🌲',
     color: 'from-emerald-600 to-green-700',
     borderColor: 'border-emerald-500/40',
@@ -51,8 +45,6 @@ const CAMPUSES = [
     key: 'campus_deemed',
     name: 'GRAPHIC ERA DEEMED UNIVERSITY',
     shortName: 'GEU Deemed Campus',
-    adminName: 'Admin GEU Deemed',
-    adminEmail: 'admin.deemed@gehu.ac.in',
     icon: '🎓',
     color: 'from-purple-600 to-violet-700',
     borderColor: 'border-purple-500/40',
@@ -76,13 +68,9 @@ export default function AdminDashboard() {
   const [toast, setToast] = useState(null)
   const [copiedCode, setCopiedCode] = useState(null)
   const [activeSettingsEvent, setActiveSettingsEvent] = useState(null)
-  const [spreadsheetModalData, setSpreadsheetModalData] = useState(null)
-  const [modalSearchQuery, setModalSearchQuery] = useState('')
-  const [modalModeFilter, setModalModeFilter] = useState('all')
   const [customSheetUrl, setCustomSheetUrl] = useState('')
   const [customWebhookUrl, setCustomWebhookUrl] = useState('')
   const [sheetsConfig, setSheetsConfig] = useState(getEventGoogleSheetsConfig())
-
 
   // Check if current logged in user is Super Admin
   const isSuperAdmin = useMemo(() => {
@@ -90,7 +78,6 @@ export default function AdminDashboard() {
     return (
       user.adminType === 'super' ||
       user.email === 'ujjwalchaudhary2007@gmail.com' ||
-      user.email === 'admin@campus.edu' ||
       user.campus === 'ALL' ||
       user.campus?.includes('HIGH COMMAND')
     )
@@ -401,36 +388,6 @@ export default function AdminDashboard() {
     }
   }
 
-  // View specific event spreadsheet on page
-  const handleViewEventSheet = (eventId) => {
-    setSelectedEventId(String(eventId))
-    setViewMode('single')
-    setTimeout(() => {
-      document.getElementById('sheet-table-section')?.scrollIntoView({ behavior: 'smooth' })
-    }, 50)
-  }
-
-  // Smart Google Sheet Opener: If custom configured, open it. Otherwise auto-copy TSV and open sheets.new
-  const handleOpenInGoogleSheets = (ev, listToExport) => {
-    const currentCfg = sheetsConfig[ev.id]
-    const custom = currentCfg?.sheetUrl
-    if (custom && custom.trim() && custom.startsWith('https://docs.google.com') && !custom.includes('your-sheet-id') && !custom.includes('_Registry') && !custom.includes('1HTW2027')) {
-      window.open(custom.trim(), '_blank', 'noopener,noreferrer')
-      return
-    }
-
-    // Auto-copy data so when sheets.new opens, admin simply presses Ctrl+V!
-    if (listToExport && listToExport.length > 0) {
-      const tsv = copyForGoogleSheets(listToExport)
-      if (tsv) {
-        copyToClipboard(tsv)
-      }
-    }
-    const cleanTitle = encodeURIComponent((ev.title || `Event_${ev.id}`).replace(/[^a-zA-Z0-9 ]/g, '_').trim())
-    window.open(`https://sheets.new?title=${cleanTitle}_Registrations`, '_blank', 'noopener,noreferrer')
-    showToast(`Data copied for ${listToExport.length} students! Press Ctrl+V in your Google Sheet to paste all rows 📋`, 'success')
-  }
-
   // Filter a specific list of registrations
   const filterList = (list) => {
     return (list || []).filter(r => {
@@ -563,232 +520,6 @@ export default function AdminDashboard() {
         </div>
       )}
 
-      {/* Interactive In-App Fullscreen Spreadsheet Modal */}
-      {spreadsheetModalData && (
-        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col p-2 sm:p-5 animate-fadeIn">
-          <div className="bg-[#0D111A] border border-emerald-500/40 rounded-2xl w-full h-full flex flex-col overflow-hidden shadow-2xl ring-1 ring-emerald-500/30">
-            {/* Modal Header */}
-            <div className="bg-[#090D15] p-3.5 sm:p-4 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
-              <div className="flex items-center gap-3 min-w-0">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-xl shrink-0">
-                  📊
-                </div>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-2 flex-wrap">
-                    <h2 className="text-sm sm:text-base font-bold text-white tracking-tight truncate">
-                      {spreadsheetModalData.title}
-                    </h2>
-                    <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold shrink-0">
-                      {spreadsheetModalData.rows?.length || 0} Registered Students
-                    </span>
-                  </div>
-                  <p className="text-[11px] text-gray-400 mt-0.5 flex items-center gap-2 truncate">
-                    <span>🏛️ {spreadsheetModalData.campus}</span>
-                    <span className="text-gray-600">•</span>
-                    <span>🏷️ {spreadsheetModalData.category}</span>
-                  </p>
-                </div>
-              </div>
-
-              {/* Action Toolbar on Modal Header */}
-              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
-                <button
-                  type="button"
-                  onClick={() => exportToCSV(spreadsheetModalData.title, spreadsheetModalData.rows)}
-                  className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer border border-gray-700"
-                  title="Download CSV Spreadsheet"
-                >
-                  <span>📥</span>
-                  <span>Download CSV</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleCopyForGoogleSheets(spreadsheetModalData.title, spreadsheetModalData.rows)}
-                  className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer border border-gray-700"
-                  title="Copy rows formatted for Excel / Sheets"
-                >
-                  <span>📋</span>
-                  <span>Copy TSV</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSpreadsheetModalData(null)}
-                  className="w-8 h-8 rounded-xl bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white flex items-center justify-center text-sm font-bold transition cursor-pointer"
-                  title="Close Spreadsheet"
-                >
-                  ✕
-                </button>
-              </div>
-            </div>
-
-            {/* Filter & Search Bar */}
-            <div className="bg-[#121622] px-3.5 py-2.5 border-b border-gray-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0">
-              <div className="relative flex-1 max-w-md">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">🔍</span>
-                <input
-                  type="text"
-                  value={modalSearchQuery}
-                  onChange={(e) => setModalSearchQuery(e.target.value)}
-                  placeholder="Student name, roll number, email, ticket code se search karein..."
-                  className="w-full bg-[#090C12] border border-gray-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
-                />
-              </div>
-
-              <div className="flex items-center gap-1 bg-[#090C12] p-1 rounded-xl border border-gray-800 text-xs">
-                <button
-                  type="button"
-                  onClick={() => setModalModeFilter('all')}
-                  className={`px-3 py-1 rounded-lg transition font-medium cursor-pointer ${
-                    modalModeFilter === 'all' ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  All ({spreadsheetModalData.rows?.length || 0})
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setModalModeFilter('team')}
-                  className={`px-3 py-1 rounded-lg transition font-medium cursor-pointer ${
-                    modalModeFilter === 'team' ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Team Only
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setModalModeFilter('solo')}
-                  className={`px-3 py-1 rounded-lg transition font-medium cursor-pointer ${
-                    modalModeFilter === 'solo' ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'
-                  }`}
-                >
-                  Solo Only
-                </button>
-              </div>
-            </div>
-
-            {/* Spreadsheet Grid Table */}
-            <div className="flex-1 overflow-auto bg-[#090C12]">
-              {(() => {
-                const filteredModalRows = (spreadsheetModalData.rows || []).filter(r => {
-                  const isTeam = r.team_name && !r.team_name.toLowerCase().includes('solo')
-                  if (modalModeFilter === 'team' && !isTeam) return false
-                  if (modalModeFilter === 'solo' && isTeam) return false
-                  if (modalSearchQuery.trim()) {
-                    const q = modalSearchQuery.toLowerCase()
-                    const match =
-                      (r.student_name && r.student_name.toLowerCase().includes(q)) ||
-                      (r.roll_no && r.roll_no.toLowerCase().includes(q)) ||
-                      (r.student_email && r.student_email.toLowerCase().includes(q)) ||
-                      (r.ticket_code && r.ticket_code.toLowerCase().includes(q)) ||
-                      (r.phone && r.phone.toLowerCase().includes(q)) ||
-                      (r.team_name && r.team_name.toLowerCase().includes(q)) ||
-                      (r.degree && r.degree.toLowerCase().includes(q))
-                    if (!match) return false
-                  }
-                  return true
-                })
-
-                if (filteredModalRows.length === 0) {
-                  return (
-                    <div className="py-20 text-center text-gray-500 text-xs">
-                      Is spreadsheet me koi matching student record nahi mila.
-                    </div>
-                  )
-                }
-
-                return (
-                  <table className="w-full text-left text-xs border-collapse font-sans">
-                    <thead className="sticky top-0 bg-[#0E1422] text-emerald-400 font-semibold border-b border-gray-700 text-[10px] uppercase tracking-wider shadow-sm z-10">
-                      <tr>
-                        <th className="py-2.5 px-3 w-10 text-center border-r border-gray-800">#</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Ticket Pass</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Student Name</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Roll Number</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">University Email</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Phone</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Degree &amp; Year</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Campus</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Type</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Team Name</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Team Size</th>
-                        <th className="py-2.5 px-3 border-r border-gray-800">Track / Details</th>
-                        <th className="py-2.5 px-3">Registered Date</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-800/80">
-                      {filteredModalRows.map((r, idx) => {
-                        const isTeam = r.team_name && !r.team_name.toLowerCase().includes('solo')
-                        return (
-                          <tr key={r.ticket_code || idx} className="hover:bg-emerald-950/20 transition-colors">
-                            <td className="py-2 px-3 text-center text-gray-500 font-mono border-r border-gray-800/60 bg-[#0C101A]">
-                              {idx + 1}
-                            </td>
-                            <td className="py-2 px-3 font-mono font-bold text-emerald-400 border-r border-gray-800/60 whitespace-nowrap">
-                              {r.ticket_code || `PASS-${idx + 1}`}
-                            </td>
-                            <td className="py-2 px-3 font-semibold text-white border-r border-gray-800/60 whitespace-nowrap">
-                              {r.student_name}
-                            </td>
-                            <td className="py-2 px-3 font-mono text-cyan-300 border-r border-gray-800/60 whitespace-nowrap">
-                              {r.roll_no || '—'}
-                            </td>
-                            <td className="py-2 px-3 text-gray-300 border-r border-gray-800/60 whitespace-nowrap">
-                              {r.student_email}
-                            </td>
-                            <td className="py-2 px-3 text-gray-300 font-mono border-r border-gray-800/60 whitespace-nowrap">
-                              {r.phone || '—'}
-                            </td>
-                            <td className="py-2 px-3 text-amber-200/90 border-r border-gray-800/60 whitespace-nowrap">
-                              {r.degree || '—'}
-                            </td>
-                            <td className="py-2 px-3 text-gray-300 border-r border-gray-800/60 whitespace-nowrap">
-                              {r.campus?.split(' ')?.[3] || r.campus || '—'}
-                            </td>
-                            <td className="py-2 px-3 border-r border-gray-800/60 whitespace-nowrap">
-                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                                isTeam ? 'bg-purple-950 text-purple-300 border border-purple-500/30' : 'bg-blue-950 text-blue-300 border border-blue-500/30'
-                              }`}>
-                                {isTeam ? '👥 Team' : '👤 Solo'}
-                              </span>
-                            </td>
-                            <td className="py-2 px-3 text-gray-300 border-r border-gray-800/60 whitespace-nowrap">
-                              {r.team_name || 'Solo'}
-                            </td>
-                            <td className="py-2 px-3 text-center text-gray-400 font-mono border-r border-gray-800/60">
-                              {r.team_size || '1'}
-                            </td>
-                            <td className="py-2 px-3 text-gray-300 border-r border-gray-800/60 whitespace-nowrap">
-                              {r.track_info || 'General'}
-                            </td>
-                            <td className="py-2 px-3 text-gray-400 font-mono whitespace-nowrap">
-                              {r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
-                            </td>
-                          </tr>
-                        )
-                      })}
-                    </tbody>
-                  </table>
-                )
-              })()}
-            </div>
-
-            {/* Modal Footer */}
-            <div className="bg-[#090D15] p-2.5 px-4 border-t border-gray-800 flex items-center justify-between text-xs text-gray-400 shrink-0">
-              <span className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                <span>In-App Live Spreadsheet Grid • Graphic Era High Command</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => setSpreadsheetModalData(null)}
-                className="px-3.5 py-1 rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold transition cursor-pointer"
-              >
-                Close Spreadsheet
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
 
@@ -912,17 +643,17 @@ export default function AdminDashboard() {
         {tab === 'registrations' && (
           <div className="space-y-6">
 
-            {/* 4 CAMPUS ADMINS & MASTER SPREADSHEETS (EACH CAMPUS) */}
-            {(isSuperAdmin || user?.role === 'admin') && (
+            {/* SUPER ADMIN: 4 Campus Master Spreadsheets Cards */}
+            {isSuperAdmin && (
               <div className="bg-[#121622]/90 border border-gray-800 rounded-2xl p-4 sm:p-5">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <span>🏛️</span>
-                      <span>4 CAMPUS ADMINS & MASTER GOOGLE SPREADSHEETS (EACH CAMPUS)</span>
+                      <span>4 CAMPUSES MASTER GOOGLE SPREADSHEETS (OVERALL)</span>
                     </h3>
                     <p className="text-[11px] text-gray-400">
-                      Har campus (Bhimtal, Haldwani, Dehradun, Deemed) ke designated campus admin, hosted events aur master spreadsheet.
+                      Har campus ki overall master sheet yahan se open karein ya campus filter select karein.
                     </p>
                   </div>
                   {selectedCampusFilter !== 'ALL' && (
@@ -956,43 +687,19 @@ export default function AdminDashboard() {
                           </div>
                           <h4 className="text-xs font-bold text-white">{camp.shortName}</h4>
                           <p className="text-[10px] text-gray-400 mt-0.5">{camp.eventsCount} Events Hosted</p>
-
-                          {/* Campus Admin Badge & Credentials */}
-                          <div className="mt-2.5 pt-2 border-t border-gray-800/80 bg-black/40 rounded-lg p-2 space-y-0.5">
-                            <div className="flex items-center justify-between">
-                              <span className="text-[9px] text-gray-400 font-mono tracking-wider">CAMPUS ADMIN:</span>
-                              <span className="text-[9px] font-bold text-emerald-400 flex items-center gap-1 font-mono">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                {user?.email === camp.adminEmail ? 'LOGGED IN' : 'ACTIVE'}
-                              </span>
-                            </div>
-                            <p className="text-[11px] font-semibold text-white truncate flex items-center gap-1">
-                              <span>🛡️</span> {camp.adminName}
-                            </p>
-                            <p className="text-[10px] font-mono text-cyan-300 truncate">{camp.adminEmail}</p>
-                          </div>
                         </div>
 
                         <div className="pt-3 mt-2 border-t border-gray-800/80 flex items-center gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setModalSearchQuery('')
-                              setModalModeFilter('all')
-                              setSpreadsheetModalData({
-                                title: `${camp.shortName} Master Spreadsheet`,
-                                campus: camp.name,
-                                category: 'Quad-Campus Master Registry',
-                                rows: camp.registrations,
-                                eventId: camp.key
-                              })
-                            }}
-                            className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 transition cursor-pointer shadow-sm"
-                            title="Open Campus Master Spreadsheet"
+                          <a
+                            href={camp.sheetUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 transition"
+                            title="Open Campus Master Google Sheet"
                           >
                             <span>📊</span>
                             <span>Master Sheet</span>
-                          </button>
+                          </a>
                           <button
                             onClick={() => setSelectedCampusFilter(isSelected ? 'ALL' : camp.name)}
                             className={`py-1.5 px-2 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
@@ -1070,25 +777,16 @@ export default function AdminDashboard() {
 
                       {/* Action buttons on card */}
                       <div className="pt-3 mt-2 border-t border-gray-800/80 flex items-center gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => {
-                            setModalSearchQuery('')
-                            setModalModeFilter('all')
-                            setSpreadsheetModalData({
-                              title: ev.title,
-                              campus: ev.campus,
-                              category: ev.category,
-                              rows: evRegs,
-                              eventId: ev.id
-                            })
-                          }}
-                          className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 cursor-pointer transition shadow-sm"
-                          title="Open in-app interactive spreadsheet"
+                        <a
+                          href={sheetLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600/90 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 cursor-pointer transition"
+                          title="Open separate Google Sheet"
                         >
                           <span>📊</span>
                           <span>Open Sheet</span>
-                        </button>
+                        </a>
 
                         <button
                           onClick={() => exportToCSV(ev.title, evRegs)}
@@ -1158,7 +856,6 @@ export default function AdminDashboard() {
             </div>
 
             {/* SPREADSHEETS DISPLAY */}
-            <div id="sheet-table-section"></div>
             {loading ? (
               <div className="flex justify-center py-16">
                 <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -1169,9 +866,10 @@ export default function AdminDashboard() {
                 {eventsList.map(ev => {
                   const evRegs = registrationsByEvent[String(ev.id)] || []
                   const filtered = filterList(evRegs)
+                  const sheetLink = getEventSheetUrl(ev.id, ev.title)
 
                   return (
-                    <div key={ev.id} id={`sheet-event-${ev.id}`} className="bg-[#121622] border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div key={ev.id} className="bg-[#121622] border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
                       {/* Event Specific Spreadsheet Header */}
                       <div className="bg-[#0D101A] p-4 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="space-y-0.5">
@@ -1191,25 +889,15 @@ export default function AdminDashboard() {
 
                         {/* Event Spreadsheet Actions */}
                         <div className="flex flex-wrap items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setModalSearchQuery('')
-                              setModalModeFilter('all')
-                              setSpreadsheetModalData({
-                                title: ev.title,
-                                campus: ev.campus,
-                                category: ev.category,
-                                rows: filtered,
-                                eventId: ev.id
-                              })
-                            }}
-                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
-                            title="Open In-App Interactive Spreadsheet"
+                          <a
+                            href={sheetLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
                           >
                             <span>📊</span>
-                            <span>Open Fullsheet</span>
-                          </button>
+                            <span>Open Google Sheet</span>
+                          </a>
 
                           <button
                             onClick={() => handleCopyForGoogleSheets(ev.title, filtered)}
@@ -1367,25 +1055,15 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 shrink-0">
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setModalSearchQuery('')
-                              setModalModeFilter('all')
-                              setSpreadsheetModalData({
-                                title: ev.title,
-                                campus: ev.campus,
-                                category: ev.category,
-                                rows: filtered,
-                                eventId: ev.id
-                              })
-                            }}
-                            className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
-                            title="Open In-App Interactive Spreadsheet"
+                          <a
+                            href={sheetLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
                           >
                             <span>📊</span>
-                            <span>Open Fullsheet</span>
-                          </button>
+                            <span>Open in Google Sheets</span>
+                          </a>
                           <button
                             onClick={() => handleCopyForGoogleSheets(ev.title, filtered)}
                             className="px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"

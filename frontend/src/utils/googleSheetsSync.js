@@ -17,7 +17,7 @@ export function getEventGoogleSheetsConfig() {
 export function getEventSheetUrl(eventId, eventTitle = 'Event') {
   const configs = getEventGoogleSheetsConfig()
   const custom = configs[eventId]?.sheetUrl
-  if (custom && custom.trim() && custom.startsWith('https://docs.google.com') && !custom.includes('your-sheet-id') && !custom.includes('_Registry') && !custom.includes('1HTW2027')) {
+  if (custom && custom.trim() && !custom.includes('your-sheet-id')) {
     return custom.trim()
   }
   const cleanTitle = encodeURIComponent((eventTitle || `Event_${eventId}`).replace(/[^a-zA-Z0-9 ]/g, '_').trim())
@@ -173,15 +173,14 @@ function doPost(e) {
   }
 }
 `.trim()
-
+\n
 // Get smart Campus Master Google Sheet URL
 export function getCampusSheetUrl(campusKey, campusName = 'Campus') {
   const configs = getEventGoogleSheetsConfig()
   const custom = configs[campusKey]?.sheetUrl
-  if (custom && custom.trim() && custom.startsWith('https://docs.google.com') && !custom.includes('your-sheet-id') && !custom.includes('_Registry') && !custom.includes('1HTW2027')) {
+  if (custom && custom.trim() && !custom.includes('your-sheet-id')) {
     return custom.trim()
   }
   const cleanTitle = encodeURIComponent((campusName || campusKey).replace(/[^a-zA-Z0-9 ]/g, '_').trim())
-  return `https://sheets.new?title=${cleanTitle}_Master_Registrations`
+  return https://sheets.new?title=_Master_Registrations
 }
-
