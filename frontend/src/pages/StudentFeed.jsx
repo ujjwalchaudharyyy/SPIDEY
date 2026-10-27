@@ -185,6 +185,7 @@ export default function StudentFeed({ initialTab = 'radar' }) {
                 campuses={campuses}
                 activeCampusIndex={activeCampusIndex}
                 onSelectCampus={handleSelectCampusWithShooter}
+                events={events}
               />
             )}
 
