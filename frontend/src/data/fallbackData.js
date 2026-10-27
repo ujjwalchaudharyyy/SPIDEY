@@ -72,7 +72,15 @@ export const DEFAULT_EVENTS = [
     category: "Technical",
     venue: "Main Campus & Turing Arena (Altitude 4494.75 ft), GEHU Bhimtal",
     campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
-    image_url: "/assets/events/graphite2026.jpg",
+    image_url: "/assets/events/graphite_live_3.jpg",
+    gallery: [
+      "/assets/events/graphite_live_3.jpg",
+      "/assets/events/graphite_live_1.jpg",
+      "/assets/events/graphite_live_2.jpg",
+      "/assets/events/graphite_live_4.jpg",
+      "/assets/events/graphite_live_5.jpg"
+    ],
+    live_status: "🔴 Live Hackathon Underway (27-28 Oct 2026)",
     event_date: "2026-10-27",
     event_time: "10:00 AM",
     organizer_name: "@Graphite.xo • Graphic Era Hill University",

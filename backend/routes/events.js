@@ -4,6 +4,29 @@ const { authenticateToken } = require('./auth');
 
 const router = express.Router();
 
+const EVENT_ENRICHMENTS = {
+  2: {
+    image_url: "/assets/events/graphite_live_3.jpg",
+    gallery: [
+      "/assets/events/graphite_live_3.jpg",
+      "/assets/events/graphite_live_1.jpg",
+      "/assets/events/graphite_live_2.jpg",
+      "/assets/events/graphite_live_4.jpg",
+      "/assets/events/graphite_live_5.jpg"
+    ]
+  },
+  4: {
+    gallery: [
+      "/assets/events/watch_the_code_1.jpg",
+      "/assets/events/watch_the_code_stage.jpg",
+      "/assets/events/watch_the_code_team.jpg",
+      "/assets/events/watch_the_code_trophy1.jpg",
+      "/assets/events/watch_the_code_trophy2.jpg"
+    ],
+    winner_team: "Team TECH4ALL (Consolation Prize ₹5,000 & Trophy)"
+  }
+};
+
 router.get('/', (req, res) => {
   const { category, search, campus, timeline } = req.query;
 
@@ -40,14 +63,18 @@ router.get('/', (req, res) => {
 
   query += ' ORDER BY e.event_date DESC, e.event_time ASC';
 
-  const events = queryAll(query, params).map(e => {
-    if (e.photos && typeof e.photos === 'string') {
-      try { e.photos = JSON.parse(e.photos); } catch (err) {}
+  const rawEvents = queryAll(query, params);
+  const events = rawEvents.map(e => {
+    const enrich = EVENT_ENRICHMENTS[e.id] || {};
+    const item = { ...e, ...enrich };
+    if (item.photos && typeof item.photos === 'string') {
+      try { item.photos = JSON.parse(item.photos); } catch (err) {}
     }
-    if (e.gallery && typeof e.gallery === 'string') {
-      try { e.gallery = JSON.parse(e.gallery); } catch (err) {}
+    if (item.gallery && typeof item.gallery === 'string') {
+      try { item.gallery = JSON.parse(item.gallery); } catch (err) {}
     }
-    return e;
+    return item;
+  
   });
   res.json(events);
 });

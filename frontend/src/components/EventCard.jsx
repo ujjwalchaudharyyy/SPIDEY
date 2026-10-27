@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import EventRegistrationModal from './EventRegistrationModal'
+import EventGalleryModal from './EventGalleryModal'
 
 const categoryStyles = {
   Academic: 'bg-blue-950/60 text-blue-300 border-blue-500/40',
@@ -155,6 +156,25 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
               </span>
             </div>
           )}
+
+          {/* Live Hackathon Photos Callout Banner */}
+          {hasGallery && !event.winner_team && (
+            <div 
+              onClick={(e) => {
+                e.stopPropagation()
+                handleOpenGallery()
+              }}
+              className="absolute bottom-2 left-2 right-2 z-10 bg-black/85 hover:bg-black/95 border border-red-500/60 hover:border-red-400 rounded-xl px-3 py-1.5 text-[11px] font-mono text-red-300 flex items-center justify-between shadow-lg backdrop-blur-md cursor-pointer transition-all group/banner"
+            >
+              <span className="truncate font-medium flex items-center gap-1.5 text-white">
+                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping inline-block"></span>
+                <span>🔴 LIVE PHOTOS ({event.gallery.length})</span>
+              </span>
+              <span className="text-[10px] bg-red-600 group-hover/banner:bg-red-500 text-white px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0 shadow-spider-glow flex items-center gap-1">
+                VIEW 4K ➔
+              </span>
+            </div>
+          )}
         </div>
 
         {/* Card Details Body */}
@@ -217,37 +237,50 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
           {/* Footer Action Buttons */}
           <div className="pt-2 border-t border-[#1E293B] space-y-2">
             {isStudent && (!event.status || event.status === 'approved') && !isPast && (
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => setShowRegisterModal(true)}
-                  className="py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white shadow-spider-glow flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                >
-                  <span>🎟️ REGISTER</span>
-                </button>
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowRegisterModal(true)}
+                    className="py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white shadow-spider-glow flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+                  >
+                    <span>🎟️ REGISTER</span>
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={handleRsvp}
-                  disabled={rsvpLoading}
-                  className={`py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                    isRsvped
-                      ? 'bg-blue-600 text-white shadow-spider-glow-blue border border-blue-400'
-                      : 'bg-[#0E1526] hover:bg-white/5 text-gray-300 border border-gray-700'
-                  }`}
-                >
-                  {rsvpLoading ? (
-                    <span>...</span>
-                  ) : isRsvped ? (
-                    <>
-                      <span>✓ GOING</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>RSVP</span>
-                    </>
-                  )}
-                </button>
+                  <button
+                    type="button"
+                    onClick={handleRsvp}
+                    disabled={rsvpLoading}
+                    className={`py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                      isRsvped
+                        ? 'bg-blue-600 text-white shadow-spider-glow-blue border border-blue-400'
+                        : 'bg-[#0E1526] hover:bg-white/5 text-gray-300 border border-gray-700'
+                    }`}
+                  >
+                    {rsvpLoading ? (
+                      <span>...</span>
+                    ) : isRsvped ? (
+                      <>
+                        <span>✓ GOING</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>RSVP</span>
+                      </>
+                    )}
+                  </button>
+                </div>
+
+                {hasGallery && (
+                  <button
+                    type="button"
+                    onClick={handleOpenGallery}
+                    className="w-full py-2 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white hover:brightness-110 shadow-spider-glow flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 border border-red-500/50"
+                  >
+                    <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                    <span>📸 VIEW LIVE 4K PHOTOS ({event.gallery.length})</span>
+                  </button>
+                )}
               </div>
             )}
 
