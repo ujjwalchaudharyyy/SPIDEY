@@ -80,7 +80,7 @@ export default function Navbar() {
                     </Link>
                   )}
 
-                  {(user.role === 'admin' || user.email === 'admin@campus.edu' || user.email === 'ujjwalchaudhary2007@gmail.com') && (
+                  {user.role === 'admin' && (
                     <Link
                       to="/admin"
                       onClick={() => handleNavClick('SANCTUM ADMIN')}

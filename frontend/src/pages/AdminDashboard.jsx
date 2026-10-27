@@ -8,17 +8,57 @@ import {
   getEventGoogleSheetsConfig,
   updateEventGoogleSheetConfig,
   getEventSheetUrl,
+  getCampusSheetUrl,
   copyForGoogleSheets,
-  syncRegistrationToGoogleSheet,
   GOOGLE_APPS_SCRIPT_TEMPLATE
 } from '../utils/googleSheetsSync'
 
+const CAMPUSES = [
+  {
+    key: 'campus_bhimtal',
+    name: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+    shortName: 'Bhimtal Campus',
+    icon: '🏔️',
+    color: 'from-blue-600 to-indigo-700',
+    borderColor: 'border-blue-500/40',
+    badgeBg: 'bg-blue-950/80 text-blue-300 border-blue-500/30'
+  },
+  {
+    key: 'campus_haldwani',
+    name: 'GRAPHIC ERA HILL UNIVERSITY HALDWANI',
+    shortName: 'Haldwani Campus',
+    icon: '🌊',
+    color: 'from-cyan-600 to-teal-700',
+    borderColor: 'border-cyan-500/40',
+    badgeBg: 'bg-cyan-950/80 text-cyan-300 border-cyan-500/30'
+  },
+  {
+    key: 'campus_dehradun',
+    name: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
+    shortName: 'Dehradun Campus',
+    icon: '🌲',
+    color: 'from-emerald-600 to-green-700',
+    borderColor: 'border-emerald-500/40',
+    badgeBg: 'bg-emerald-950/80 text-emerald-300 border-emerald-500/30'
+  },
+  {
+    key: 'campus_deemed',
+    name: 'GRAPHIC ERA DEEMED UNIVERSITY',
+    shortName: 'GEU Deemed Campus',
+    icon: '🎓',
+    color: 'from-purple-600 to-violet-700',
+    borderColor: 'border-purple-500/40',
+    badgeBg: 'bg-purple-950/80 text-purple-300 border-purple-500/30'
+  }
+]
+
 export default function AdminDashboard() {
-  const { token } = useAuth()
+  const { user, token } = useAuth()
   const [tab, setTab] = useState('registrations') // 'registrations', 'pending', 'all'
   const [pendingEvents, setPendingEvents] = useState([])
   const [allEvents, setAllEvents] = useState([])
   const [allRegistrations, setAllRegistrations] = useState([])
+  const [selectedCampusFilter, setSelectedCampusFilter] = useState('ALL') // 'ALL' or specific campus name
   const [selectedEventId, setSelectedEventId] = useState('all') // 'all' or specific event id
   const [viewMode, setViewMode] = useState('stacked') // 'stacked' (all sheets visible) or 'single' (focused sheet)
   const [searchQuery, setSearchQuery] = useState('')
@@ -31,6 +71,17 @@ export default function AdminDashboard() {
   const [customSheetUrl, setCustomSheetUrl] = useState('')
   const [customWebhookUrl, setCustomWebhookUrl] = useState('')
   const [sheetsConfig, setSheetsConfig] = useState(getEventGoogleSheetsConfig())
+
+  // Check if current logged in user is Super Admin
+  const isSuperAdmin = useMemo(() => {
+    if (!user) return false
+    return (
+      user.adminType === 'super' ||
+      user.email === 'ujjwalchaudhary2007@gmail.com' ||
+      user.campus === 'ALL' ||
+      user.campus?.includes('HIGH COMMAND')
+    )
+  }, [user])
 
   const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
@@ -174,6 +225,16 @@ export default function AdminDashboard() {
     showToast(`Ticket pass ${ticketCode} removed.`, 'info')
   }
 
+  // Filter events based on role (Super Admin = all or filter, Campus Admin = their campus only)
+  const accessibleEvents = useMemo(() => {
+    if (isSuperAdmin) {
+      if (selectedCampusFilter === 'ALL') return allEvents
+      return allEvents.filter(e => e.campus === selectedCampusFilter)
+    }
+    // Campus Admin sees only their campus events
+    return allEvents.filter(e => e.campus === user?.campus)
+  }, [allEvents, isSuperAdmin, selectedCampusFilter, user])
+
   // Count registrations per event
   const eventCounts = useMemo(() => {
     const counts = {}
@@ -186,7 +247,7 @@ export default function AdminDashboard() {
 
   // Events list with registrations count
   const eventsList = useMemo(() => {
-    return allEvents.map(e => ({
+    return accessibleEvents.map(e => ({
       id: e.id,
       title: e.title,
       campus: e.campus,
@@ -194,7 +255,7 @@ export default function AdminDashboard() {
       venue: e.venue,
       count: eventCounts[String(e.id)] || 0
     }))
-  }, [allEvents, eventCounts])
+  }, [accessibleEvents, eventCounts])
 
   // Group all registrations by eventId
   const registrationsByEvent = useMemo(() => {
@@ -208,6 +269,34 @@ export default function AdminDashboard() {
       map[id].push(r)
     }
     return map
+  }, [allEvents, allRegistrations])
+
+  // Registrations accessible to this admin
+  const accessibleRegistrations = useMemo(() => {
+    if (isSuperAdmin) {
+      if (selectedCampusFilter === 'ALL') return allRegistrations
+      const eventIds = new Set(accessibleEvents.map(e => e.id))
+      return allRegistrations.filter(r => eventIds.has(r.event_id) || r.event_campus === selectedCampusFilter)
+    }
+    const eventIds = new Set(accessibleEvents.map(e => e.id))
+    return allRegistrations.filter(r => eventIds.has(r.event_id) || r.event_campus === user?.campus)
+  }, [allRegistrations, accessibleEvents, isSuperAdmin, selectedCampusFilter, user])
+
+  // Campus-wise summary statistics (for Super Admin)
+  const campusSummary = useMemo(() => {
+    return CAMPUSES.map(camp => {
+      const campEvents = allEvents.filter(e => e.campus === camp.name)
+      const campEventIds = new Set(campEvents.map(e => e.id))
+      const campRegs = allRegistrations.filter(r => campEventIds.has(r.event_id) || r.event_campus === camp.name)
+      return {
+        ...camp,
+        eventsCount: campEvents.length,
+        registrationsCount: campRegs.length,
+        events: campEvents,
+        registrations: campRegs,
+        sheetUrl: getCampusSheetUrl(camp.key, camp.shortName)
+      }
+    })
   }, [allEvents, allRegistrations])
 
   // Open Settings Modal for a specific event
@@ -434,20 +523,29 @@ export default function AdminDashboard() {
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
 
-        {/* Clean Header */}
+        {/* Clean Admin Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-gray-800 mb-6">
           <div>
-            <div className="flex items-center gap-2 text-xs font-semibold text-red-400 mb-1">
-              <span>●</span>
-              <span>ADMIN PANEL</span>
-              <span className="text-gray-500">|</span>
-              <span className="text-gray-400">Graphic Era Event Hub</span>
+            <div className="flex items-center gap-2 text-xs font-semibold mb-1">
+              {isSuperAdmin ? (
+                <span className="px-2.5 py-0.5 rounded-full bg-red-950 text-red-400 border border-red-500/40 text-[11px] font-bold flex items-center gap-1">
+                  <span>🕷️</span>
+                  <span>SUPER ADMIN (UJJWAL) — ALL 4 CAMPUSES</span>
+                </span>
+              ) : (
+                <span className="px-2.5 py-0.5 rounded-full bg-blue-950 text-blue-400 border border-blue-500/40 text-[11px] font-bold flex items-center gap-1">
+                  <span>🏢</span>
+                  <span>CAMPUS ADMIN • {user?.campus?.split(' ')?.[3] || user?.name}</span>
+                </span>
+              )}
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-              Event Spreadsheets &amp; Registrations
+              {isSuperAdmin ? 'Quad-Campus Master Operations & Spreadsheets' : `${user?.campus} — Admin Portal`}
             </h1>
             <p className="text-xs text-gray-400 mt-0.5">
-              Sabhi events ki alag-alag Google Spreadsheets yahan live hain. Naya registration aane par data automatic update hota hai.
+              {isSuperAdmin
+                ? 'Super Admin Access: Sabhi 4 campuses ke events, overall campus spreadsheets, aur individual event spreadsheets live hain.'
+                : `Aapke campus (${user?.campus}) ke sabhi event spreadsheets yahan live hain. Naya registration aate hi automatic update hota hai.`}
             </p>
           </div>
 
@@ -455,13 +553,19 @@ export default function AdminDashboard() {
           {stats && (
             <div className="flex items-center gap-2.5">
               <div className="bg-[#121622] border border-gray-800 px-3.5 py-2 rounded-xl text-center">
-                <p className="text-lg font-bold text-white">{allRegistrations.length}</p>
-                <p className="text-[10px] text-gray-400 font-medium uppercase">Total Registrations</p>
+                <p className="text-lg font-bold text-white">{accessibleRegistrations.length}</p>
+                <p className="text-[10px] text-gray-400 font-medium uppercase">Registrations</p>
               </div>
               <div className="bg-[#121622] border border-gray-800 px-3.5 py-2 rounded-xl text-center">
-                <p className="text-lg font-bold text-emerald-400">{allEvents.length}</p>
-                <p className="text-[10px] text-gray-400 font-medium uppercase">Active Spreadsheets</p>
+                <p className="text-lg font-bold text-emerald-400">{accessibleEvents.length}</p>
+                <p className="text-[10px] text-gray-400 font-medium uppercase">Events</p>
               </div>
+              {isSuperAdmin && (
+                <div className="bg-[#121622] border border-gray-800 px-3.5 py-2 rounded-xl text-center">
+                  <p className="text-lg font-bold text-cyan-400">4</p>
+                  <p className="text-[10px] text-gray-400 font-medium uppercase">Campuses</p>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -479,7 +583,7 @@ export default function AdminDashboard() {
             >
               <span>📊 Event Spreadsheets</span>
               <span className="px-1.5 py-0.5 rounded-full bg-black/30 text-[10px]">
-                {allRegistrations.length}
+                {accessibleRegistrations.length}
               </span>
             </button>
 
@@ -507,7 +611,7 @@ export default function AdminDashboard() {
             >
               <span>📋 All Campus Events</span>
               <span className="px-1.5 py-0.5 rounded-full bg-black/30 text-[10px]">
-                {allEvents.length}
+                {accessibleEvents.length}
               </span>
             </button>
           </div>
@@ -538,6 +642,89 @@ export default function AdminDashboard() {
         {/* Tab 1: Event Spreadsheets */}
         {tab === 'registrations' && (
           <div className="space-y-6">
+
+            {/* SUPER ADMIN: 4 Campus Master Spreadsheets Cards */}
+            {isSuperAdmin && (
+              <div className="bg-[#121622]/90 border border-gray-800 rounded-2xl p-4 sm:p-5">
+                <div className="flex items-center justify-between mb-3">
+                  <div>
+                    <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                      <span>🏛️</span>
+                      <span>4 CAMPUSES MASTER GOOGLE SPREADSHEETS (OVERALL)</span>
+                    </h3>
+                    <p className="text-[11px] text-gray-400">
+                      Har campus ki overall master sheet yahan se open karein ya campus filter select karein.
+                    </p>
+                  </div>
+                  {selectedCampusFilter !== 'ALL' && (
+                    <button
+                      onClick={() => setSelectedCampusFilter('ALL')}
+                      className="px-2.5 py-1 rounded-lg bg-red-600/80 hover:bg-red-500 text-white text-[11px] font-semibold transition"
+                    >
+                      Clear Campus Filter (Show All)
+                    </button>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {campusSummary.map(camp => {
+                    const isSelected = selectedCampusFilter === camp.name
+                    return (
+                      <div
+                        key={camp.key}
+                        className={`bg-[#0A0D14] border rounded-xl p-3.5 flex flex-col justify-between transition-all ${
+                          isSelected
+                            ? 'border-emerald-500 ring-2 ring-emerald-500/40 shadow-lg'
+                            : 'border-gray-800 hover:border-gray-700'
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between gap-1 mb-2">
+                            <span className="text-xl">{camp.icon}</span>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${camp.badgeBg}`}>
+                              {camp.registrationsCount} Registered
+                            </span>
+                          </div>
+                          <h4 className="text-xs font-bold text-white">{camp.shortName}</h4>
+                          <p className="text-[10px] text-gray-400 mt-0.5">{camp.eventsCount} Events Hosted</p>
+                        </div>
+
+                        <div className="pt-3 mt-2 border-t border-gray-800/80 flex items-center gap-1.5">
+                          <a
+                            href={camp.sheetUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 transition"
+                            title="Open Campus Master Google Sheet"
+                          >
+                            <span>📊</span>
+                            <span>Master Sheet</span>
+                          </a>
+                          <button
+                            onClick={() => setSelectedCampusFilter(isSelected ? 'ALL' : camp.name)}
+                            className={`py-1.5 px-2 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
+                              isSelected
+                                ? 'bg-red-600 text-white'
+                                : 'bg-gray-800 hover:bg-gray-700 text-gray-300'
+                            }`}
+                            title="Filter events by this campus"
+                          >
+                            {isSelected ? 'Selected' : 'Filter'}
+                          </button>
+                          <button
+                            onClick={() => exportToCSV(`${camp.shortName}_Master`, camp.registrations)}
+                            className="py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] transition"
+                            title="Download Campus CSV"
+                          >
+                            📥
+                          </button>
+                        </div>
+                      </div>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Quick Directory Cards: Har Event Ki Apni Separate Sheet Card */}
             <div>
@@ -1022,10 +1209,12 @@ export default function AdminDashboard() {
             <div className="flex items-center justify-between mb-4">
               <div>
                 <h3 className="text-base font-bold text-white">All Campus Events</h3>
-                <p className="text-xs text-gray-400">Sabhi 4 campuses ke active and past events.</p>
+                <p className="text-xs text-gray-400">
+                  {isSuperAdmin ? 'Sabhi 4 campuses ke active and past events.' : `${user?.campus} ke active and past events.`}
+                </p>
               </div>
               <span className="text-xs font-mono text-gray-400">
-                Total: {allEvents.length} Events
+                Total: {accessibleEvents.length} Events
               </span>
             </div>
 
@@ -1033,13 +1222,13 @@ export default function AdminDashboard() {
               <div className="flex justify-center py-16">
                 <div className="w-8 h-8 border-2 border-red-500 border-t-transparent rounded-full animate-spin"></div>
               </div>
-            ) : allEvents.length === 0 ? (
+            ) : accessibleEvents.length === 0 ? (
               <div className="bg-[#121622] border border-gray-800 rounded-2xl p-12 text-center">
                 <p className="text-xs text-gray-400">No events found.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-                {allEvents.map(event => (
+                {accessibleEvents.map(event => (
                   <EventCard
                     key={event.id}
                     event={event}

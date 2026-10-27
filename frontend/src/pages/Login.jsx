@@ -203,15 +203,76 @@ export default function Login() {
       const res = await axios.post('/api/auth/login', { email: normalizedEmail, password: trimmedPass })
       proceedWithLogin(res.data.token, res.data.user.role)
     } catch (err) {
-      // 1. Authenticate Ujjwal Chaudhary (Your Registered Account - Full High Command Admin Access)
+      // 1. Authenticate Ujjwal Chaudhary (Super Admin - All Campuses)
       if (normalizedEmail === 'ujjwalchaudhary2007@gmail.com' || normalizedEmail.includes('ujjwal')) {
         const fakeToken = `header.${btoa(JSON.stringify({
           id: 2,
           name: 'Ujjwal Chaudhary',
           email: 'ujjwalchaudhary2007@gmail.com',
           role: 'admin',
+          adminType: 'super',
+          campus: 'ALL',
+          degree: 'B.Tech CSE - 3rd Year (Super Admin)',
+          exp: Math.floor(Date.now() / 1000) + 86400 * 7
+        }))}.signature`
+        proceedWithLogin(fakeToken, 'admin')
+        return
+      }
+
+      // 1b. Bhimtal Campus Admin
+      if (normalizedEmail === 'admin.bhimtal@gehu.ac.in') {
+        const fakeToken = `header.${btoa(JSON.stringify({
+          id: 10,
+          name: 'Admin Bhimtal',
+          email: 'admin.bhimtal@gehu.ac.in',
+          role: 'admin',
+          adminType: 'campus',
           campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
-          degree: 'B.Tech CSE - 3rd Year (High Command Admin)',
+          exp: Math.floor(Date.now() / 1000) + 86400 * 7
+        }))}.signature`
+        proceedWithLogin(fakeToken, 'admin')
+        return
+      }
+
+      // 1c. Haldwani Campus Admin
+      if (normalizedEmail === 'admin.haldwani@gehu.ac.in') {
+        const fakeToken = `header.${btoa(JSON.stringify({
+          id: 11,
+          name: 'Admin Haldwani',
+          email: 'admin.haldwani@gehu.ac.in',
+          role: 'admin',
+          adminType: 'campus',
+          campus: 'GRAPHIC ERA HILL UNIVERSITY HALDWANI',
+          exp: Math.floor(Date.now() / 1000) + 86400 * 7
+        }))}.signature`
+        proceedWithLogin(fakeToken, 'admin')
+        return
+      }
+
+      // 1d. Dehradun Campus Admin
+      if (normalizedEmail === 'admin.dehradun@gehu.ac.in') {
+        const fakeToken = `header.${btoa(JSON.stringify({
+          id: 12,
+          name: 'Admin Dehradun',
+          email: 'admin.dehradun@gehu.ac.in',
+          role: 'admin',
+          adminType: 'campus',
+          campus: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
+          exp: Math.floor(Date.now() / 1000) + 86400 * 7
+        }))}.signature`
+        proceedWithLogin(fakeToken, 'admin')
+        return
+      }
+
+      // 1e. Deemed Campus Admin
+      if (normalizedEmail === 'admin.deemed@gehu.ac.in') {
+        const fakeToken = `header.${btoa(JSON.stringify({
+          id: 13,
+          name: 'Admin GEU Deemed',
+          email: 'admin.deemed@gehu.ac.in',
+          role: 'admin',
+          adminType: 'campus',
+          campus: 'GRAPHIC ERA DEEMED UNIVERSITY',
           exp: Math.floor(Date.now() / 1000) + 86400 * 7
         }))}.signature`
         proceedWithLogin(fakeToken, 'admin')
@@ -474,17 +535,73 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Quick Fill Accounts (UJJWAL + PETER PARKER + ADMIN) */}
+            {/* Quick Fill Accounts */}
             <div className="p-2.5 rounded-xl bg-[#0E1526]/80 border border-red-500/30 space-y-2">
               <div className="flex items-center justify-between text-[11px] font-mono">
                 <div>
-                  <span className="text-red-400 font-bold">🕷️ Ujjwal (You):</span>{' '}
+                  <span className="text-red-400 font-bold">🕷️ Ujjwal (Super Admin):</span>{' '}
                   <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">ujjwalchaudhary2007@gmail.com</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => handleQuickLogin('ujjwalchaudhary2007@gmail.com', 'ujjwal123')}
                   className="text-red-400 hover:text-red-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
+                >
+                  Auto-Fill
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
+                <div>
+                  <span className="text-blue-400 font-bold">🏔️ Bhimtal Admin:</span>{' '}
+                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">admin.bhimtal@gehu.ac.in</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('admin.bhimtal@gehu.ac.in', 'bhimtal123')}
+                  className="text-blue-400 hover:text-blue-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
+                >
+                  Auto-Fill
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
+                <div>
+                  <span className="text-cyan-400 font-bold">🌊 Haldwani Admin:</span>{' '}
+                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">admin.haldwani@gehu.ac.in</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('admin.haldwani@gehu.ac.in', 'haldwani123')}
+                  className="text-cyan-400 hover:text-cyan-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
+                >
+                  Auto-Fill
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
+                <div>
+                  <span className="text-green-400 font-bold">🌲 Dehradun Admin:</span>{' '}
+                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">admin.dehradun@gehu.ac.in</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('admin.dehradun@gehu.ac.in', 'dehradun123')}
+                  className="text-green-400 hover:text-green-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
+                >
+                  Auto-Fill
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
+                <div>
+                  <span className="text-purple-400 font-bold">🎓 Deemed Admin:</span>{' '}
+                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">admin.deemed@gehu.ac.in</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('admin.deemed@gehu.ac.in', 'deemed123')}
+                  className="text-purple-400 hover:text-purple-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
                 >
                   Auto-Fill
                 </button>

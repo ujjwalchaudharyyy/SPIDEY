@@ -173,3 +173,14 @@ function doPost(e) {
   }
 }
 `.trim()
+\n
+// Get smart Campus Master Google Sheet URL
+export function getCampusSheetUrl(campusKey, campusName = 'Campus') {
+  const configs = getEventGoogleSheetsConfig()
+  const custom = configs[campusKey]?.sheetUrl
+  if (custom && custom.trim() && !custom.includes('your-sheet-id')) {
+    return custom.trim()
+  }
+  const cleanTitle = encodeURIComponent((campusName || campusKey).replace(/[^a-zA-Z0-9 ]/g, '_').trim())
+  return https://sheets.new?title=_Master_Registrations
+}
