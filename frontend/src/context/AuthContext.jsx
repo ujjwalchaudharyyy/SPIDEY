@@ -40,7 +40,11 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setToken(null)
     setUser(null)
-    localStorage.removeItem('token')
+    try {
+      localStorage.removeItem('token')
+      localStorage.removeItem('user')
+      sessionStorage.clear()
+    } catch {}
   }
 
   const isAuthenticated = !!user

@@ -7,6 +7,7 @@ export default function SignoutVideoModal({ onComplete }) {
     const video = videoRef.current
     if (!video) return
 
+    video.currentTime = 0
     video.muted = false
     video.volume = 1.0
 
@@ -25,7 +26,7 @@ export default function SignoutVideoModal({ onComplete }) {
       {/* Dynamic Spider Glow Background (Lightweight CSS, Zero Video Lag) */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.18)_0%,_rgba(15,0,0,0.7)_55%,_#000000_100%)] pointer-events-none" />
 
-      {/* Main Ultra-Smooth Full HD Video */}
+      {/* Main Ultra-Smooth 4K Video */}
       <div className="relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-0">
         <video
           ref={videoRef}
@@ -37,6 +38,12 @@ export default function SignoutVideoModal({ onComplete }) {
           disablePictureInPicture
           controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
           onEnded={onComplete}
+          style={{
+            imageRendering: '-webkit-optimize-contrast',
+            transform: 'translate3d(0, 0, 0)',
+            backfaceVisibility: 'hidden',
+            filter: 'contrast(1.04) saturate(1.05)'
+          }}
           className="w-full max-h-[88vh] sm:max-h-full sm:h-full object-contain sm:object-cover rounded-2xl sm:rounded-none border border-red-500/40 sm:border-0 shadow-[0_0_40px_rgba(226,27,36,0.5)] sm:shadow-none"
         />
       </div>

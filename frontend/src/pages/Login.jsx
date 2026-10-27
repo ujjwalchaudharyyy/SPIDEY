@@ -27,6 +27,7 @@ export default function Login() {
     const video = videoRef.current
     if (!video) return
 
+    video.currentTime = 0
     video.muted = false
     video.volume = 1.0
 
@@ -399,7 +400,7 @@ export default function Login() {
             }
           }}
           className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
-          style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+          style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)', imageRendering: '-webkit-optimize-contrast', filter: 'contrast(1.04) saturate(1.05)' }}
         />
       ) : (
         <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#0B1021] via-black to-[#130713]" />

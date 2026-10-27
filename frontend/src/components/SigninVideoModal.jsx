@@ -21,6 +21,7 @@ export default function SigninVideoModal({ onComplete }) {
     if (!video) return
 
     video.volume = 1.0
+    video.currentTime = 0
 
     // User just clicked the login button (valid user gesture), so audio is pre-authorized!
     const playPromise = video.play()

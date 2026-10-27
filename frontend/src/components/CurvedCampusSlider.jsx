@@ -74,6 +74,28 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
   // Keyboard navigation for curve slider
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // 1. Never navigate campuses if the user is typing in ANY form input, textarea, select, or editable element
+      const activeEl = document.activeElement
+      const activeTag = activeEl?.tagName?.toLowerCase()
+      if (activeTag === 'input' || activeTag === 'textarea' || activeTag === 'select' || activeEl?.isContentEditable) {
+        return
+      }
+      const targetTag = e.target?.tagName?.toLowerCase()
+      if (targetTag === 'input' || targetTag === 'textarea' || targetTag === 'select' || e.target?.isContentEditable) {
+        return
+      }
+
+      // 2. Never navigate campuses if the registration modal or ANY dialog/overlay is open
+      if (
+        document.querySelector('[data-registration-modal="true"]') ||
+        document.querySelector('[role="dialog"]') ||
+        document.querySelector('.fixed.inset-0') ||
+        document.body.classList.contains('overflow-hidden') ||
+        document.body.style.overflow === 'hidden'
+      ) {
+        return
+      }
+
       if (lightboxCampus) {
         if (e.key === 'Escape') setLightboxCampus(null)
         return

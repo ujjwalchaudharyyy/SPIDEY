@@ -75,6 +75,10 @@ export default function StudentFeed({ initialTab = 'radar' }) {
   }
 
   const handleSelectCampusWithShooter = (idx) => {
+    // If user is currently filling an event registration, protect active campus from accidental shift
+    if (document.querySelector('[data-registration-modal="true"]')) {
+      return
+    }
     setActiveCampusIndex(idx)
   }
 

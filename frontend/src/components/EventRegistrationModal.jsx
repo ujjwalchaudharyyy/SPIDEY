@@ -385,6 +385,16 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   // Multi-step navigation: 'form' (Details & Photos) -> 'payment' -> 'idcards'
   const [currentStep, setCurrentStep] = useState('form')
 
+  // Lock body scroll and isolate keyboard events while registration modal is open
+  useEffect(() => {
+    document.body.style.overflow = 'hidden'
+    document.body.classList.add('overflow-hidden')
+    return () => {
+      document.body.style.overflow = 'unset'
+      document.body.classList.remove('overflow-hidden')
+    }
+  }, [])
+
   // Initial user defaults
   const defaultEmail = user?.email || 'student.gehu@gmail.com'
   const defaultName = user?.name || (user?.email ? user.email.split('@')[0] : 'Aryan Sharma')
@@ -692,8 +702,19 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const currentMember = members[activeMemberTab] || members[0] || {}
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto">
+    <div
+      data-registration-modal="true"
+      role="dialog"
+      aria-modal="true"
+      onKeyDown={(e) => e.stopPropagation()}
+      onKeyUp={(e) => e.stopPropagation()}
+      onContextMenu={(e) => e.stopPropagation()}
+      className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md overflow-y-auto"
+    >
       <div
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={(e) => e.stopPropagation()}
+        onKeyUp={(e) => e.stopPropagation()}
         className={`relative w-full bg-[#0E1526] border border-red-500/40 rounded-3xl shadow-[0_0_60px_rgba(220,38,38,0.3)] overflow-hidden my-auto animate-fadeIn transition-all duration-500 ${
           currentStep === 'idcards' ? 'max-w-7xl' : 'max-w-2xl'
         }`}

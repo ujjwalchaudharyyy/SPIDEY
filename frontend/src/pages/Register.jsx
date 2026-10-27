@@ -23,6 +23,7 @@ export default function Register() {
 
   useEffect(() => {
     if (videoRef.current) {
+      videoRef.current.currentTime = 0
       videoRef.current.muted = false
       videoRef.current.play().catch(() => {
         if (videoRef.current) {
@@ -151,7 +152,7 @@ export default function Register() {
             }
           }}
           className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
-          style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+          style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)', imageRendering: '-webkit-optimize-contrast', filter: 'contrast(1.04) saturate(1.05)' }}
         />
       ) : (
         <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#0B1021] via-black to-[#130713]" />

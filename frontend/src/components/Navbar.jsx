@@ -22,7 +22,10 @@ export default function Navbar() {
   const handleSignoutComplete = () => {
     setShowSignoutVideo(false)
     logout()
-    navigate('/login')
+    try {
+      sessionStorage.clear()
+    } catch {}
+    navigate('/', { replace: true })
   }
 
   return (

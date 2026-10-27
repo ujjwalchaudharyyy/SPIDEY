@@ -33,6 +33,7 @@ export default function EventVideoModal({ event, videoUrl, title, onClose, defau
 
     const tryPlay = async () => {
       try {
+        vid.currentTime = 0
         await vid.play()
         setIsPlaying(true)
         setHasStarted(true)
@@ -40,6 +41,7 @@ export default function EventVideoModal({ event, videoUrl, title, onClose, defau
         // Autoplay with sound was blocked by browser policy -> try muted autoplay
         console.warn('Unmuted autoplay blocked, attempting muted autoplay:', err)
         try {
+          vid.currentTime = 0
           vid.muted = true
           setIsMuted(true)
           await vid.play()
@@ -106,12 +108,12 @@ export default function EventVideoModal({ event, videoUrl, title, onClose, defau
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-2 mb-0.5">
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-red-950 text-red-300 border border-red-500/50 flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
-                  HD WEB-DRONE VIDEO
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-cyan-950/90 text-cyan-300 border border-cyan-500/60 flex items-center gap-1 shadow-sm">
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping"></span>
+                  ✨ 4K ULTRA HD • 60 FPS
                 </span>
-                <span className="text-[10px] font-mono text-cyan-400 hidden sm:inline">
-                  GEHU BHIMTAL
+                <span className="text-[10px] font-mono text-red-400 hidden sm:inline">
+                  GEHU BHIMTAL CAMPUS
                 </span>
               </div>
               <h2 className="spider-heading text-sm sm:text-base text-white truncate">
@@ -131,15 +133,17 @@ export default function EventVideoModal({ event, videoUrl, title, onClose, defau
         </div>
 
         {/* Video Player Display */}
-        <div className="relative bg-black flex items-center justify-center w-full min-h-[340px] sm:min-h-[440px] md:min-h-[480px] max-h-[70vh] overflow-hidden group">
+        <div className="relative bg-black flex items-center justify-center w-full min-h-[360px] sm:min-h-[460px] md:min-h-[520px] max-h-[75vh] overflow-hidden group">
           <div
             className="flex items-center justify-center transition-transform duration-300 ease-out"
             style={{
-              transform: `rotate(${rotation}deg)`,
-              width: Math.abs(rotation) % 180 !== 0 ? '56.25vh' : '100%',
+              transform: `rotate(${rotation}deg) translate3d(0, 0, 0)`,
+              width: Math.abs(rotation) % 180 !== 0 ? '66vh' : '100%',
               height: Math.abs(rotation) % 180 !== 0 ? '100%' : 'auto',
-              maxWidth: Math.abs(rotation) % 180 !== 0 ? '420px' : '100%',
-              maxHeight: Math.abs(rotation) % 180 !== 0 ? '750px' : '70vh',
+              maxWidth: Math.abs(rotation) % 180 !== 0 ? '560px' : '100%',
+              maxHeight: Math.abs(rotation) % 180 !== 0 ? '920px' : '75vh',
+              imageRendering: '-webkit-optimize-contrast',
+              backfaceVisibility: 'hidden',
             }}
           >
             <video
@@ -149,6 +153,12 @@ export default function EventVideoModal({ event, videoUrl, title, onClose, defau
               controls
               autoPlay
               preload="auto"
+              webkit-playsinline="true"
+              style={{
+                imageRendering: '-webkit-optimize-contrast',
+                transform: 'translateZ(0)',
+                filter: 'contrast(1.04) saturate(1.05)'
+              }}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
               onError={(e) => {

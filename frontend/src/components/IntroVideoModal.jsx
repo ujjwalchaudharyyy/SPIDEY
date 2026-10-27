@@ -21,18 +21,18 @@ export default function IntroVideoModal({ onComplete }) {
     const video = videoRef.current
     if (!video) return
 
-    // Critical for 0-second instant play:
-    // Browser autoplay policy requires muted=true to start without user interaction.
-    // Starting with muted=true guarantees playback starts the microsecond bytes arrive!
+    // Critical for 0-second instant play from start:
+    video.currentTime = 0
     video.muted = true
     video.defaultMuted = true
 
     const startInstantPlay = () => {
+      try { video.currentTime = 0 } catch {}
       const playPromise = video.play()
       if (playPromise !== undefined) {
         playPromise
           .then(() => {
-            // Video is already rolling instantly!
+            // Video is already rolling instantly from start!
             // Now attempt to unmute with audio in the background
             video.muted = false
             video.volume = 1.0
@@ -126,6 +126,12 @@ export default function IntroVideoModal({ onComplete }) {
           disablePictureInPicture
           controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
           onEnded={onComplete}
+          style={{
+            imageRendering: '-webkit-optimize-contrast',
+            transform: 'translate3d(0, 0, 0)',
+            backfaceVisibility: 'hidden',
+            filter: 'contrast(1.04) saturate(1.06)'
+          }}
           className={`pointer-events-none transition-all duration-500 ${
             mobileFitMode === 'fit'
               ? 'w-full max-h-[82vh] sm:max-h-full sm:h-full object-contain sm:object-cover rounded-2xl sm:rounded-none border border-red-500/30 sm:border-0 shadow-[0_0_35px_rgba(239,68,68,0.35)] sm:shadow-none'
@@ -134,16 +140,21 @@ export default function IntroVideoModal({ onComplete }) {
         />
       </div>
 
-      {/* Spider-Man Tech Branding */}
+      {/* Spider-Man Tech Branding with 4K UHD Badge */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-8 flex items-center space-x-2.5 sm:space-x-3 pointer-events-none z-20">
         <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-600/40 via-red-950/80 to-black border border-red-500/60 flex items-center justify-center backdrop-blur-md shadow-spider-glow flex-shrink-0">
           <span className="text-lg sm:text-2xl animate-pulse">🕷️</span>
         </div>
         <div>
-          <h1 className="font-chakra italic font-bold text-sm sm:text-xl text-white tracking-wider flex items-center gap-1.5 sm:gap-2">
-            GRAPHIC ERA <span className="text-red-500 text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-red-950/80 border border-red-500/50 not-italic">SPIDER-VERSE</span>
-          </h1>
-          <p className="text-[9px] sm:text-xs font-mono text-gray-400">4-CAMPUS MULTIVERSE RADAR</p>
+          <div className="flex items-center gap-2">
+            <h1 className="font-chakra italic font-bold text-sm sm:text-xl text-white tracking-wider flex items-center gap-1.5 sm:gap-2">
+              GRAPHIC ERA <span className="text-red-500 text-[10px] sm:text-xs px-2 py-0.5 rounded-full bg-red-950/80 border border-red-500/50 not-italic">SPIDER-VERSE</span>
+            </h1>
+            <span className="hidden sm:inline-flex px-2 py-0.5 rounded-full bg-cyan-950/80 border border-cyan-500/60 text-[10px] font-mono text-cyan-300 font-bold">
+              ✨ 4K ULTRA HD
+            </span>
+          </div>
+          <p className="text-[9px] sm:text-xs font-mono text-gray-400">4-CAMPUS MULTIVERSE RADAR • 60 FPS ULTRA HD</p>
         </div>
       </div>
 
