@@ -482,22 +482,82 @@ export default function CampusLeadershipSection({ activeCampus }) {
         </div>
       )}
 
-      {/* Deemed University / Other Campuses */}
+      {/* ══════════════════════════════════════════════ */}
+      {/* DEEMED UNIVERSITY CAMPUS SECTION              */}
+      {/* ══════════════════════════════════════════════ */}
       {!isBhimtal && !isHaldwani && !isDehradun && (
-        <SpotlightCard
-          glowColor="rgba(0, 240, 255, 0.15)"
-          className="bg-[#090D18]/90 border border-cyan-500/30 rounded-3xl p-8 sm:p-10 shadow-2xl backdrop-blur-2xl text-left space-y-4"
-        >
-          <div className="relative z-20 space-y-3">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-300 text-xs font-mono">
-              <span>🏛️</span> {activeCampus?.code || 'GEU DEEMED'}
+        <div className="space-y-12">
+          {/* ── Deemed Campus Photos (FIRST) ── */}
+          <SpotlightCard
+            glowColor="rgba(0, 240, 255, 0.2)"
+            className="bg-[#090D18]/90 border border-cyan-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-2xl"
+          >
+            <div className="relative z-20 space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="text-cyan-400">📸</span>
+                <h4 className="spider-heading text-base sm:text-lg text-white">GRAPHIC ERA DEEMED UNIVERSITY — 4K HIGHLIGHTS</h4>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {[
+                  { src: '/assets/leadership/deemed_flag.png', label: 'Tricolor at Main Building', sub: 'Iconic Central Flagmast & Main Block' },
+                  { src: '/assets/leadership/deemed_aerial.jpg', label: 'Panoramic Aerial View', sub: 'Extensive Lush Green Campus & Blocks' },
+                  { src: '/assets/leadership/deemed_auditorium.jpg', label: 'Convention Hall & Auditorium', sub: 'State-of-the-Art Academic Amphitheatre' },
+                ].map(img => (
+                  <div key={img.label} className="group relative rounded-2xl overflow-hidden border border-cyan-500/40 h-64 sm:h-56">
+                    <img src={img.src} alt={img.label}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-4 left-4 right-4">
+                      <span className="font-chakra italic font-bold text-sm text-white block">{img.label}</span>
+                      <span className="text-[11px] font-mono text-cyan-300">{img.sub}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-            <h3 className="spider-heading text-2xl sm:text-3xl text-white">{activeCampus?.name}</h3>
-            <p className="text-sm font-rajdhani text-gray-300 max-w-2xl leading-relaxed">
-              {activeCampus?.tagline}. Located at <strong className="text-white">{activeCampus?.location}</strong>.
-            </p>
-          </div>
-        </SpotlightCard>
+          </SpotlightCard>
+
+          {/* ── Deemed Campus About ── */}
+          <SpotlightCard
+            glowColor="rgba(0, 240, 255, 0.18)"
+            className="bg-[#090D18]/90 border border-cyan-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-2xl"
+          >
+            <div className="relative z-20 space-y-6 text-left">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1E293B]">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-950/60 border border-cyan-500/40 text-cyan-400 text-xs font-mono mb-2">
+                    <span>🏛️</span> DEEMED-TO-BE UNIVERSITY
+                  </div>
+                  <h3 className="spider-heading text-2xl sm:text-3xl text-white">About Graphic Era (Deemed to be University)</h3>
+                  <p className="text-xs font-mono text-gray-400 mt-1">Bell Road, Clement Town, Dehradun, Uttarakhand</p>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[#0E1526] border border-cyan-500/40 text-left sm:text-right flex-shrink-0 shadow-spider-glow">
+                  <span className="text-[10px] font-mono text-gray-400 uppercase tracking-wider block">Accreditation</span>
+                  <span className="font-chakra italic font-bold text-base sm:text-lg text-cyan-400">NAAC A+ GRADE</span>
+                  <span className="block text-[10px] font-mono text-gray-500">NIRF Top Ranked</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs sm:text-sm font-rajdhani text-gray-300 leading-relaxed font-medium">
+                <div className="space-y-3">
+                  <p>
+                    <strong className="text-white font-semibold">Graphic Era (Deemed to be University)</strong> is the flagship institution of the Graphic Era group, founded by <strong className="text-amber-300 font-semibold">Prof. (Dr.) Kamal Ghanshala</strong>. Beginning its journey in 1993, it achieved Deemed-to-be University status under Section 3 of the UGC Act, 1956.
+                  </p>
+                  <p>
+                    Acclaimed as one of North India's premier higher education destinations, Graphic Era Deemed is recognized for high-impact research, world-class teaching, and outstanding placements in Fortune 500 tech giants.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <p>
+                    The sprawling campus in Clement Town boasts massive smart auditoriums, futuristic computing labs, specialized innovation centers, and lush green sports grounds.
+                  </p>
+                  <p className="text-gray-400">
+                    With an emphasis on technology, entrepreneurship, and global leadership, Graphic Era continues to nurture top-tier engineers, managers, researchers, and creators across the world.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </SpotlightCard>
+        </div>
       )}
     </section>
   )
