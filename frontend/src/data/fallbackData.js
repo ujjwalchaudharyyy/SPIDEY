@@ -398,5 +398,53 @@ export const DEFAULT_EVENTS = [
     organizer_name: "Student Activity Council (SAC) • Graphic Era Deemed University",
     rsvp_count: 1420,
     status: "approved"
+  },
+  {
+    id: 21,
+    title: "🎭 Student Grafest 2026 — Classical & Modern Dance Showcase",
+    description: "Grand Student Grafest cultural extravaganza celebrating breathtaking dance drama performances, mythological Tandav & Mahakali choreography, classical Kathak mudras, and energetic western freestyle dance battles by talented Graphic Era students on the main university ground stage.",
+    category: "Cultural",
+    venue: "Main University Ground & Open Amphitheatre, Graphic Era Deemed Campus",
+    campus: "GRAPHIC ERA DEEMED UNIVERSITY",
+    image_url: "/assets/events/grafest/grafest_1.jpg",
+    gallery: [
+      "/assets/events/grafest/grafest_1.jpg",
+      "/assets/events/grafest/grafest_2.jpg",
+      "/assets/events/grafest/grafest_3.jpg",
+      "/assets/events/grafest/grafest_4.jpg",
+      "/assets/events/grafest/grafest_5.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/grafest/grafest_1.jpg",
+        title: "Mahakali & Shiva Group Classical Dance",
+        caption: "Spellbinding classical dance drama enactment featuring Lord Shiva and Mahakali in fierce divine choreography on the Student Grafest stage."
+      },
+      {
+        url: "/assets/events/grafest/grafest_2.jpg",
+        title: "Classical Indian Mudra & Veil Performance",
+        caption: "Graceful performer portraying timeless Indian classical traditions with intricate facial expressions and authentic festive attire."
+      },
+      {
+        url: "/assets/events/grafest/grafest_3.jpg",
+        title: "Tandav Drama & Western Freestyle Solo Battle",
+        caption: "Vibrant fusion featuring the fierce Mahakali roop alongside electrifying western solo freestyle choreography under the Grafest spotlight."
+      },
+      {
+        url: "/assets/events/grafest/grafest_4.jpg",
+        title: "Kathak Mid-Air Leap & Natraj Trishul Posture",
+        caption: "Incredible athletic classical leap and divine Natraj pose holding the sacred Trishul, met with deafening applause from thousands of students."
+      },
+      {
+        url: "/assets/events/grafest/grafest_5.jpg",
+        title: "Lord Shiva Rudra Tandav & Grand Stage Smoke Finale",
+        caption: "Grand ensemble finale with Lord Shiva raising the Damru amidst atmospheric stage smoke and rhythmic beats filling the university ground."
+      }
+    ],
+    event_date: "2026-10-20",
+    event_time: "06:30 PM",
+    organizer_name: "Cultural Affairs & Dance Society • Graphic Era Deemed University",
+    rsvp_count: 1850,
+    status: "approved"
   }
 ];
