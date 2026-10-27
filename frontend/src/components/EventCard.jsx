@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import EventRegistrationModal from './EventRegistrationModal'
+import PokeballOpeningTransition from './PokeballOpeningTransition'
 
 const categoryStyles = {
   Academic: 'bg-blue-950/60 text-blue-300 border-blue-500/40',
@@ -38,6 +39,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const [rsvpLoading, setRsvpLoading] = useState(false)
   const [showRegisterModal, setShowRegisterModal] = useState(false)
   const [registeredTicket, setRegisteredTicket] = useState(null)
+  const [showPokeballTransition, setShowPokeballTransition] = useState(false)
   const [showGalleryModal, setShowGalleryModal] = useState(false)
   const [activePhotoIndex, setActivePhotoIndex] = useState(0)
 
@@ -59,6 +61,16 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const hasGallery = event.gallery && event.gallery.length > 0
   const isWatchTheCode = event.id === 4 || event.title?.includes('Watch The Code')
 
+  const handleOpenGallery = () => {
+    if (!hasGallery) return
+    if (isWatchTheCode) {
+      // Trigger interactive Pokéball opening animation first!
+      setShowPokeballTransition(true)
+    } else {
+      setShowGalleryModal(true)
+    }
+  }
+
   return (
     <>
       <div className={`spider-card group flex flex-col justify-between overflow-hidden p-0 transition-all duration-300 ${
@@ -69,11 +81,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
         {/* Event Header Photo */}
         <div 
           className="relative h-52 w-full overflow-hidden bg-black cursor-pointer"
-          onClick={() => {
-            if (hasGallery) {
-              setShowGalleryModal(true)
-            }
-          }}
+          onClick={handleOpenGallery}
         >
           <img
             src={event.image_url || '/assets/campuses/bhimtal.png'}
@@ -109,7 +117,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             </div>
           </div>
 
-          {/* Watch The Code Pokémon Special Banner */}
+          {/* Watch The Code Pokémon Special Mascot */}
           {isWatchTheCode && (
             <div className="absolute top-12 right-2 z-10 pointer-events-none group-hover:scale-110 transition-transform">
               <img src="/assets/events/pikachu.png" alt="Pikachu Mascot" className="w-14 h-14 drop-shadow-[0_0_15px_rgba(250,204,21,0.8)] animate-bounce" />
@@ -138,7 +146,10 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                   POKÉMON × CODE
                 </span>
               )}
-              <h3 className="spider-heading text-base sm:text-lg text-white group-hover:text-yellow-400 transition-colors line-clamp-2">
+              <h3 
+                className="spider-heading text-base sm:text-lg text-white group-hover:text-yellow-400 transition-colors line-clamp-2 cursor-pointer"
+                onClick={handleOpenGallery}
+              >
                 {event.title}
               </h3>
             </div>
@@ -214,10 +225,10 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                 {hasGallery && (
                   <button
                     type="button"
-                    onClick={() => setShowGalleryModal(true)}
+                    onClick={handleOpenGallery}
                     className="flex-1 py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-yellow-400 via-amber-500 to-yellow-500 text-black hover:brightness-110 shadow-[0_0_20px_rgba(234,179,8,0.5)] flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
                   >
-                    <span>⚡ VIEW 4K MEMORIES</span>
+                    <span>{isWatchTheCode ? '⚡ OPEN POKÉBALL & 4K MEMORIES' : 'VIEW MEMORIES'}</span>
                   </button>
                 )}
                 <div className={`py-2.5 text-xs font-mono text-gray-400 bg-[#0E1526]/80 border border-gray-800 rounded-xl text-center ${hasGallery ? 'px-3' : 'w-full'}`}>
@@ -267,7 +278,18 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
         />
       )}
 
-      {/* Modern Pokémon-Themed 4K Memories Lightbox Modal */}
+      {/* 1. Pokéball Opening Transition Animation (Watch The Code exclusive) */}
+      {showPokeballTransition && (
+        <PokeballOpeningTransition
+          onComplete={() => {
+            setShowPokeballTransition(false)
+            setShowGalleryModal(true)
+          }}
+          onClose={() => setShowPokeballTransition(false)}
+        />
+      )}
+
+      {/* 2. Modern Pokémon-Themed 4K Memories Lightbox Modal */}
       {showGalleryModal && hasGallery && (
         <div 
           className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex items-center justify-center p-3 sm:p-6"
