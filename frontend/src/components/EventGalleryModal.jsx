@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 
 export default function EventGalleryModal({ event, onClose }) {
   const formatEventDate = (dateStr) => {
+    if (event?.display_date) return event.display_date
     if (!dateStr) return ''
     try {
       const d = new Date(dateStr)
@@ -272,7 +273,7 @@ export default function EventGalleryModal({ event, onClose }) {
             <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-950/20 via-[#0E1526] to-[#090D18] border border-amber-500/30 space-y-3">
               <h3 className="spider-heading text-base sm:text-lg text-amber-300 flex items-center gap-2">
                 <span>✨</span>
-                <span>HIGHLIGHTS OF THE CELEBRATION</span>
+                <span>{event.highlights_title || 'HIGHLIGHTS OF THE CELEBRATION'}</span>
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                 {event.highlights.map((highlight, hIdx) => (

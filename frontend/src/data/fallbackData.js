@@ -429,6 +429,65 @@ export const DEFAULT_EVENTS = [
     rsvp_count: 670,
     status: "approved"
   },
+  {
+    id: 24,
+    title: "Student GRAFEST 2026",
+    description: "Student GRAFEST 2026 at Graphic Era Hill University, Dehradun Campus, was a vibrant celebration of student talent, music, dance, creativity, and campus life. The festival brought together students to enjoy live performances, cultural showcases, music, and memorable moments with friends. From energetic stage performances to beautiful artistic expressions, GRAFEST captures the excitement and spirit of student life.",
+    overview: "Student GRAFEST 2026 at Graphic Era Hill University, Dehradun Campus, was a vibrant celebration of student talent, music, dance, creativity, and campus life. The festival brought together students to enjoy live performances, cultural showcases, music, and memorable moments with friends. From energetic stage performances to beautiful artistic expressions, GRAFEST captures the excitement and spirit of student life.",
+    highlights_title: "FESTIVAL HIGHLIGHTS",
+    highlights: [
+      "Live vocal and instrumental performances on the main festival stage",
+      "Classical, folk, and contemporary solo dance showcases",
+      "Colorful Student GRAFEST interactive photo backdrops capturing lasting campus memories",
+      "Diverse showcase of artistic talent, cultural traditions, and student creativity",
+      "Musical sets featuring acoustic guitarists and student performers"
+    ],
+    closing_message: "Celebrating student creativity, music, culture, and campus memories that define the vibrant spirit of Graphic Era.",
+    category: "Student Festival / Cultural and Entertainment Event",
+    venue: "Graphic Era Hill University, Dehradun Campus",
+    campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
+    image_url: "/assets/events/student_grafest/student_grafest_1.jpg",
+    gallery: [
+      "/assets/events/student_grafest/student_grafest_1.jpg",
+      "/assets/events/student_grafest/student_grafest_2.jpg",
+      "/assets/events/student_grafest/student_grafest_3.jpg",
+      "/assets/events/student_grafest/student_grafest_4.jpg",
+      "/assets/events/student_grafest/student_grafest_5.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/student_grafest/student_grafest_1.jpg",
+        title: "Photo Backdrop Memories with Friends",
+        caption: "Students posing together at the colorful Student GRAFEST photo backdrop, capturing memories with friends."
+      },
+      {
+        url: "/assets/events/student_grafest/student_grafest_2.jpg",
+        title: "Live Stage Vocal Performance",
+        caption: "A live stage performance featuring a vocalist under vibrant festival lighting, with the GRAFEST stage visible below."
+      },
+      {
+        url: "/assets/events/student_grafest/student_grafest_3.jpg",
+        title: "Solo Dance Cultural Expression",
+        caption: "A solo dance performance on stage, showcasing expression, movement, and cultural talent."
+      },
+      {
+        url: "/assets/events/student_grafest/student_grafest_4.jpg",
+        title: "Stage Performances & Acoustic Sets",
+        caption: "A series of stage performances featuring dance, music, and a live singer with a guitar."
+      },
+      {
+        url: "/assets/events/student_grafest/student_grafest_5.jpg",
+        title: "Traditional Dance & Solo Singing Highlights",
+        caption: "More highlights from the festival, including a dynamic traditional-style dance performance and a solo singing performance."
+      }
+    ],
+    event_date: "2026-10-26",
+    display_date: "October 26-27, 2026",
+    event_time: "05:00 PM",
+    organizer_name: "Student Activity Council (SAC) • GEHU Dehradun",
+    rsvp_count: 1540,
+    status: "approved"
+  },
 
   // 4. Graphic Era Deemed University
   {

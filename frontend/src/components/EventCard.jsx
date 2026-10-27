@@ -12,6 +12,7 @@ const categoryStyles = {
   Other: 'bg-gray-900/60 text-gray-300 border-gray-600/40',
   'Hackathon / Technical Event': 'bg-purple-950/60 text-purple-300 border-purple-500/40',
   'University Event / Cultural Celebration': 'bg-amber-950/60 text-amber-300 border-amber-500/40',
+  'Student Festival / Cultural and Entertainment Event': 'bg-rose-950/60 text-rose-300 border-rose-500/40',
 }
 
 const statusStyles = {
@@ -346,6 +347,8 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                   <span className="text-cyan-300 font-bold">
                     {event.display_date || 'Date: Revealing Soon (TBA) ❄️'}
                   </span>
+                ) : event.display_date ? (
+                  <span>{event.display_date} • {formatTime(event.event_time)}</span>
                 ) : (
                   <span>{formatDate(event.event_date)} • {formatTime(event.event_time)}</span>
                 )}
