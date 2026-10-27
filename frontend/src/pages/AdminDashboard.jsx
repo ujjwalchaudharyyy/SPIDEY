@@ -242,15 +242,24 @@ export default function AdminDashboard() {
     showToast(`Ticket pass ${ticketCode} removed.`, 'info')
   }
 
-  // Filter events based on role (Super Admin = all or filter, Campus Admin = their campus only)
+  // Filter events based on role (Super Admin = all or filter, Campus Admin = strictly their campus only)
   const accessibleEvents = useMemo(() => {
     if (isSuperAdmin) {
       if (selectedCampusFilter === 'ALL') return allEvents
-      return allEvents.filter(e => e.campus === selectedCampusFilter)
+      return allEvents.filter(e => isCampusMatch(e.campus, selectedCampusFilter))
     }
-    // Campus Admin sees only their campus events
-    return allEvents.filter(e => e.campus === user?.campus)
+    // Campus Admin strictly sees only their campus events
+    return allEvents.filter(e => isCampusMatch(e.campus, user?.campus))
   }, [allEvents, isSuperAdmin, selectedCampusFilter, user])
+
+  // Pending events strictly scoped by campus for campus admins
+  const accessiblePendingEvents = useMemo(() => {
+    if (isSuperAdmin) {
+      if (selectedCampusFilter === 'ALL') return pendingEvents
+      return pendingEvents.filter(e => isCampusMatch(e.campus, selectedCampusFilter))
+    }
+    return pendingEvents.filter(e => isCampusMatch(e.campus, user?.campus))
+  }, [pendingEvents, isSuperAdmin, selectedCampusFilter, user])
 
   // Count registrations per event
   const eventCounts = useMemo(() => {
@@ -288,15 +297,20 @@ export default function AdminDashboard() {
     return map
   }, [allEvents, allRegistrations])
 
-  // Registrations accessible to this admin
+  // Registrations strictly accessible to this admin
   const accessibleRegistrations = useMemo(() => {
+    const campusEventsSet = new Set(accessibleEvents.map(e => String(e.id)))
     if (isSuperAdmin) {
       if (selectedCampusFilter === 'ALL') return allRegistrations
-      const eventIds = new Set(accessibleEvents.map(e => e.id))
-      return allRegistrations.filter(r => eventIds.has(r.event_id) || r.event_campus === selectedCampusFilter)
+      return allRegistrations.filter(r => 
+        campusEventsSet.has(String(r.event_id)) || 
+        isCampusMatch(r.event_campus || r.campus, selectedCampusFilter)
+      )
     }
-    const eventIds = new Set(accessibleEvents.map(e => e.id))
-    return allRegistrations.filter(r => eventIds.has(r.event_id) || r.event_campus === user?.campus)
+    return allRegistrations.filter(r => 
+      campusEventsSet.has(String(r.event_id)) || 
+      isCampusMatch(r.event_campus || r.campus, user?.campus)
+    )
   }, [allRegistrations, accessibleEvents, isSuperAdmin, selectedCampusFilter, user])
 
   // Campus-wise summary statistics (for Super Admin)
