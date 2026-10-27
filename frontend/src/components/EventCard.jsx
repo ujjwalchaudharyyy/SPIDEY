@@ -430,23 +430,13 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             {(!event.status || event.status === 'approved') && !isPast && (
               <div className="space-y-2">
                 <div className="grid grid-cols-2 gap-2">
-                  {isRegistrationOpen ? (
-                    <button
-                      type="button"
-                      onClick={() => setShowRegisterModal(true)}
-                      className="py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white shadow-spider-glow flex items-center justify-center gap-1.5 transition-all cursor-pointer"
-                    >
-                      <span>🎟️ REGISTER</span>
-                    </button>
-                  ) : isPresent ? (
-                    <div className="py-2.5 px-2 rounded-xl text-[10px] sm:text-xs font-mono font-bold bg-amber-950/70 border border-amber-500/60 text-amber-300 text-center flex items-center justify-center gap-1 shadow-inner">
-                      <span>🔴 LIVE TODAY (REG CLOSED)</span>
-                    </div>
-                  ) : (
-                    <div className="py-2.5 px-2 rounded-xl text-[10px] sm:text-xs font-mono font-bold bg-red-950/60 border border-red-500/40 text-red-300 text-center flex items-center justify-center gap-1" title="Registrations strictly close 5 days prior to event date">
-                      <span>🔒 REG CLOSED (5-DAY RULE)</span>
-                    </div>
-                  )}
+                  <button
+                    type="button"
+                    onClick={() => setShowRegisterModal(true)}
+                    className="py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white shadow-spider-glow flex items-center justify-center gap-1.5 transition-all cursor-pointer active:scale-95"
+                  >
+                    <span>🎟️ REGISTER</span>
+                  </button>
 
                   <button
                     type="button"

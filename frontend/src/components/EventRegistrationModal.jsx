@@ -92,7 +92,6 @@ function SpideyAvatar({ gender = 'male', avatarId = 1 }) {
 
         <ellipse cx="60" cy="58" rx="28" ry="32" fill={`url(#skin_${gender}_${avatarId})`} />
 
-        {/* Eyes & mask accents */}
         <g>
           <path d="M 40 54 Q 48 48 56 55 Q 52 64 42 61 Z" fill="#0F172A" />
           <path d="M 43 55 Q 49 51 54 55 Q 50 61 44 59 Z" fill="#FFFFFF" />
@@ -104,17 +103,17 @@ function SpideyAvatar({ gender = 'male', avatarId = 1 }) {
   )
 }
 
-// ─── Graphite'26-Style Lanyard ID Card (With Uploaded Original Photo) ───
+// ─── Graphite'26-Style Lanyard ID Card (With Original Uploaded Photo & Name) ───
 function LanyardIDCard({ attendee, event, teamName, participationMode, selectedTrack, index, onCopy, copiedCode }) {
   const cardRef = useRef(null)
 
   const handleShareTwitter = () => {
-    const text = encodeURIComponent(`Just got my official Spider-Pass ID Card for ${event.title}! 🕷️ My pass code: ${attendee.ticketCode} #SPIDEY #GraphicEra`)
+    const text = encodeURIComponent(`Just got my official Spider-Pass ID Card for ${event.title}! 🕷️ Pass: ${attendee.ticketCode} #SPIDEY #GraphicEra`)
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank')
   }
 
   const handleShareLinkedIn = () => {
-    const text = encodeURIComponent(`Excited to participate in ${event.title} at Graphic Era University! 🎟️ Pass Confirmed: ${attendee.ticketCode} #GraphicEra #SPIDEY`)
+    const text = encodeURIComponent(`Excited to participate in ${event.title} at Graphic Era University! 🎟️ Pass: ${attendee.ticketCode} #GraphicEra #SPIDEY`)
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://gehu.ac.in')}&title=${text}`, '_blank')
   }
 
@@ -326,49 +325,29 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
   )
 }
 
-// ─── Main Event Registration Modal with Post-Payment Team Roster & Photo Upload ───
+// ─── Main Event Registration Modal ───
 export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const { user, token } = useAuth()
 
-  const todayStr = '2026-10-27'
-  const isPast = event.event_date < todayStr
-  const isPresent = event.event_date === todayStr
-
-  const getDaysUntil = () => {
-    if (!event.event_date) return 999
-    const today = new Date('2026-10-27T00:00:00')
-    const evDate = new Date(`${event.event_date}T00:00:00`)
-    const diff = evDate.getTime() - today.getTime()
-    return Math.ceil(diff / (1000 * 60 * 60 * 24))
-  }
-  const daysUntil = getDaysUntil()
-  const isRegistrationClosed = isPast || isPresent || (daysUntil >= 0 && daysUntil <= 5)
-
-  // Event category detection
+  // Detect event type
   const isHackTheWinter = event.title?.toLowerCase().includes('winter')
   const isAstroVerse = event.title?.toLowerCase().includes('astro')
   const isGrafest = event.title?.toLowerCase().includes('grafest')
   const isTechFest = event.title?.toLowerCase().includes('infotsav') || (event.category === 'Technical' && !isHackTheWinter && !isAstroVerse)
   const isSports = event.category === 'Sports' || event.title?.toLowerCase().includes('spardha')
 
-  // Multi-step modal navigation: 'form' -> 'payment' -> 'roster' (Photo upload) -> 'idcards'
+  // Multi-step navigation: 'form' (Details & Photos) -> 'payment' -> 'idcards'
   const [currentStep, setCurrentStep] = useState('form')
   const [activeCardIndex, setActiveCardIndex] = useState(0)
 
-  // Initial Team Leader Details
+  // Initial user defaults
   const defaultEmail = user?.email || 'student.gehu@gmail.com'
-  const defaultName = user?.name || (user?.email ? user.email.split('@')[0] : 'Graphic Era Student')
-
-  const [leaderName, setLeaderName] = useState(defaultName)
-  const [leaderEmail, setLeaderEmail] = useState(defaultEmail)
-  const [leaderPhone, setLeaderPhone] = useState(user?.phone || '+91 98765 43210')
-  const [leaderRoll, setLeaderRoll] = useState('GEHU-2024-BHM-842')
-  const [leaderDegree, setLeaderDegree] = useState(user?.degree || COURSE_OPTIONS[0])
-  const [leaderCampus, setLeaderCampus] = useState(user?.campus || event.campus || CAMPUS_OPTIONS[0])
+  const defaultName = user?.name || (user?.email ? user.email.split('@')[0] : 'Aryan Sharma')
+  const defaultCampus = user?.campus || event.campus || CAMPUS_OPTIONS[0]
 
   // Participation Mode: 'solo' or 'team'
   const [participationMode, setParticipationMode] = useState('team')
-  const [teamName, setTeamName] = useState(isHackTheWinter ? 'Spider-Hackers Bhimtal' : 'Team Alpha')
+  const [teamName, setTeamName] = useState(isHackTheWinter ? 'Spider-Hackers Bhimtal' : 'Team Spider-Verse')
   const [teamSize, setTeamSize] = useState('3')
 
   // Track selection
@@ -381,96 +360,92 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     return 'General Participation Track'
   })
 
-  // Payment State
-  const eventFee = 199
-  const totalAmount = participationMode === 'team' ? parseInt(teamSize, 10) * eventFee : eventFee
-  const [paymentMethod, setPaymentMethod] = useState('upi')
-  const [upiId, setUpiId] = useState('student@oksbi')
-  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
-  const [paymentSuccess, setPaymentSuccess] = useState(false)
-  const [transactionId, setTransactionId] = useState('')
-
-  // Post-Payment Team Roster & Photos State
-  const [rosterMembers, setRosterMembers] = useState([])
-  const [activeRosterIndex, setActiveRosterIndex] = useState(0)
-
-  // Final Generated Tickets & Cards
-  const [generatedTickets, setGeneratedTickets] = useState([])
-  const [copiedCode, setCopiedCode] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const headers = token ? { Authorization: `Bearer ${token}` } : {}
-
-  // Step 1 -> Step 2 (Proceed to Payment)
-  const handleProceedToPayment = (e) => {
-    e.preventDefault()
-    if (isRegistrationClosed) return
-    setError('')
-    setCurrentStep('payment')
-  }
-
-  // Step 2 -> Step 3 (Payment Complete -> Ask Team Details & Photos)
-  const handleCompletePaymentAndProceedToRoster = async () => {
-    setIsProcessingPayment(true)
-    setError('')
-
-    const txId = 'SPIDER-UPI-' + Math.floor(100000 + Math.random() * 900000)
-    setTransactionId(txId)
-    setPaymentSuccess(true)
-
-    // Build initial team roster with members
-    const count = participationMode === 'team' ? parseInt(teamSize, 10) : 1
-    const initialRoster = []
-
-    // 1. Team Leader / Entrant
-    initialRoster.push({
+  // ─── Team Members State (With Photo Upload For Each Member) ───
+  const [members, setMembers] = useState([
+    {
       isLeader: true,
-      name: leaderName || 'Aryan Sharma',
-      email: leaderEmail || 'student@gehu.ac.in',
-      phone: leaderPhone || '+91 98765 43210',
-      campus: leaderCampus || event.campus || CAMPUS_OPTIONS[0],
-      degree: leaderDegree || COURSE_OPTIONS[0],
-      rollNo: leaderRoll || 'GEHU-2024-BHM-842',
+      name: defaultName,
+      email: defaultEmail,
+      phone: user?.phone || '+91 98765 43210',
+      campus: defaultCampus,
+      degree: user?.degree || COURSE_OPTIONS[0],
+      rollNo: 'GEHU-2024-BHM-842',
       gender: 'male',
       photoUrl: ''
+    },
+    {
+      isLeader: false,
+      name: 'Priya Negi',
+      email: 'priya.negi.gehu@gmail.com',
+      phone: '+91 97654 32190',
+      campus: defaultCampus,
+      degree: COURSE_OPTIONS[1],
+      rollNo: 'GEHU-2025-BHM-632',
+      gender: 'female',
+      photoUrl: ''
+    },
+    {
+      isLeader: false,
+      name: 'Rohit Joshi',
+      email: 'rohit.gehu.bhimtal@gmail.com',
+      phone: '+91 98234 56789',
+      campus: defaultCampus,
+      degree: COURSE_OPTIONS[0],
+      rollNo: 'GEHU-2024-BHM-714',
+      gender: 'male',
+      photoUrl: ''
+    }
+  ])
+
+  const [activeMemberTab, setActiveMemberTab] = useState(0)
+
+  // Handle Team Size Change
+  const handleTeamSizeChange = (sizeStr) => {
+    const size = parseInt(sizeStr, 10)
+    setTeamSize(sizeStr)
+
+    setMembers(prev => {
+      const current = [...prev]
+      if (current.length < size) {
+        const defaultNames = ['Ananya Bhatt', 'Ayush Negi', 'Manish Verma']
+        for (let i = current.length; i < size; i++) {
+          current.push({
+            isLeader: false,
+            name: defaultNames[i - 1] || `Team Member ${i + 1}`,
+            email: `member${i + 1}.gehu@gmail.com`,
+            phone: `+91 98${Math.floor(10000000 + Math.random() * 89999999)}`,
+            campus: defaultCampus,
+            degree: COURSE_OPTIONS[0],
+            rollNo: `GEHU-2025-BHM-${500 + i * 20}`,
+            gender: i % 2 === 1 ? 'female' : 'male',
+            photoUrl: ''
+          })
+        }
+      } else if (current.length > size) {
+        current.length = size
+      }
+      return current
     })
 
-    // 2. Additional Team Members (if team)
-    if (participationMode === 'team') {
-      const defaultNames = ['Priya Negi', 'Rohit Joshi', 'Ananya Bhatt']
-      const defaultDegrees = [
-        'B.Tech CSE (AI & Machine Learning)',
-        'B.Tech Computer Science & Engineering (CSE)',
-        'BCA (Bachelor of Computer Applications)'
-      ]
-      for (let i = 1; i < count; i++) {
-        initialRoster.push({
-          isLeader: false,
-          name: defaultNames[i - 1] || `Team Member ${i + 1}`,
-          email: `member${i + 1}.${(leaderCampus || '').toLowerCase().includes('haldwani') ? 'hld' : (leaderCampus || '').toLowerCase().includes('dehradun') ? 'ddn' : 'bhm'}@gmail.com`,
-          phone: `+91 98${Math.floor(10000000 + Math.random() * 89999999)}`,
-          campus: leaderCampus || event.campus || CAMPUS_OPTIONS[0],
-          degree: defaultDegrees[i - 1] || COURSE_OPTIONS[0],
-          rollNo: `GEHU-2025-BHM-${500 + i * 22}`,
-          gender: i % 2 === 1 ? 'female' : 'male',
-          photoUrl: ''
-        })
-      }
+    if (activeMemberTab >= size) {
+      setActiveMemberTab(size - 1)
     }
+  }
 
-    setRosterMembers(initialRoster)
-    setActiveRosterIndex(0)
-
-    setTimeout(() => {
-      setIsProcessingPayment(false)
-      setCurrentStep('roster')
-    }, 600)
+  // Handle Mode Change (Solo vs Team)
+  const handleModeChange = (mode) => {
+    setParticipationMode(mode)
+    if (mode === 'solo') {
+      setMembers(prev => [prev[0]])
+      setActiveMemberTab(0)
+    } else {
+      handleTeamSizeChange(teamSize || '3')
+    }
   }
 
   // Update specific field for a team member
-  const handleUpdateRosterMember = (index, field, value) => {
-    setRosterMembers(prev => {
+  const handleUpdateMember = (index, field, value) => {
+    setMembers(prev => {
       const next = [...prev]
       next[index] = { ...next[index], [field]: value }
       return next
@@ -491,7 +466,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     reader.onload = (event) => {
       const dataUrl = event.target?.result
       if (dataUrl) {
-        handleUpdateRosterMember(memberIndex, 'photoUrl', dataUrl)
+        handleUpdateMember(memberIndex, 'photoUrl', dataUrl)
         setError('')
       }
     }
@@ -500,28 +475,57 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
 
   // Remove Photo
   const handleRemovePhoto = (memberIndex) => {
-    handleUpdateRosterMember(memberIndex, 'photoUrl', '')
+    handleUpdateMember(memberIndex, 'photoUrl', '')
   }
 
-  // Step 3 -> Step 4: Finalize & Generate Animated ID Cards
-  const handleGenerateFinalCards = async () => {
-    // Validate that all members have name and email
-    for (let i = 0; i < rosterMembers.length; i++) {
-      const m = rosterMembers[i]
+  // Payment State
+  const eventFee = 199
+  const totalAmount = participationMode === 'team' ? members.length * eventFee : eventFee
+  const [paymentMethod, setPaymentMethod] = useState('upi')
+  const [upiId, setUpiId] = useState('student@oksbi')
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false)
+  const [paymentSuccess, setPaymentSuccess] = useState(false)
+  const [transactionId, setTransactionId] = useState('')
+
+  // Final Generated Tickets & Cards
+  const [generatedTickets, setGeneratedTickets] = useState([])
+  const [copiedCode, setCopiedCode] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const headers = token ? { Authorization: `Bearer ${token}` } : {}
+
+  // Step 1 -> Step 2: Validate details & proceed to payment
+  const handleProceedToPayment = (e) => {
+    e.preventDefault()
+
+    // Validate that each member has name and email
+    for (let i = 0; i < members.length; i++) {
+      const m = members[i]
       if (!m.name || !m.name.trim()) {
         setError(`Please enter the full name for ${m.isLeader ? 'Team Leader' : `Member ${i + 1}`}.`)
-        setActiveRosterIndex(i)
+        setActiveMemberTab(i)
         return
       }
       if (!m.email || !m.email.trim()) {
         setError(`Please enter the email for ${m.isLeader ? 'Team Leader' : `Member ${i + 1}`}.`)
-        setActiveRosterIndex(i)
+        setActiveMemberTab(i)
         return
       }
     }
 
-    setLoading(true)
     setError('')
+    setCurrentStep('payment')
+  }
+
+  // Step 2 -> Step 3: Complete Payment and Generate ID Cards
+  const handleCompletePaymentAndGenerateCards = async () => {
+    setIsProcessingPayment(true)
+    setError('')
+
+    const txId = 'SPIDER-UPI-' + Math.floor(100000 + Math.random() * 900000)
+    setTransactionId(txId)
+    setPaymentSuccess(true)
 
     let prefix = 'SPIDEY'
     if (isHackTheWinter) prefix = 'HTW-2027'
@@ -530,7 +534,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     else if (isTechFest) prefix = 'TECHFEST'
     else if (isSports) prefix = 'SPARDHA'
 
-    const allAttendees = rosterMembers.map((m, idx) => {
+    const allAttendees = members.map((m, idx) => {
       const campusAbbr = (m.campus || '').includes('HALDWANI')
         ? 'HLD'
         : (m.campus || '').includes('DEHRADUN')
@@ -565,9 +569,9 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
         campus: leaderMember.campus,
         ticket_code: leaderMember.ticketCode,
         team_name: participationMode === 'team' ? teamName : 'Solo Entrant',
-        team_size: participationMode === 'team' ? String(rosterMembers.length) : '1',
+        team_size: participationMode === 'team' ? String(members.length) : '1',
         track_info: selectedTrack,
-        transaction_id: transactionId,
+        transaction_id: txId,
         payment_status: 'Paid',
         attendees: allAttendees,
         created_at: new Date().toISOString()
@@ -602,7 +606,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     } catch (err) {
       setError('Registration card generation failed. Please try again.')
     } finally {
-      setLoading(false)
+      setIsProcessingPayment(false)
     }
   }
 
@@ -614,7 +618,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     }
   }
 
-  const activeRosterMember = rosterMembers[activeRosterIndex] || {}
+  const currentMember = members[activeMemberTab] || members[0] || {}
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
@@ -643,44 +647,27 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
           </button>
         </div>
 
-        {/* 4-Step Animated Breadcrumbs */}
+        {/* 3-Step Animated Breadcrumbs */}
         <div className="px-5 py-2.5 bg-[#0A0D15] border-b border-gray-800 flex items-center justify-between text-xs overflow-x-auto">
           <div className={`flex items-center gap-1.5 font-semibold whitespace-nowrap ${currentStep === 'form' ? 'text-red-400 font-bold' : 'text-gray-400'}`}>
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'form' ? 'bg-red-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>1</span>
-            <span>Team &amp; Pass</span>
+            <span>Team Details &amp; Photos</span>
           </div>
           <span className="text-gray-600 px-1">→</span>
           <div className={`flex items-center gap-1.5 font-semibold whitespace-nowrap ${currentStep === 'payment' ? 'text-emerald-400 font-bold' : 'text-gray-400'}`}>
             <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'payment' ? 'bg-emerald-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>2</span>
-            <span>Payment</span>
-          </div>
-          <span className="text-gray-600 px-1">→</span>
-          <div className={`flex items-center gap-1.5 font-semibold whitespace-nowrap ${currentStep === 'roster' ? 'text-cyan-400 font-bold' : 'text-gray-400'}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'roster' ? 'bg-cyan-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>3</span>
-            <span>Details &amp; Photos</span>
+            <span>Secure Payment</span>
           </div>
           <span className="text-gray-600 px-1">→</span>
           <div className={`flex items-center gap-1.5 font-semibold whitespace-nowrap ${currentStep === 'idcards' ? 'text-red-400 font-bold' : 'text-gray-400'}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'idcards' ? 'bg-red-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>4</span>
-            <span>Animated ID Cards</span>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'idcards' ? 'bg-red-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>3</span>
+            <span>Holographic ID Cards</span>
           </div>
         </div>
 
-        {/* ─── STEP 1: Registration Mode & Team Setup ─── */}
+        {/* ─── STEP 1: Team & Member Details + Photo Upload (All in Step 1) ─── */}
         {currentStep === 'form' && (
           <form onSubmit={handleProceedToPayment} className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
-            {isRegistrationClosed && (
-              <div className="p-3.5 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs space-y-1">
-                <p className="font-bold flex items-center gap-1.5 text-sm text-red-300">
-                  <span>🚫</span>
-                  <span>Registration Closed for this Event</span>
-                </p>
-                <p className="text-[11px] text-gray-300 leading-relaxed">
-                  Graphic Era university guidelines: Registrations strictly close 5-6 days prior to event date. Past and ongoing events do not accept new registrations.
-                </p>
-              </div>
-            )}
-
             {error && (
               <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs flex items-center gap-2">
                 <span>⚠️</span>
@@ -694,7 +681,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
               <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
-                  onClick={() => setParticipationMode('team')}
+                  onClick={() => handleModeChange('team')}
                   className={`p-3.5 rounded-xl border text-left transition cursor-pointer ${
                     participationMode === 'team'
                       ? 'bg-red-950/60 border-red-500 text-white ring-1 ring-red-500/50'
@@ -705,12 +692,12 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                     <span className="font-chakra italic font-bold text-sm">👥 Team Pass</span>
                     <span className="text-[10px] font-mono bg-red-600/40 text-red-300 px-1.5 py-0.5 rounded">Popular</span>
                   </div>
-                  <p className="text-[11px] text-gray-400">Multiple team members ke saath register karein. Har member ka alag ID card banega.</p>
+                  <p className="text-[11px] text-gray-400">Team members add karein, details aur photos upload karein.</p>
                 </button>
 
                 <button
                   type="button"
-                  onClick={() => setParticipationMode('solo')}
+                  onClick={() => handleModeChange('solo')}
                   className={`p-3.5 rounded-xl border text-left transition cursor-pointer ${
                     participationMode === 'solo'
                       ? 'bg-red-950/60 border-red-500 text-white ring-1 ring-red-500/50'
@@ -721,22 +708,22 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                     <span className="font-chakra italic font-bold text-sm">👤 Solo Pass</span>
                     <span className="text-[10px] font-mono bg-blue-600/40 text-blue-300 px-1.5 py-0.5 rounded">Individual</span>
                   </div>
-                  <p className="text-[11px] text-gray-400">Single entrant pass with verified hologram badge &amp; lanyard pass.</p>
+                  <p className="text-[11px] text-gray-400">Single student pass with photo and verified lanyard badge.</p>
                 </button>
               </div>
             </div>
 
-            {/* Team Settings (if Team selected) */}
+            {/* Team Settings (Team Name & Size) */}
             {participationMode === 'team' && (
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#141A29] p-3.5 rounded-xl border border-gray-800">
                 <div>
-                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">Team Name:</label>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">Team Name <span className="text-red-400">*</span>:</label>
                   <input
                     type="text"
                     value={teamName}
                     onChange={(e) => setTeamName(e.target.value)}
                     placeholder="e.g. Spider-Verse Hackers"
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500 font-medium"
                     required
                   />
                 </div>
@@ -744,7 +731,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                   <label className="block text-[11px] font-semibold text-gray-300 mb-1">Total Team Size:</label>
                   <select
                     value={teamSize}
-                    onChange={(e) => setTeamSize(e.target.value)}
+                    onChange={(e) => handleTeamSizeChange(e.target.value)}
                     className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500"
                   >
                     <option value="2">2 Members (Leader + 1 Member)</option>
@@ -766,45 +753,233 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
               />
             </div>
 
-            {/* Quick Leader Primary Info */}
-            <div className="p-3.5 rounded-xl bg-[#141A29] border border-gray-800 space-y-2">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-red-400 font-bold block">
-                PRIMARY CONTACT DETAILS
-              </span>
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            {/* ─── TEAM MEMBERS & PHOTO UPLOADS (TABS) ─── */}
+            <div className="p-4 rounded-xl bg-[#141A29] border border-gray-800 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                 <div>
-                  <label className="block text-[11px] text-gray-400 mb-0.5">Contact Name:</label>
-                  <input
-                    type="text"
-                    value={leaderName}
-                    onChange={(e) => setLeaderName(e.target.value)}
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white text-xs"
-                    required
-                  />
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <span>📸</span>
+                    <span>TEAM MEMBERS DETAILS &amp; ORIGINAL PHOTO UPLOAD</span>
+                  </span>
+                  <p className="text-[11px] text-gray-400 mt-0.5">
+                    Har member ki details bharein aur original photo upload karein taaki personalized ID card generate ho.
+                  </p>
                 </div>
-                <div>
-                  <label className="block text-[11px] text-gray-400 mb-0.5">University Email:</label>
-                  <input
-                    type="email"
-                    value={leaderEmail}
-                    onChange={(e) => setLeaderEmail(e.target.value)}
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white text-xs font-mono"
-                    required
-                  />
+                <span className="px-2.5 py-1 rounded-full bg-red-950 text-red-300 border border-red-500/30 text-[10px] font-mono font-bold shrink-0">
+                  {members.length} {members.length > 1 ? 'Members' : 'Entrant'}
+                </span>
+              </div>
+
+              {/* Member Navigation Tabs */}
+              {members.length > 1 && (
+                <div className="flex items-center gap-2 border-b border-gray-800 pb-2 overflow-x-auto">
+                  {members.map((m, idx) => {
+                    const isActive = activeMemberTab === idx
+                    const hasPhoto = !!m.photoUrl
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setActiveMemberTab(idx)}
+                        className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                          isActive
+                            ? 'bg-red-600 text-white shadow-md'
+                            : 'bg-[#0A0D15] text-gray-400 hover:text-white border border-gray-800'
+                        }`}
+                      >
+                        <span>{m.isLeader ? '👑' : '👤'}</span>
+                        <span>{m.name ? m.name.split(' ')[0] : `Member ${idx + 1}`}</span>
+                        {hasPhoto ? (
+                          <span className="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-black" title="Photo Uploaded ✓" />
+                        ) : (
+                          <span className="text-[9px] text-red-400 font-mono">(Upload Photo)</span>
+                        )}
+                      </button>
+                    )
+                  })}
+                </div>
+              )}
+
+              {/* Photo Upload Box for Current Member */}
+              <div className="p-4 rounded-xl bg-black/60 border border-red-950/60 flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.5)] bg-[#0A0D15] flex items-center justify-center shrink-0">
+                  {currentMember.photoUrl ? (
+                    <>
+                      <img
+                        src={currentMember.photoUrl}
+                        alt={currentMember.name || 'Member'}
+                        className="w-full h-full object-cover object-center"
+                      />
+                      <div className="animate-scan-line" />
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-gray-500 text-center p-2">
+                      <span className="text-3xl mb-1">📸</span>
+                      <span className="text-[9px] font-mono uppercase tracking-wider text-red-400 font-bold">No Photo</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-2 text-center sm:text-left">
+                  <div>
+                    <h5 className="text-xs font-bold text-white flex items-center justify-center sm:justify-start gap-1.5">
+                      <span>{currentMember.isLeader ? 'Leader Photo' : `Member ${activeMemberTab + 1} Photo`}</span>
+                      {currentMember.photoUrl ? (
+                        <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/30 font-bold">
+                          ✓ Photo Ready for Badge
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-amber-400 font-mono bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-500/30">
+                          Photo Upload Pending
+                        </span>
+                      )}
+                    </h5>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      Apni original selfie ya passport photo upload karein. Ye photo ID card par original display hogi.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                    <label className="py-2 px-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition active:scale-95">
+                      <span>📸</span>
+                      <span>{currentMember.photoUrl ? 'Change Photo' : 'Upload Original Photo'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handlePhotoUpload(activeMemberTab, e)}
+                      />
+                    </label>
+
+                    {currentMember.photoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePhoto(activeMemberTab)}
+                        className="py-2 px-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs transition cursor-pointer"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
                 </div>
               </div>
-              <p className="text-[10px] text-gray-400">
-                Payment ke agle step me sabhi members ki full details aur photos upload hongi.
-              </p>
+
+              {/* Form Inputs Grid for Current Member */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    Student Full Name <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={currentMember.name || ''}
+                    onChange={(e) => handleUpdateMember(activeMemberTab, 'name', e.target.value)}
+                    placeholder="e.g. Aryan Sharma"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-medium"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    University Email ID <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={currentMember.email || ''}
+                    onChange={(e) => handleUpdateMember(activeMemberTab, 'email', e.target.value)}
+                    placeholder="e.g. aryan.sharma@gehu.ac.in"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    Phone Number <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    value={currentMember.phone || ''}
+                    onChange={(e) => handleUpdateMember(activeMemberTab, 'phone', e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    University Roll Number <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={currentMember.rollNo || ''}
+                    onChange={(e) => handleUpdateMember(activeMemberTab, 'rollNo', e.target.value)}
+                    placeholder="e.g. GEHU-2024-BHM-842"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
+                    required
+                  />
+                </div>
+
+                {/* Campus Dropdown */}
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    Campus <span className="text-red-400">*</span>
+                  </label>
+                  <select
+                    value={currentMember.campus || defaultCampus}
+                    onChange={(e) => handleUpdateMember(activeMemberTab, 'campus', e.target.value)}
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
+                  >
+                    {CAMPUS_OPTIONS.map((c) => (
+                      <option key={c} value={c} className="bg-black text-white">
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Course / Degree Dropdown */}
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    Course / Degree <span className="text-red-400">*</span>
+                  </label>
+                  <select
+                    value={currentMember.degree || COURSE_OPTIONS[0]}
+                    onChange={(e) => handleUpdateMember(activeMemberTab, 'degree', e.target.value)}
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
+                  >
+                    {COURSE_OPTIONS.map((c) => (
+                      <option key={c} value={c} className="bg-black text-white">
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              {/* Quick switch to next member */}
+              {activeMemberTab < members.length - 1 && (
+                <div className="pt-2 text-right">
+                  <button
+                    type="button"
+                    onClick={() => setActiveMemberTab(prev => prev + 1)}
+                    className="text-xs font-semibold text-red-400 hover:text-red-300 transition cursor-pointer"
+                  >
+                    Fill Next Member Details ({activeMemberTab + 2}) ➔
+                  </button>
+                </div>
+              )}
             </div>
 
-            {/* Bottom Actions */}
+            {/* Bottom Actions for Step 1 */}
             <div className="pt-2 flex items-center justify-between border-t border-gray-800">
               <div className="text-xs text-gray-400">
-                <span>Fee: </span>
+                <span>Total Fee: </span>
                 <span className="text-white font-bold text-sm">₹{totalAmount}</span>
                 <span className="text-[10px] text-gray-500 ml-1">
-                  ({participationMode === 'team' ? `${teamSize} x ₹${eventFee}` : `1 x ₹${eventFee}`})
+                  ({members.length} {members.length > 1 ? 'passes' : 'pass'} x ₹{eventFee})
                 </span>
               </div>
               <div className="flex gap-2">
@@ -813,15 +988,10 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                 </button>
                 <button
                   type="submit"
-                  disabled={isRegistrationClosed}
-                  className={`px-5 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${
-                    isRegistrationClosed
-                      ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      : 'bg-red-600 hover:bg-red-500 text-white cursor-pointer active:scale-95'
-                  }`}
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white text-xs font-chakra font-bold tracking-wider shadow-spider-glow flex items-center gap-1.5 cursor-pointer active:scale-95"
                 >
-                  <span>{isRegistrationClosed ? 'Registration Closed' : 'Proceed to Payment'}</span>
-                  {!isRegistrationClosed && <span>➔</span>}
+                  <span>Proceed to Payment</span>
+                  <span>➔</span>
                 </button>
               </div>
             </div>
@@ -843,9 +1013,9 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px] text-gray-300">
                 <div><span className="text-gray-500">Mode:</span> {participationMode === 'team' ? `Team (${teamName})` : 'Solo Entry'}</div>
-                <div><span className="text-gray-500">Attendees:</span> {participationMode === 'team' ? teamSize : '1'}</div>
-                <div><span className="text-gray-500">Contact:</span> {leaderName}</div>
-                <div><span className="text-gray-500">Email:</span> {leaderEmail}</div>
+                <div><span className="text-gray-500">Attendees:</span> {members.length} Members</div>
+                <div><span className="text-gray-500">Leader:</span> {members[0]?.name}</div>
+                <div><span className="text-gray-500">Email:</span> {members[0]?.email}</div>
               </div>
             </div>
 
@@ -928,297 +1098,24 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
               </button>
               <button
                 type="button"
-                onClick={handleCompletePaymentAndProceedToRoster}
+                onClick={handleCompletePaymentAndGenerateCards}
                 disabled={isProcessingPayment}
-                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg cursor-pointer flex items-center gap-2 transition active:scale-95"
+                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white text-xs font-bold shadow-lg cursor-pointer flex items-center gap-2 transition active:scale-95"
               >
                 {isProcessingPayment ? (
                   <>
                     <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Verifying Payment...</span>
+                    <span>Processing &amp; Generating Badges...</span>
                   </>
                 ) : (
-                  <span>✓ Pay ₹{totalAmount} &amp; Fill Member Details ➔</span>
+                  <span>✓ Pay ₹{totalAmount} &amp; Generate ID Cards ➔</span>
                 )}
               </button>
             </div>
           </div>
         )}
 
-        {/* ─── STEP 3: Post-Payment Team Roster & Original Photo Upload ─── */}
-        {currentStep === 'roster' && (
-          <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
-            {/* Payment Verified Header Card */}
-            <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-between">
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-bold text-sm">
-                  ✓
-                </div>
-                <div>
-                  <h4 className="text-xs font-bold text-white flex items-center gap-2">
-                    <span>Payment Verified Successfully</span>
-                    <span className="font-mono text-[10px] text-emerald-400">({transactionId})</span>
-                  </h4>
-                  <p className="text-[11px] text-gray-300 mt-0.5">
-                    Ab team ke sabhi members ki details &amp; unki original photo upload karein taaki personalized ID cards generate ho sakein.
-                  </p>
-                </div>
-              </div>
-              <span className="px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold shrink-0">
-                {rosterMembers.length} {rosterMembers.length > 1 ? 'Cards' : 'Card'}
-              </span>
-            </div>
-
-            {error && (
-              <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs flex items-center gap-2">
-                <span>⚠️</span>
-                <span>{error}</span>
-              </div>
-            )}
-
-            {/* Member Navigation Tabs (if Team) */}
-            {rosterMembers.length > 1 && (
-              <div className="flex items-center gap-2 border-b border-gray-800 pb-2 overflow-x-auto">
-                {rosterMembers.map((m, idx) => {
-                  const isActive = activeRosterIndex === idx
-                  const hasPhoto = !!m.photoUrl
-                  return (
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() => setActiveRosterIndex(idx)}
-                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
-                        isActive
-                          ? 'bg-red-600 text-white shadow-md'
-                          : 'bg-[#141A29] text-gray-400 hover:text-white border border-gray-800'
-                      }`}
-                    >
-                      <span>{m.isLeader ? '👑' : '👤'}</span>
-                      <span>{m.name ? m.name.split(' ')[0] : `Member ${idx + 1}`}</span>
-                      {hasPhoto && (
-                        <span className="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-black" title="Photo Uploaded ✓" />
-                      )}
-                    </button>
-                  )
-                })}
-              </div>
-            )}
-
-            {/* Active Member Details & Photo Box */}
-            <div className="p-4 rounded-xl bg-[#141A29] border border-gray-800 space-y-4">
-              <div className="flex items-center justify-between border-b border-gray-800 pb-2">
-                <span className="text-xs font-bold text-white flex items-center gap-1.5">
-                  <span>{activeRosterMember.isLeader ? '👑 TEAM LEADER DETAILS' : `👤 MEMBER ${activeRosterIndex + 1} DETAILS`}</span>
-                  <span className="text-[10px] font-mono text-red-400">({activeRosterIndex + 1} of {rosterMembers.length})</span>
-                </span>
-                <span className="text-[10px] text-gray-400">All fields required for holographic badge</span>
-              </div>
-
-              {/* Photo Upload Zone */}
-              <div className="p-4 rounded-xl bg-black/60 border border-red-950/60 flex flex-col sm:flex-row items-center gap-4">
-                <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.5)] bg-[#0A0D15] flex items-center justify-center shrink-0">
-                  {activeRosterMember.photoUrl ? (
-                    <>
-                      <img
-                        src={activeRosterMember.photoUrl}
-                        alt={activeRosterMember.name || 'Member'}
-                        className="w-full h-full object-cover object-center"
-                      />
-                      <div className="animate-scan-line" />
-                    </>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center text-gray-500 text-center p-2">
-                      <span className="text-3xl mb-1">📸</span>
-                      <span className="text-[9px] font-mono uppercase tracking-wider text-red-400 font-bold">No Photo</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex-1 space-y-2 text-center sm:text-left">
-                  <div>
-                    <h5 className="text-xs font-bold text-white flex items-center justify-center sm:justify-start gap-1.5">
-                      <span>Original Student Photo</span>
-                      {activeRosterMember.photoUrl ? (
-                        <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/30 font-bold">
-                          ✓ Photo Ready for Badge
-                        </span>
-                      ) : (
-                        <span className="text-[10px] text-amber-400 font-mono bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-500/30">
-                          Upload Required
-                        </span>
-                      )}
-                    </h5>
-                    <p className="text-[11px] text-gray-400 mt-0.5">
-                      Apni original passport photo ya clear selfie upload karein. Ye photo ID card par print hogi.
-                    </p>
-                  </div>
-
-                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                    <label className="py-2 px-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition active:scale-95">
-                      <span>📸</span>
-                      <span>{activeRosterMember.photoUrl ? 'Change Photo' : 'Upload Original Photo'}</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={(e) => handlePhotoUpload(activeRosterIndex, e)}
-                      />
-                    </label>
-
-                    {activeRosterMember.photoUrl && (
-                      <button
-                        type="button"
-                        onClick={() => handleRemovePhoto(activeRosterIndex)}
-                        className="py-2 px-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs transition cursor-pointer"
-                      >
-                        Remove
-                      </button>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              {/* Form Inputs Grid for Active Member */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div>
-                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
-                    Student Full Name <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={activeRosterMember.name || ''}
-                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'name', e.target.value)}
-                    placeholder="e.g. Aryan Sharma"
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-medium"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
-                    University Email ID <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    value={activeRosterMember.email || ''}
-                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'email', e.target.value)}
-                    placeholder="e.g. aryan.sharma@gehu.ac.in"
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
-                    Phone Number <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="tel"
-                    value={activeRosterMember.phone || ''}
-                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'phone', e.target.value)}
-                    placeholder="+91 98765 43210"
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
-                    required
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
-                    University Roll Number <span className="text-red-400">*</span>
-                  </label>
-                  <input
-                    type="text"
-                    value={activeRosterMember.rollNo || ''}
-                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'rollNo', e.target.value)}
-                    placeholder="e.g. GEHU-2024-BHM-842"
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
-                    required
-                  />
-                </div>
-
-                {/* Campus Dropdown */}
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
-                    Campus <span className="text-red-400">*</span>
-                  </label>
-                  <select
-                    value={activeRosterMember.campus || event.campus || CAMPUS_OPTIONS[0]}
-                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'campus', e.target.value)}
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
-                  >
-                    {CAMPUS_OPTIONS.map((c) => (
-                      <option key={c} value={c} className="bg-black text-white">
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                {/* Course / Degree Dropdown */}
-                <div className="sm:col-span-2">
-                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
-                    Course / Degree <span className="text-red-400">*</span>
-                  </label>
-                  <select
-                    value={activeRosterMember.degree || COURSE_OPTIONS[0]}
-                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'degree', e.target.value)}
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
-                  >
-                    {COURSE_OPTIONS.map((c) => (
-                      <option key={c} value={c} className="bg-black text-white">
-                        {c}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            {/* Bottom Actions for Step 3 */}
-            <div className="pt-3 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-800">
-              <button
-                type="button"
-                onClick={() => setCurrentStep('payment')}
-                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold cursor-pointer"
-              >
-                ← Back to Payment
-              </button>
-
-              <div className="w-full sm:w-auto flex items-center gap-2">
-                {activeRosterIndex < rosterMembers.length - 1 && (
-                  <button
-                    type="button"
-                    onClick={() => setActiveRosterIndex(prev => prev + 1)}
-                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold cursor-pointer transition"
-                  >
-                    Next: Member {activeRosterIndex + 2} ➔
-                  </button>
-                )}
-
-                <button
-                  type="button"
-                  onClick={handleGenerateFinalCards}
-                  disabled={loading}
-                  className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white text-xs font-chakra font-bold tracking-wider shadow-spider-glow flex items-center justify-center gap-2 cursor-pointer transition active:scale-95"
-                >
-                  {loading ? (
-                    <>
-                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                      <span>Generating Badges...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>✨ GENERATE ANIMATED ID CARDS</span>
-                      <span>➔</span>
-                    </>
-                  )}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ─── STEP 4: Animated Graphite'26 Lanyard ID Cards ─── */}
+        {/* ─── STEP 3: Animated Graphite'26 Lanyard ID Cards ─── */}
         {currentStep === 'idcards' && (
           <div className="max-h-[82vh] overflow-y-auto" style={{ background: 'linear-gradient(180deg, #0A0A0A 0%, #0D0505 50%, #0A0A0A 100%)' }}>
             {/* Top Header Bar */}
@@ -1229,7 +1126,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                 </div>
                 <h3 className="text-sm font-bold text-white mt-0.5">Your ID Card is ready with original photo!</h3>
                 <p className="text-[11px] text-gray-400">
-                  Post it on LinkedIn or share on X. Original uploaded photo and credentials verified.
+                  Original uploaded photo and credentials verified for Graphic Era campus entry.
                 </p>
               </div>
               <div className="hidden sm:block text-right text-[10px] text-gray-500 space-y-0.5">
@@ -1249,7 +1146,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                 </div>
               </div>
               <a
-                href={createGoogleCalendarUrl(event, generatedTickets[activeCardIndex]?.email || leaderEmail)}
+                href={createGoogleCalendarUrl(event, generatedTickets[activeCardIndex]?.email || members[0]?.email)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="py-1.5 px-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-semibold flex items-center gap-1 shadow transition"
@@ -1283,7 +1180,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
             {/* The Lanyard ID Card */}
             <div className="px-5 py-6">
               <LanyardIDCard
-                attendee={generatedTickets[activeCardIndex] || rosterMembers[0] || {}}
+                attendee={generatedTickets[activeCardIndex] || members[0] || {}}
                 event={event}
                 teamName={teamName}
                 participationMode={participationMode}
