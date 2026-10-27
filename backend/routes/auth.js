@@ -110,10 +110,7 @@ router.post('/google', async (req, res) => {
     return res.status(400).json({ error: 'Google ID token required' });
   }
 
-  const clientId = process.env.GOOGLE_CLIENT_ID;
-  if (!clientId) {
-    return res.status(500).json({ error: 'Google authentication is not configured on the server (missing GOOGLE_CLIENT_ID)' });
-  }
+  const clientId = process.env.GOOGLE_CLIENT_ID || '329285224512-im9fsfjmh1gkmoalcrbh8a0salnkmcbu.apps.googleusercontent.com';
 
   try {
     const ticket = await googleClient.verifyIdToken({

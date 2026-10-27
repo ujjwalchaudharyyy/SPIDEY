@@ -14,7 +14,7 @@ export default function Login() {
   const [hasGisButton, setHasGisButton] = useState(false)
   const videoRef = useRef(null)
   const googleBtnRef = useRef(null)
-  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID
+  const googleClientId = import.meta.env.VITE_GOOGLE_CLIENT_ID || '329285224512-im9fsfjmh1gkmoalcrbh8a0salnkmcbu.apps.googleusercontent.com'
 
   const { login, isAuthenticated, user } = useAuth()
   const navigate = useNavigate()
