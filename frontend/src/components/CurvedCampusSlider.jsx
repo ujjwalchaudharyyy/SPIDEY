@@ -1,7 +1,31 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState, useEffect } from 'react'
 
 export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSelectCampus }) {
   const containerRef = useRef(null)
+  const touchStartX = useRef(null)
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 640)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX
+  }
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return
+    const touchEndX = e.changedTouches[0].clientX
+    const diff = touchStartX.current - touchEndX
+    if (Math.abs(diff) > 40) {
+      if (diff > 0) handleNext()
+      else handlePrev()
+    }
+    touchStartX.current = null
+  }
 
   const handlePrev = () => {
     const nextIdx = (activeCampusIndex - 1 + campuses.length) % campuses.length
@@ -18,7 +42,9 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
       {/* 3D Curved Carousel Container */}
       <div
         ref={containerRef}
-        className="relative max-w-6xl mx-auto h-[380px] sm:h-[420px] flex items-center justify-center"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+        className="relative max-w-6xl mx-auto h-[380px] sm:h-[420px] flex items-center justify-center touch-pan-y"
         style={{ perspective: '1200px' }}
       >
         {campuses.map((campus, idx) => {
@@ -27,10 +53,11 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
           if (offset > 2) offset -= campuses.length
 
           const isCenter = offset === 0
-          const translateX = offset * 280
-          const translateY = Math.abs(offset) * 32
-          const translateZ = -Math.abs(offset) * 180
-          const rotateY = -offset * 28
+          const stepX = isMobile ? 180 : 280
+          const translateX = offset * stepX
+          const translateY = Math.abs(offset) * (isMobile ? 20 : 32)
+          const translateZ = -Math.abs(offset) * (isMobile ? 140 : 180)
+          const rotateY = -offset * (isMobile ? 22 : 28)
           const opacity = Math.abs(offset) > 2 ? 0 : 1 - Math.abs(offset) * 0.3
           const zIndex = 20 - Math.abs(offset)
 
@@ -44,7 +71,7 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
                 zIndex,
                 transition: 'all 0.6s cubic-bezier(0.2, 0.8, 0.2, 1)'
               }}
-              className={`absolute w-[300px] sm:w-[350px] h-[340px] sm:h-[370px] cursor-pointer rounded-3xl overflow-hidden border backdrop-blur-2xl transition-all group ${
+              className={`absolute w-[270px] sm:w-[350px] h-[330px] sm:h-[370px] cursor-pointer rounded-3xl overflow-hidden border backdrop-blur-2xl transition-all group ${
                 isCenter
                   ? 'border-red-500 shadow-modal-glow scale-105 ring-2 ring-red-500/50'
                   : 'border-[#1E293B] hover:border-gray-600'

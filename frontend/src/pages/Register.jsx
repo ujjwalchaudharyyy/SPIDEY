@@ -97,20 +97,25 @@ export default function Register() {
         src="/assets/videos/login_bg.mp4"
         autoPlay
         loop
+        muted
         playsInline
-        className="absolute inset-0 w-full h-full object-cover z-0"
+        webkit-playsinline="true"
+        x5-playsinline="true"
+        disablePictureInPicture
+        controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
+        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105"
       />
 
       {/* Cyber Overlay Gradients */}
-      <div className="absolute inset-0 z-10 bg-black/75 backdrop-blur-[3px] pointer-events-none" />
+      <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/85 via-black/40 to-black/85 pointer-events-none" />
 
       {/* Sound Toggle (Top Right) */}
       <button
         onClick={toggleSound}
-        className="absolute top-6 right-6 z-30 bg-black/70 hover:bg-black/90 text-white px-3.5 py-2 rounded-xl border border-red-500/40 text-xs font-mono flex items-center gap-2 backdrop-blur-md transition-all"
+        className="absolute top-3 right-3 sm:top-6 sm:right-6 z-30 bg-black/80 hover:bg-red-950/80 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full sm:rounded-xl border border-red-500/60 text-[10px] sm:text-xs font-mono flex items-center gap-1.5 sm:gap-2 backdrop-blur-md transition-all shadow-spider-glow cursor-pointer active:scale-95"
       >
-        <span>{isVideoMuted ? '🔇' : '🔊'}</span>
-        <span>{isVideoMuted ? 'UNMUTE AUDIO' : 'AUDIO ON'}</span>
+        <span className="text-xs sm:text-sm">{isVideoMuted ? '🔇' : '🔊'}</span>
+        <span className="font-semibold">{isVideoMuted ? 'TAP AUDIO' : 'SOUND ON'}</span>
       </button>
 
       {/* Central Modal Card Exactly Matching User Screenshot */}
