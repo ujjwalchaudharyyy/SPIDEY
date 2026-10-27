@@ -66,16 +66,16 @@ export const DEFAULT_EVENTS = [
   },
   {
     id: 2,
-    title: "⚡ Electro-Lake Drone Racing & Night Illumination",
-    description: "High-speed night racing tournament under neon floodlights with custom-built FPV quads and Spider-Beacon telemetry.",
+    title: "Graphite 2026: The Ultimate Spider-Man Themed Hackathon 🕸️⚡",
+    description: "Welcome to Graphite 2026 — an intense, high-energy 24-hour hackathon designed to challenge the sharpest minds across Graphic Era Campuses! Inspired by the iconic Spider-Man theme, this hackathon pushes developers, designers, and innovators to swing into action, build creative solutions, and solve complex real-world problems under the clock. Featuring 24 Hours Non-Stop Coding & Building (27th Oct – 28th Oct 2026) at an altitude of 4494.75 ft. Exclusively for innovators across Dehradun, Bhimtal, and Haldwani campuses.",
     category: "Technical",
-    venue: "Lake Vista Arena, GEHU Bhimtal",
+    venue: "Main Campus & Turing Arena (Altitude 4494.75 ft), GEHU Bhimtal",
     campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
-    image_url: "/assets/campuses/bhimtal.png",
+    image_url: "/assets/events/graphite2026.jpg",
     event_date: "2026-10-27",
-    event_time: "06:30 PM",
-    organizer_name: "Web-Tech Robotics Society",
-    rsvp_count: 142
+    event_time: "10:00 AM",
+    organizer_name: "@Graphite.xo • Graphic Era Hill University",
+    rsvp_count: 328
   },
   {
     id: 3,
