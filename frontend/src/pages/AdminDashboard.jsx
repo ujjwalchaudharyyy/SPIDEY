@@ -71,6 +71,9 @@ export default function AdminDashboard() {
   const [customSheetUrl, setCustomSheetUrl] = useState('')
   const [customWebhookUrl, setCustomWebhookUrl] = useState('')
   const [sheetsConfig, setSheetsConfig] = useState(getEventGoogleSheetsConfig())
+  const [spreadsheetModalData, setSpreadsheetModalData] = useState(null)
+  const [modalSearchQuery, setModalSearchQuery] = useState('')
+  const [modalModeFilter, setModalModeFilter] = useState('all')
 
   // Check if current logged in user is Super Admin
   const isSuperAdmin = useMemo(() => {
@@ -520,6 +523,232 @@ export default function AdminDashboard() {
         </div>
       )}
 
+      {/* Interactive In-App Fullscreen Spreadsheet Modal */}
+      {spreadsheetModalData && (
+        <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex flex-col p-2 sm:p-5 animate-fadeIn">
+          <div className="bg-[#0D111A] border border-emerald-500/40 rounded-2xl w-full h-full flex flex-col overflow-hidden shadow-2xl ring-1 ring-emerald-500/30">
+            {/* Modal Header */}
+            <div className="bg-[#090D15] p-3.5 sm:p-4 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shrink-0">
+              <div className="flex items-center gap-3 min-w-0">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-xl shrink-0">
+                  📊
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <h2 className="text-sm sm:text-base font-bold text-white tracking-tight truncate">
+                      {spreadsheetModalData.title}
+                    </h2>
+                    <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40 text-[11px] font-mono font-bold shrink-0">
+                      {spreadsheetModalData.rows?.length || 0} Registered Students
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-gray-400 mt-0.5 flex items-center gap-2 truncate">
+                    <span>🏛️ {spreadsheetModalData.campus}</span>
+                    <span className="text-gray-600">•</span>
+                    <span>🏷️ {spreadsheetModalData.category}</span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Action Toolbar on Modal Header */}
+              <div className="flex items-center gap-2 self-end sm:self-auto shrink-0">
+                <button
+                  type="button"
+                  onClick={() => exportToCSV(spreadsheetModalData.title, spreadsheetModalData.rows)}
+                  className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer border border-gray-700"
+                  title="Download CSV Spreadsheet"
+                >
+                  <span>📥</span>
+                  <span>Download CSV</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleCopyForGoogleSheets(spreadsheetModalData.title, spreadsheetModalData.rows)}
+                  className="px-3 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer border border-gray-700"
+                  title="Copy rows formatted for Excel / Sheets"
+                >
+                  <span>📋</span>
+                  <span>Copy TSV</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSpreadsheetModalData(null)}
+                  className="w-8 h-8 rounded-xl bg-gray-800 hover:bg-red-600 text-gray-300 hover:text-white flex items-center justify-center text-sm font-bold transition cursor-pointer"
+                  title="Close Spreadsheet"
+                >
+                  ✕
+                </button>
+              </div>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="bg-[#121622] px-3.5 py-2.5 border-b border-gray-800/80 flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 shrink-0">
+              <div className="relative flex-1 max-w-md">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-xs">🔍</span>
+                <input
+                  type="text"
+                  value={modalSearchQuery}
+                  onChange={(e) => setModalSearchQuery(e.target.value)}
+                  placeholder="Student name, roll number, email, ticket code se search karein..."
+                  className="w-full bg-[#090C12] border border-gray-800 rounded-xl pl-8 pr-3 py-1.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-500"
+                />
+              </div>
+
+              <div className="flex items-center gap-1 bg-[#090C12] p-1 rounded-xl border border-gray-800 text-xs">
+                <button
+                  type="button"
+                  onClick={() => setModalModeFilter('all')}
+                  className={`px-3 py-1 rounded-lg transition font-medium cursor-pointer ${
+                    modalModeFilter === 'all' ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  All ({spreadsheetModalData.rows?.length || 0})
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalModeFilter('team')}
+                  className={`px-3 py-1 rounded-lg transition font-medium cursor-pointer ${
+                    modalModeFilter === 'team' ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Team Only
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setModalModeFilter('solo')}
+                  className={`px-3 py-1 rounded-lg transition font-medium cursor-pointer ${
+                    modalModeFilter === 'solo' ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'
+                  }`}
+                >
+                  Solo Only
+                </button>
+              </div>
+            </div>
+
+            {/* Spreadsheet Grid Table */}
+            <div className="flex-1 overflow-auto bg-[#090C12]">
+              {(() => {
+                const filteredModalRows = (spreadsheetModalData.rows || []).filter(r => {
+                  const isTeam = r.team_name && !r.team_name.toLowerCase().includes('solo')
+                  if (modalModeFilter === 'team' && !isTeam) return false
+                  if (modalModeFilter === 'solo' && isTeam) return false
+                  if (modalSearchQuery.trim()) {
+                    const q = modalSearchQuery.toLowerCase()
+                    const match =
+                      (r.student_name && r.student_name.toLowerCase().includes(q)) ||
+                      (r.roll_no && r.roll_no.toLowerCase().includes(q)) ||
+                      (r.student_email && r.student_email.toLowerCase().includes(q)) ||
+                      (r.ticket_code && r.ticket_code.toLowerCase().includes(q)) ||
+                      (r.phone && r.phone.toLowerCase().includes(q)) ||
+                      (r.team_name && r.team_name.toLowerCase().includes(q)) ||
+                      (r.degree && r.degree.toLowerCase().includes(q))
+                    if (!match) return false
+                  }
+                  return true
+                })
+
+                if (filteredModalRows.length === 0) {
+                  return (
+                    <div className="py-20 text-center text-gray-500 text-xs">
+                      Is spreadsheet me koi matching student record nahi mila.
+                    </div>
+                  )
+                }
+
+                return (
+                  <table className="w-full text-left text-xs border-collapse font-sans">
+                    <thead className="sticky top-0 bg-[#0E1422] text-emerald-400 font-semibold border-b border-gray-700 text-[10px] uppercase tracking-wider shadow-sm z-10">
+                      <tr>
+                        <th className="py-2.5 px-3 w-10 text-center border-r border-gray-800">#</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Ticket Pass</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Student Name</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Roll Number</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">University Email</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Phone</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Degree &amp; Year</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Campus</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Type</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Team Name</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Team Size</th>
+                        <th className="py-2.5 px-3 border-r border-gray-800">Track / Details</th>
+                        <th className="py-2.5 px-3">Registered Date</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-800/80">
+                      {filteredModalRows.map((r, idx) => {
+                        const isTeam = r.team_name && !r.team_name.toLowerCase().includes('solo')
+                        return (
+                          <tr key={r.ticket_code || idx} className="hover:bg-emerald-950/20 transition-colors">
+                            <td className="py-2 px-3 text-center text-gray-500 font-mono border-r border-gray-800/60 bg-[#0C101A]">
+                              {idx + 1}
+                            </td>
+                            <td className="py-2 px-3 font-mono font-bold text-emerald-400 border-r border-gray-800/60 whitespace-nowrap">
+                              {r.ticket_code || `PASS-${idx + 1}`}
+                            </td>
+                            <td className="py-2 px-3 font-semibold text-white border-r border-gray-800/60 whitespace-nowrap">
+                              {r.student_name}
+                            </td>
+                            <td className="py-2 px-3 font-mono text-cyan-300 border-r border-gray-800/60 whitespace-nowrap">
+                              {r.roll_no || '—'}
+                            </td>
+                            <td className="py-2 px-3 text-gray-300 border-r border-gray-800/60 whitespace-nowrap">
+                              {r.student_email}
+                            </td>
+                            <td className="py-2 px-3 text-gray-300 font-mono border-r border-gray-800/60 whitespace-nowrap">
+                              {r.phone || '—'}
+                            </td>
+                            <td className="py-2 px-3 text-amber-200/90 border-r border-gray-800/60 whitespace-nowrap">
+                              {r.degree || '—'}
+                            </td>
+                            <td className="py-2 px-3 text-gray-300 border-r border-gray-800/60 whitespace-nowrap">
+                              {r.campus?.split(' ')?.[3] || r.campus || '—'}
+                            </td>
+                            <td className="py-2 px-3 border-r border-gray-800/60 whitespace-nowrap">
+                              <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                isTeam ? 'bg-purple-950 text-purple-300 border border-purple-500/30' : 'bg-blue-950 text-blue-300 border border-blue-500/30'
+                              }`}>
+                                {isTeam ? '👥 Team' : '👤 Solo'}
+                              </span>
+                            </td>
+                            <td className="py-2 px-3 text-gray-300 border-r border-gray-800/60 whitespace-nowrap">
+                              {r.team_name || 'Solo'}
+                            </td>
+                            <td className="py-2 px-3 text-center text-gray-400 font-mono border-r border-gray-800/60">
+                              {r.team_size || '1'}
+                            </td>
+                            <td className="py-2 px-3 text-gray-300 border-r border-gray-800/60 whitespace-nowrap">
+                              {r.track_info || 'General'}
+                            </td>
+                            <td className="py-2 px-3 text-gray-400 font-mono whitespace-nowrap">
+                              {r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' }) : '—'}
+                            </td>
+                          </tr>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                )
+              })()}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="bg-[#090D15] p-2.5 px-4 border-t border-gray-800 flex items-center justify-between text-xs text-gray-400 shrink-0">
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>In-App Live Spreadsheet Grid • Graphic Era High Command</span>
+              </span>
+              <button
+                type="button"
+                onClick={() => setSpreadsheetModalData(null)}
+                className="px-3.5 py-1 rounded-xl bg-gray-800 hover:bg-gray-700 text-white text-xs font-semibold transition cursor-pointer"
+              >
+                Close Spreadsheet
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main Container */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
 
@@ -620,20 +849,45 @@ export default function AdminDashboard() {
           {tab === 'registrations' && (
             <div className="flex items-center gap-1.5 bg-[#121622] border border-gray-800 p-1 rounded-xl text-xs">
               <button
-                onClick={() => setViewMode('stacked')}
-                className={`px-3 py-1 rounded-lg transition cursor-pointer font-medium ${
-                  viewMode === 'stacked' ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'
+                type="button"
+                onClick={() => {
+                  setViewMode('stacked')
+                  setTimeout(() => {
+                    const el = document.getElementById('spreadsheets-section')
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }, 50)
+                }}
+                className={`px-3 py-1.5 rounded-lg transition cursor-pointer font-semibold flex items-center gap-1.5 ${
+                  viewMode === 'stacked'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
                 }`}
+                title="View all event spreadsheets stacked together"
               >
-                📑 Sabhi Sheets Ek Sath
+                <span>📑</span>
+                <span>All Sheets (Stacked)</span>
               </button>
               <button
-                onClick={() => setViewMode('single')}
-                className={`px-3 py-1 rounded-lg transition cursor-pointer font-medium ${
-                  viewMode === 'single' ? 'bg-emerald-600 text-white' : 'text-gray-400 hover:text-white'
+                type="button"
+                onClick={() => {
+                  setViewMode('single')
+                  if ((selectedEventId === 'all' || !selectedEventId) && eventsList.length > 0) {
+                    setSelectedEventId(String(eventsList[0].id))
+                  }
+                  setTimeout(() => {
+                    const el = document.getElementById('spreadsheets-section')
+                    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                  }, 50)
+                }}
+                className={`px-3 py-1.5 rounded-lg transition cursor-pointer font-semibold flex items-center gap-1.5 ${
+                  viewMode === 'single'
+                    ? 'bg-emerald-600 text-white shadow-sm'
+                    : 'text-gray-400 hover:text-white hover:bg-gray-800/50'
                 }`}
+                title="Focus on one single event spreadsheet at a time"
               >
-                🔍 Focus Single Sheet
+                <span>🔍</span>
+                <span>Single Sheet Focus</span>
               </button>
             </div>
           )}
@@ -690,16 +944,25 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="pt-3 mt-2 border-t border-gray-800/80 flex items-center gap-1.5">
-                          <a
-                            href={camp.sheetUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 transition"
-                            title="Open Campus Master Google Sheet"
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setModalSearchQuery('')
+                              setModalModeFilter('all')
+                              setSpreadsheetModalData({
+                                title: `${camp.shortName} Master Spreadsheet`,
+                                campus: camp.name,
+                                category: 'Quad-Campus Master Registry',
+                                rows: camp.registrations,
+                                eventId: camp.key
+                              })
+                            }}
+                            className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 transition cursor-pointer shadow-sm"
+                            title="Open Campus Master Spreadsheet"
                           >
                             <span>📊</span>
                             <span>Master Sheet</span>
-                          </a>
+                          </button>
                           <button
                             onClick={() => setSelectedCampusFilter(isSelected ? 'ALL' : camp.name)}
                             className={`py-1.5 px-2 rounded-lg text-[11px] font-semibold transition cursor-pointer ${
@@ -726,92 +989,143 @@ export default function AdminDashboard() {
               </div>
             )}
 
-            {/* Quick Directory Cards: Har Event Ki Apni Separate Sheet Card */}
-            <div>
-              <div className="flex items-center justify-between mb-2.5">
-                <p className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
-                  <span>📂</span>
-                  <span>SABHI EVENTS KI ALAG-ALAG SPREADSHEETS DIRECTORY ({eventsList.length})</span>
-                </p>
-                <span className="text-[11px] text-emerald-400 font-mono">
-                  ● Real-Time Auto-Update Active
-                </span>
-              </div>
+            {/* Quick Directory Cards: Shown in stacked mode or clean quick selector in single mode */}
+            {viewMode === 'stacked' ? (
+              <div>
+                <div className="flex items-center justify-between mb-2.5">
+                  <p className="text-xs font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <span>📂</span>
+                    <span>ALL EVENTS SPREADSHEETS DIRECTORY ({eventsList.length})</span>
+                  </p>
+                  <span className="text-[11px] text-emerald-400 font-mono">
+                    ● Real-Time Auto-Update Active
+                  </span>
+                </div>
 
-              {/* Grid of Event Spreadsheet Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                {eventsList.map(ev => {
-                  const sheetLink = getEventSheetUrl(ev.id, ev.title)
-                  const count = ev.count
-                  const isSelected = String(selectedEventId) === String(ev.id)
-                  const evRegs = registrationsByEvent[String(ev.id)] || []
+                {/* Grid of Event Spreadsheet Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                  {eventsList.map(ev => {
+                    const count = ev.count
+                    const isSelected = String(selectedEventId) === String(ev.id)
+                    const evRegs = registrationsByEvent[String(ev.id)] || []
 
-                  return (
-                    <div
-                      key={ev.id}
-                      className={`bg-[#121622] border rounded-xl p-3.5 flex flex-col justify-between transition-all ${
-                        isSelected
-                          ? 'border-emerald-500 shadow-md ring-1 ring-emerald-500/50'
-                          : 'border-gray-800 hover:border-gray-700'
-                      }`}
-                    >
-                      <div>
-                        <div className="flex items-center justify-between gap-2 mb-2">
-                          <span className="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold">
-                            SPREADSHEET #{ev.id}
-                          </span>
-                          <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
-                            count > 0 ? 'bg-emerald-600 text-white' : 'bg-gray-800 text-gray-400'
-                          }`}>
-                            {count} Registered
-                          </span>
+                    return (
+                      <div
+                        key={ev.id}
+                        className={`bg-[#121622] border rounded-xl p-3.5 flex flex-col justify-between transition-all ${
+                          isSelected
+                            ? 'border-emerald-500 shadow-md ring-1 ring-emerald-500/50'
+                            : 'border-gray-800 hover:border-gray-700'
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-center justify-between gap-2 mb-2">
+                            <span className="px-2 py-0.5 rounded bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-semibold">
+                              SPREADSHEET #{ev.id}
+                            </span>
+                            <span className={`px-2 py-0.5 rounded-full text-[10px] font-mono font-bold ${
+                              count > 0 ? 'bg-emerald-600 text-white' : 'bg-gray-800 text-gray-400'
+                            }`}>
+                              {count} Registered
+                            </span>
+                          </div>
+
+                          <h4 className="text-xs font-bold text-white line-clamp-2 mb-1" title={ev.title}>
+                            {ev.title}
+                          </h4>
+                          <p className="text-[10px] text-gray-400 truncate">
+                            {ev.campus?.split(' ')?.[3] || 'Bhimtal'} • {ev.category}
+                          </p>
                         </div>
 
-                        <h4 className="text-xs font-bold text-white line-clamp-2 mb-1" title={ev.title}>
-                          {ev.title}
-                        </h4>
-                        <p className="text-[10px] text-gray-400 truncate">
-                          {ev.campus?.split(' ')?.[3] || 'Bhimtal'} • {ev.category}
-                        </p>
+                        {/* Action buttons on card */}
+                        <div className="pt-3 mt-2 border-t border-gray-800/80 flex items-center gap-1.5">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setModalSearchQuery('')
+                              setModalModeFilter('all')
+                              setSpreadsheetModalData({
+                                title: ev.title,
+                                campus: ev.campus,
+                                category: ev.category,
+                                rows: evRegs,
+                                eventId: ev.id
+                              })
+                            }}
+                            className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600/90 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 cursor-pointer transition shadow-sm"
+                            title="Open In-App Spreadsheet"
+                          >
+                            <span>📊</span>
+                            <span>Open Sheet</span>
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => exportToCSV(ev.title, evRegs)}
+                            className="py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] font-medium transition cursor-pointer"
+                            title="Download CSV"
+                          >
+                            📥
+                          </button>
+
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setSelectedEventId(String(ev.id))
+                              setViewMode('single')
+                              setTimeout(() => {
+                                const el = document.getElementById('spreadsheets-section')
+                                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                              }, 50)
+                            }}
+                            className="py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] font-medium transition cursor-pointer"
+                            title="Focus this sheet below"
+                          >
+                            👁️
+                          </button>
+                        </div>
                       </div>
-
-                      {/* Action buttons on card */}
-                      <div className="pt-3 mt-2 border-t border-gray-800/80 flex items-center gap-1.5">
-                        <a
-                          href={sheetLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600/90 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 cursor-pointer transition"
-                          title="Open separate Google Sheet"
-                        >
-                          <span>📊</span>
-                          <span>Open Sheet</span>
-                        </a>
-
-                        <button
-                          onClick={() => exportToCSV(ev.title, evRegs)}
-                          className="py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] font-medium transition cursor-pointer"
-                          title="Download CSV"
-                        >
-                          📥
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setSelectedEventId(String(ev.id))
-                            setViewMode('single')
-                          }}
-                          className="py-1.5 px-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-[11px] font-medium transition cursor-pointer"
-                          title="View table below"
-                        >
-                          👁️
-                        </button>
-                      </div>
-                    </div>
-                  )
-                })}
+                    )
+                  })}
+                </div>
               </div>
-            </div>
+            ) : (
+              /* In Single Sheet Focus mode, show a clean quick-switch selector bar so the user immediately sees the single sheet without having to scroll past 33 cards */
+              <div className="bg-[#121622] border border-emerald-500/30 rounded-2xl p-4 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-xl shrink-0">
+                    🔍
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-xs font-bold text-white uppercase tracking-wider">Single Sheet Focus Mode</h4>
+                      <span className="px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold">
+                        Active
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-gray-400">
+                      Viewing one event spreadsheet at a time. Select an event below to inspect all registered students.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full md:w-auto">
+                  <span className="text-xs text-gray-300 whitespace-nowrap font-medium">Select Event:</span>
+                  <select
+                    value={String(selectedEventId)}
+                    onChange={(e) => setSelectedEventId(e.target.value)}
+                    className="bg-[#090C12] border border-gray-700 hover:border-emerald-500 text-white text-xs rounded-xl px-3 py-2 focus:outline-none focus:border-emerald-500 w-full md:w-80 cursor-pointer transition font-medium"
+                  >
+                    {eventsList.map(ev => (
+                      <option key={ev.id} value={String(ev.id)}>
+                        #{ev.id} - {ev.title} ({ev.count} registered)
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
 
             {/* Global Search and Filter Bar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 bg-[#121622] border border-gray-800 p-2.5 rounded-xl">
@@ -856,6 +1170,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* SPREADSHEETS DISPLAY */}
+            <div id="spreadsheets-section">
             {loading ? (
               <div className="flex justify-center py-16">
                 <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -889,15 +1204,25 @@ export default function AdminDashboard() {
 
                         {/* Event Spreadsheet Actions */}
                         <div className="flex flex-wrap items-center gap-2 shrink-0">
-                          <a
-                            href={sheetLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setModalSearchQuery('')
+                              setModalModeFilter('all')
+                              setSpreadsheetModalData({
+                                title: ev.title,
+                                campus: ev.campus,
+                                category: ev.category,
+                                rows: filtered,
+                                eventId: ev.id
+                              })
+                            }}
+                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+                            title="Open In-App Fullscreen Spreadsheet"
                           >
                             <span>📊</span>
-                            <span>Open Google Sheet</span>
-                          </a>
+                            <span>Open Fullsheet</span>
+                          </button>
 
                           <button
                             onClick={() => handleCopyForGoogleSheets(ev.title, filtered)}
@@ -1055,15 +1380,25 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 shrink-0">
-                          <a
-                            href={sheetLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setModalSearchQuery('')
+                              setModalModeFilter('all')
+                              setSpreadsheetModalData({
+                                title: ev.title,
+                                campus: ev.campus,
+                                category: ev.category,
+                                rows: filtered,
+                                eventId: ev.id
+                              })
+                            }}
+                            className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer shadow-sm"
+                            title="Open In-App Fullscreen Spreadsheet"
                           >
                             <span>📊</span>
-                            <span>Open in Google Sheets</span>
-                          </a>
+                            <span>Open Fullsheet</span>
+                          </button>
                           <button
                             onClick={() => handleCopyForGoogleSheets(ev.title, filtered)}
                             className="px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
@@ -1165,6 +1500,7 @@ export default function AdminDashboard() {
                 })()}
               </div>
             )}
+            </div>
           </div>
         )}
 
