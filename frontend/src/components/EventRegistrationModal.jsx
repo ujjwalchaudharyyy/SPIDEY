@@ -1,4 +1,5 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
+import QRCode from 'qrcode'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import { syncRegistrationToGoogleSheet } from '../utils/googleSheetsSync'
@@ -106,6 +107,76 @@ function SpideyAvatar({ gender = 'male', avatarId = 1 }) {
 // ─── Graphite'26-Style Lanyard ID Card (With Original Uploaded Photo & Name) ───
 function LanyardIDCard({ attendee, event, teamName, participationMode, selectedTrack, index, onCopy, copiedCode }) {
   const cardRef = useRef(null)
+  const [qrDataUrl, setQrDataUrl] = useState('')
+
+  useEffect(() => {
+    let isMounted = true
+
+    async function generateVerificationQR() {
+      if (!attendee?.ticketCode) return
+
+      try {
+        const origin = window.location.origin
+        const verifyParams = new URLSearchParams({
+          code: attendee.ticketCode,
+          name: attendee.name || '',
+          roll: attendee.rollNo || '',
+          email: attendee.email || '',
+          phone: attendee.phone || '',
+          campus: attendee.campus || '',
+          degree: attendee.degree || '',
+          event: event.title || '',
+          team: teamName || 'Solo',
+          role: attendee.isLeader ? 'Leader' : 'Member',
+          track: selectedTrack || ''
+        })
+
+        const verifyUrl = `${origin}/verify?${verifyParams.toString()}`
+
+        // Also save to localStorage so local browser has access to uploaded photo
+        try {
+          const payload = {
+            ticketCode: attendee.ticketCode,
+            name: attendee.name,
+            rollNo: attendee.rollNo,
+            email: attendee.email,
+            phone: attendee.phone,
+            campus: attendee.campus,
+            degree: attendee.degree,
+            event_title: event.title,
+            event_campus: attendee.campus || event.campus,
+            team_name: teamName || 'Solo',
+            roleInTeam: attendee.isLeader ? 'Team Leader' : 'Team Member',
+            track_info: selectedTrack,
+            photoUrl: attendee.photoUrl || ''
+          }
+          localStorage.setItem(`spider_verified_pass_${attendee.ticketCode}`, JSON.stringify(payload))
+        } catch (e) {}
+
+        const qrUrl = await QRCode.toDataURL(verifyUrl, {
+          width: 320,
+          margin: 1,
+          color: {
+            dark: '#000000',
+            light: '#ffffff'
+          },
+          errorCorrectionLevel: 'M'
+        })
+
+        if (isMounted) {
+          setQrDataUrl(qrUrl)
+        }
+      } catch (err) {
+        console.error('Failed to generate verification QR code:', err)
+      }
+    }
+
+    generateVerificationQR()
+
+    return () => {
+      isMounted = false
+    }
+  }, [attendee, event, teamName, selectedTrack])
 
   const handleShareTwitter = () => {
     const text = encodeURIComponent(`Just got my official Spider-Pass ID Card for ${event.title}! 🕷️ Pass: ${attendee.ticketCode} #SPIDEY #GraphicEra`)
@@ -273,6 +344,47 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
             >
               {copiedCode === attendee.ticketCode ? '✓ Copied!' : '📋 Copy'}
             </button>
+          </div>
+        </div>
+
+        {/* ─── Authentic Scannable Verification QR Code ─── */}
+        <div className="px-4 pb-3">
+          <div className="bg-black/70 border border-red-900/50 rounded-xl p-3 flex flex-col items-center text-center shadow-inner">
+            <div className="flex items-center gap-1.5 mb-2">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="text-[10px] font-mono font-bold text-gray-200 uppercase tracking-widest">
+                📱 SCAN TO VERIFY PASS
+              </span>
+            </div>
+
+            {/* Sharp Scannable QR Code */}
+            <div className="p-2 bg-white rounded-xl shadow-lg border-2 border-red-500/60 transition transform hover:scale-105">
+              {qrDataUrl ? (
+                <img
+                  src={qrDataUrl}
+                  alt="Scannable Verification QR Code"
+                  className="w-32 h-32 object-contain block mx-auto"
+                />
+              ) : (
+                <div className="w-32 h-32 flex items-center justify-center text-black text-xs font-mono">
+                  Generating QR...
+                </div>
+              )}
+            </div>
+
+            <p className="text-[10px] text-gray-400 font-mono mt-2">
+              Point any mobile camera to verify official Graphic Era pass credentials.
+            </p>
+
+            <a
+              href={`/verify?code=${encodeURIComponent(attendee.ticketCode || '')}&name=${encodeURIComponent(attendee.name || '')}&roll=${encodeURIComponent(attendee.rollNo || '')}&campus=${encodeURIComponent(attendee.campus || '')}&degree=${encodeURIComponent(attendee.degree || '')}&event=${encodeURIComponent(event.title || '')}&team=${encodeURIComponent(teamName || '')}&role=${encodeURIComponent(attendee.isLeader ? 'Leader' : 'Member')}&track=${encodeURIComponent(selectedTrack || '')}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-950/80 border border-emerald-500/50 text-emerald-300 hover:text-white hover:bg-emerald-800/80 text-[11px] font-mono font-bold transition shadow-sm"
+            >
+              <span>🔍 Test Scan / View Pass</span>
+              <span>➔</span>
+            </a>
           </div>
         </div>
 
@@ -482,6 +594,27 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const eventFee = 199
   const totalAmount = participationMode === 'team' ? members.length * eventFee : eventFee
   const [paymentMethod, setPaymentMethod] = useState('upi')
+  const [paymentQrDataUrl, setPaymentQrDataUrl] = useState('')
+
+  useEffect(() => {
+    async function genPaymentQR() {
+      try {
+        const upiString = `upi://pay?pa=graphicera.events@sbi&pn=Graphic%20Era%20Events&am=${totalAmount}&cu=INR&tn=Graphite26%20Pass%20Fee`
+        const url = await QRCode.toDataURL(upiString, {
+          width: 280,
+          margin: 1,
+          color: {
+            dark: '#000000',
+            light: '#ffffff'
+          }
+        })
+        setPaymentQrDataUrl(url)
+      } catch (e) {
+        console.error(e)
+      }
+    }
+    genPaymentQR()
+  }, [totalAmount])
   const [upiId, setUpiId] = useState('student@oksbi')
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
@@ -1051,22 +1184,11 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
             {paymentMethod === 'qr' && (
               <div className="p-4 rounded-xl bg-[#141A29] border border-gray-800 flex flex-col items-center text-center space-y-2">
                 <div className="w-36 h-36 bg-white rounded-xl p-2.5 shadow-md flex items-center justify-center">
-                  <svg viewBox="0 0 100 100" className="w-full h-full text-black">
-                    <rect x="5" y="5" width="30" height="30" fill="black" />
-                    <rect x="10" y="10" width="20" height="20" fill="white" />
-                    <rect x="15" y="15" width="10" height="10" fill="black" />
-                    <rect x="65" y="5" width="30" height="30" fill="black" />
-                    <rect x="70" y="10" width="20" height="20" fill="white" />
-                    <rect x="75" y="15" width="10" height="10" fill="black" />
-                    <rect x="5" y="65" width="30" height="30" fill="black" />
-                    <rect x="10" y="70" width="20" height="20" fill="white" />
-                    <rect x="15" y="75" width="10" height="10" fill="black" />
-                    <rect x="45" y="20" width="10" height="20" fill="black" />
-                    <rect x="45" y="50" width="20" height="10" fill="black" />
-                    <rect x="70" y="50" width="15" height="15" fill="black" />
-                    <rect x="45" y="70" width="15" height="25" fill="black" />
-                    <circle cx="50" cy="50" r="6" fill="#DC2626" />
-                  </svg>
+                  {paymentQrDataUrl ? (
+                    <img src={paymentQrDataUrl} alt="UPI Payment QR" className="w-full h-full object-contain" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-500 font-mono">Loading UPI...</div>
+                  )}
                 </div>
                 <p className="text-xs font-semibold text-white">Scan with GPay, PhonePe, or Paytm</p>
                 <p className="text-[11px] text-gray-400">Total: <span className="text-emerald-400 font-bold">₹{totalAmount}</span></p>

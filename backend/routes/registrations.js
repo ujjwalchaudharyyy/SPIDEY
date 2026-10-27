@@ -107,5 +107,25 @@ router.get('/:id/attendees', authenticateToken, (req, res) => {
   res.json(attendees);
 });
 
+// GET /api/events/verify/:ticketCode — Public scan verification
+router.get('/verify/:ticketCode', (req, res) => {
+  const code = req.params.ticketCode;
+  const reg = queryGet(`
+    SELECT r.*, e.title as event_title, e.category as event_category, e.campus as event_campus, e.venue as event_venue, e.event_date, e.event_time
+    FROM event_registrations r
+    JOIN events e ON e.id = r.event_id
+    WHERE r.ticket_code = ?
+  `, [code]);
+
+  if (!reg) {
+    return res.status(404).json({ verified: false, message: 'Ticket code not found or invalid' });
+  }
+
+  res.json({
+    verified: true,
+    registration: reg
+  });
+});
+
 module.exports = router;
 

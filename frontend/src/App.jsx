@@ -7,6 +7,7 @@ import StudentFeed from './pages/StudentFeed'
 import OrganizerDashboard from './pages/OrganizerDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import Placement from './pages/Placement'
+import VerifyPass from './pages/VerifyPass'
 import ProtectedRoute from './components/ProtectedRoute'
 import IntroVideoModal from './components/IntroVideoModal'
 
@@ -77,6 +78,8 @@ export default function App() {
         </ProtectedRoute>
       } />
       <Route path="/placements" element={<Placement />} />
+      <Route path="/verify" element={<VerifyPass />} />
+      <Route path="/verify/:code" element={<VerifyPass />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
