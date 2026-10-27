@@ -535,7 +535,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const currentPayAmount = payAmountOption === '1' ? 1 : payAmountOption === '10' ? 10 : totalAmount
 
   const [paymentMethod, setPaymentMethod] = useState('upi')
-  const [upiId, setUpiId] = useState('student@oksbi')
+  const [upiId, setUpiId] = useState('chaudharyujjwal@fam')
   const [paymentQrDataUrl, setPaymentQrDataUrl] = useState('')
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [transactionId, setTransactionId] = useState('')
@@ -550,7 +550,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   useEffect(() => {
     async function genPaymentQR() {
       try {
-        const upiString = `upi://pay?pa=graphicera.events@sbi&pn=Graphic%20Era%20Events&am=${currentPayAmount}.00&cu=INR&tn=REG-${event.id}`
+        const upiString = `upi://pay?pa=chaudharyujjwal@fam&pn=Ujjwal%20Chaudhary&am=${currentPayAmount}.00&cu=INR&tn=REG-${event.id}`
         const url = await QRCode.toDataURL(upiString, {
           width: 280,
           margin: 1,
@@ -1391,10 +1391,10 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                 <p className="text-xs font-semibold text-white">
                   Scan with GPay, PhonePe, or Paytm • Total: <span className="text-emerald-400 font-bold font-mono">₹{currentPayAmount}</span>
                 </p>
-                <p className="text-[10px] text-gray-400 mt-0.5">UPI ID: <span className="text-gray-300 font-mono">graphicera.events@sbi</span></p>
+                <p className="text-[10px] text-gray-400 mt-0.5">UPI ID: <span className="text-gray-300 font-mono">chaudharyujjwal@fam</span></p>
               </div>
               <a
-                href={`upi://pay?pa=graphicera.events@sbi&pn=Graphic%20Era%20Events&am=${currentPayAmount}.00&cu=INR&tn=REG-${event.id}`}
+                href={`upi://pay?pa=chaudharyujjwal@fam&pn=Ujjwal%20Chaudhary&am=${currentPayAmount}.00&cu=INR&tn=REG-${event.id}`}
                 className="px-3.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-200 text-[11px] font-semibold border border-gray-700 flex items-center gap-1 transition"
               >
                 <span>📱 Pay Directly on Mobile (Open UPI App)</span>
