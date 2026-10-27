@@ -44,11 +44,11 @@ const POKEMON_ROSTER = [
 ]
 
 export default function PokeballOpeningTransition({ onComplete, onClose }) {
-  // Clean 3-Second Fully Automated Flow:
-  // 0.0s – 1.0s: Clean Pokéball appears & shakes
-  // 1.0s – 1.4s: Pokéball opens & flashes
-  // 1.4s – 3.0s: Random Pokémon appears
-  // At 3.0s: Automatically opens 4K Gallery (no clicking needed)
+  // Exact 2.0-Second Fully Automated Flow:
+  // 0.0s – 0.6s: Pokeball appears & fast shakes
+  // 0.6s – 0.9s: Pokeball splits & flashes open
+  // 0.9s – 2.0s: Random Pokemon appears
+  // At exactly 2.0s: Automatically opens 4K Gallery (no clicking needed)
   const [stage, setStage] = useState('wobble')
   const [wobbleCount, setWobbleCount] = useState(0)
   const [selectedPokemon, setSelectedPokemon] = useState(null)
@@ -58,26 +58,26 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
     const randomMon = POKEMON_ROSTER[Math.floor(Math.random() * POKEMON_ROSTER.length)]
     setSelectedPokemon(randomMon)
 
-    // 1. Wobble interval (0 to 1000ms)
+    // 1. Fast wobble (0 to 600ms)
     const wobbleTimer = setInterval(() => {
       setWobbleCount((c) => c + 1)
-    }, 160)
+    }, 120)
 
-    // 2. Open pokeball at 1000ms
+    // 2. Open pokeball at 600ms
     const openTimeout = setTimeout(() => {
       clearInterval(wobbleTimer)
       setStage('open')
-    }, 1000)
+    }, 600)
 
-    // 3. Reveal Pokemon at 1400ms
+    // 3. Reveal Pokemon at 900ms
     const revealTimeout = setTimeout(() => {
       setStage('reveal')
-    }, 1400)
+    }, 900)
 
-    // 4. Auto-complete to gallery at exactly 3000ms (3.0s total work)
+    // 4. Auto-complete to gallery at exactly 2000ms (2.0 seconds total work)
     const autoCompleteTimeout = setTimeout(() => {
       onComplete()
-    }, 3000)
+    }, 2000)
 
     return () => {
       clearInterval(wobbleTimer)
@@ -113,7 +113,7 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
         </button>
       </div>
 
-      {/* ── STAGE 1 & 2: SIMPLE CLEAN POKÉBALL (0s – 1.4s) ── */}
+      {/* ── STAGE 1 & 2: SIMPLE CLEAN POKÉBALL (0s – 0.9s) ── */}
       {(stage === 'wobble' || stage === 'open') && (
         <div className="relative flex flex-col items-center justify-center animate-fade-in">
           {/* Subtle Ambient Glow */}
@@ -175,7 +175,7 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
         </div>
       )}
 
-      {/* ── STAGE 3: POKÉMON REVEAL (1.4s – 3.0s) ── */}
+      {/* ── STAGE 3: POKÉMON REVEAL (0.9s – 2.0s) ── */}
       {stage === 'reveal' && selectedPokemon && (
         <div className="relative flex flex-col items-center justify-center max-w-md w-full text-center space-y-4 animate-scale-up">
           {/* Glowing Aura Behind Pokémon */}
@@ -212,12 +212,12 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
             </div>
           </div>
 
-          {/* 3-Second Automatic Progress Bar */}
+          {/* Fast 2-Second Automatic Progress Bar */}
           <div className="w-56 h-1.5 bg-gray-800 rounded-full overflow-hidden border border-yellow-400/40 z-10 mt-2">
-            <div className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 animate-[progress_1.6s_linear_forwards]" />
+            <div className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 animate-[progress_1.1s_linear_forwards]" />
           </div>
           <p className="text-[11px] font-mono text-gray-400">
-            Entering 4K Memories Gallery... (tap anywhere to skip)
+            Entering 4K Memories Gallery...
           </p>
         </div>
       )}
