@@ -179,7 +179,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   return (
     <>
       <div className="spider-card group flex flex-col justify-between overflow-hidden p-0 border-[#1E293B] hover:border-red-500/70 transition-all duration-300">
-        {/* Event Header Photo ΓÇö In-Card Gallery Slider */}
+        {/* Event Header Photo — In-Card Gallery Slider */}
         <div
           className="relative h-52 w-full overflow-hidden bg-black cursor-pointer select-none"
           onClick={handleOpenGallery}
@@ -235,7 +235,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
               )}
               {event.registration_deadline && (
                 <span className="text-[10px] font-chakra italic font-bold px-2 py-0.5 rounded-full bg-red-950/90 text-red-200 border border-red-500 shadow-spider-glow flex items-center gap-1 animate-pulse">
-                  <span>≡ƒÜ¿</span> CLOSES 5 NOV
+                  <span>🚨</span> CLOSES 5 NOV
                 </span>
               )}
               {isPresent && (
@@ -246,11 +246,11 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
               )}
               {isPast && (
                 <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-black/85 text-yellow-400 border border-yellow-400/80 shadow-[0_0_15px_rgba(234,179,8,0.4)] flex items-center gap-1">
-                  <span>≡ƒÅå</span> MEMORIES
+                  <span>🏆</span> MEMORIES
                 </span>
               )}
               <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/80 border border-red-500/40 text-xs font-mono font-bold text-red-300">
-                <span>≡ƒò╖∩╕Å</span>
+                <span>🕷️</span>
                 <span>{event.rsvp_count || 0}</span>
               </div>
             </div>
@@ -264,14 +264,14 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                 onClick={cardPrev}
                 className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/75 hover:bg-amber-500 hover:text-black text-white flex items-center justify-center text-lg font-bold border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer shadow-lg"
               >
-                ΓÇ╣
+                ‹
               </button>
               <button
                 type="button"
                 onClick={cardNext}
                 className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/75 hover:bg-amber-500 hover:text-black text-white flex items-center justify-center text-lg font-bold border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer shadow-lg"
               >
-                ΓÇ║
+                ›
               </button>
 
               {/* Dot Indicators */}
@@ -315,7 +315,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
           {event.winner_team && (
             <div className="absolute bottom-2 left-2 right-2 z-10 bg-black/80 border border-yellow-500/40 rounded-xl px-3 py-1.5 text-[11px] font-mono text-yellow-300 flex items-center justify-between shadow-lg backdrop-blur-md">
               <span className="truncate font-medium flex items-center gap-1.5">
-                <span>≡ƒÅå</span> {event.winner_team}
+                <span>🏆</span> {event.winner_team}
               </span>
               <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0">
                 MEMORIES
@@ -338,7 +338,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
           {event.registration_deadline && (
             <div className="absolute bottom-2 left-2 right-2 z-10 bg-red-950/90 border border-red-500/60 rounded-xl px-3 py-1.5 text-[11px] font-mono text-red-200 flex items-center justify-between shadow-lg backdrop-blur-md">
               <span className="truncate font-medium flex items-center gap-1.5">
-                <span>ΓÜí</span> Reg Live! Strict Deadline: 5 Nov
+                <span>⚡</span> Reg Live! Strict Deadline: 5 Nov
               </span>
               <span className="text-[9px] bg-red-500 text-white px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0 animate-pulse">
                 HURRY
@@ -356,11 +356,11 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
               className="absolute bottom-2 left-2 right-2 z-10 bg-black/85 hover:bg-black/95 border border-amber-500/60 hover:border-amber-400 rounded-xl px-3 py-1.5 text-[11px] font-mono text-amber-300 flex items-center justify-between shadow-lg backdrop-blur-md cursor-pointer transition-all group/banner"
             >
               <span className="truncate font-medium flex items-center gap-1.5 text-white">
-                <span>≡ƒô╕</span>
+                <span>📸</span>
                 <span>{isPast ? 'EVENT MEMORIES' : 'LIVE PHOTOS'} ({gallery.length})</span>
               </span>
               <span className="text-[10px] bg-amber-500 group-hover/banner:bg-amber-400 text-black px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0 shadow-md flex items-center gap-1">
-                MEMORIES Γ₧ö
+                MEMORIES ➔
               </span>
             </div>
           )}
@@ -383,36 +383,36 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             {/* Metadata Grid */}
             <div className="space-y-1.5 text-xs font-mono text-gray-300 mb-4 bg-[#0E1526]/80 p-3 rounded-2xl border border-[#1E293B]">
               <div className="flex items-center">
-                <span className="text-red-400 mr-2">≡ƒôà</span>
+                <span className="text-red-400 mr-2">📅</span>
                 {event.date_tba ? (
                   <span className="text-cyan-300 font-bold">
                     {event.display_date || 'Date: Revealing Soon (TBA) Γ¥ä∩╕Å'}
                   </span>
                 ) : event.display_date ? (
-                  <span>{event.display_date} ΓÇó {formatTime(event.event_time)}</span>
+                  <span>{event.display_date} • {formatTime(event.event_time)}</span>
                 ) : (
-                  <span>{formatDate(event.event_date)} ΓÇó {formatTime(event.event_time)}</span>
+                  <span>{formatDate(event.event_date)} • {formatTime(event.event_time)}</span>
                 )}
               </div>
               <div className="flex items-center">
-                <span className="text-red-400 mr-2">≡ƒôì</span>
+                <span className="text-red-400 mr-2">📍</span>
                 <span className="truncate">{event.venue}</span>
               </div>
               {event.registration_window && (
                 <div className="flex items-center text-cyan-300 text-[11px] font-semibold">
-                  <span className="mr-2">≡ƒô¥</span>
+                  <span className="mr-2">📝</span>
                   <span>Reg Window: {event.registration_window}</span>
                 </div>
               )}
               {event.registration_deadline && (
                 <div className="flex items-center text-amber-300 text-[11px] font-semibold">
-                  <span className="mr-2">ΓÅ░</span>
+                  <span className="mr-2">⏰</span>
                   <span>Registration Off Date: 5th Nov 2026</span>
                 </div>
               )}
               {event.organizer_name && (
                 <div className="flex items-center text-gray-400 text-[11px]">
-                  <span className="text-blue-400 mr-2">≡ƒæñ</span>
+                  <span className="text-blue-400 mr-2">👤</span>
                   <span>By {event.organizer_name}</span>
                 </div>
               )}
@@ -462,7 +462,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                       <span>...</span>
                     ) : isRsvped ? (
                       <>
-                        <span>Γ£ô GOING</span>
+                        <span>✓ GOING</span>
                       </>
                     ) : (
                       <>
@@ -491,7 +491,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                     className="w-full py-2 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white hover:brightness-110 shadow-spider-glow flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 border border-red-500/50"
                   >
                     <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
-                    <span>≡ƒô╕ MEMORIES ({gallery.length})</span>
+                    <span>📸 MEMORIES ({gallery.length})</span>
                   </button>
                 )}
               </div>
@@ -505,7 +505,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                     onClick={handleOpenGallery}
                     className="flex-1 py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black hover:brightness-110 shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
                   >
-                    <span>≡ƒô╕ MEMORIES</span>
+                    <span>📸 MEMORIES</span>
                   </button>
                 )}
                 <div className={`py-2.5 text-xs font-mono text-gray-400 bg-[#0E1526]/80 border border-gray-800 rounded-xl text-center ${(hasGallery || hasVideo) ? 'px-3' : 'w-full'}`}>
@@ -530,13 +530,13 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                   onClick={() => onApprove(event.id)}
                   className="flex-1 bg-emerald-600 hover:bg-emerald-500 text-white py-2 px-3 rounded-xl text-xs font-chakra italic font-bold cursor-pointer"
                 >
-                  Γ£ô APPROVE
+                  ✓ APPROVE
                 </button>
                 <button
                   onClick={() => setRejecting(true)}
                   className="flex-1 bg-rose-700 hover:bg-rose-600 text-white py-2 px-3 rounded-xl text-xs font-chakra italic font-bold cursor-pointer"
                 >
-                  Γ£ù REJECT
+                  ✕ REJECT
                 </button>
               </div>
             )}
@@ -546,7 +546,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                 onClick={() => onDelete(event.id)}
                 className="text-xs font-mono text-gray-500 hover:text-red-400 mt-2 block w-full text-right transition-colors cursor-pointer"
               >
-                ≡ƒùæ∩╕Å Delete
+                🗑️ Delete
               </button>
             )}
           </div>
