@@ -113,7 +113,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                 <span>🏆</span> {event.winner_team}
               </span>
               <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0">
-                4K PHOTOS
+                MEMORIES OF EVENTS
               </span>
             </div>
           )}
@@ -203,7 +203,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                     onClick={handleOpenGallery}
                     className="flex-1 py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black hover:brightness-110 shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
                   >
-                    <span>📸 VIEW 4K PHOTOS</span>
+                    <span>📸 MEMORIES OF EVENTS</span>
                   </button>
                 )}
                 <div className={`py-2.5 text-xs font-mono text-gray-400 bg-[#0E1526]/80 border border-gray-800 rounded-xl text-center ${hasGallery ? 'px-3' : 'w-full'}`}>
