@@ -2,6 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
+html {
+  scroll-behavior: smooth;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -25,13 +32,26 @@ p, .font-rajdhani, article, .text-justify-all {
   text-justify: inter-word;
 }
 
-/* GPU Hardware Acceleration for Ultra-Smooth Zero-Stutter Playback Across Website */
+/* GPU Hardware Acceleration for Ultra-Smooth Zero-Stutter Playback & 4K UHD Clarity Across Website */
+img, video {
+  image-rendering: -webkit-optimize-contrast;
+  image-rendering: crisp-edges;
+}
+
 video {
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: transform;
+  filter: contrast(1.03) saturate(1.05);
+}
+
+img {
+  -webkit-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 /* Spider-Verse UI System matching reference design */
