@@ -59,17 +59,6 @@ export default function IntroVideoModal({ onComplete }) {
         </div>
       </div>
 
-      {/* Audio Indicator Overlay (Only if browser initially muted) */}
-      {!hasStartedWithSound && (
-        <div className="absolute inset-0 flex items-center justify-center z-20 pointer-events-none bg-black/30">
-          <div className="bg-black/80 border border-red-500/60 text-white px-8 py-4 rounded-full font-chakra italic font-bold text-sm tracking-wider flex items-center gap-3 shadow-modal-glow backdrop-blur-xl animate-pulse">
-            <span className="text-2xl">🔊</span>
-            <span>CLICK ANYWHERE TO ACTIVATE AUDIO</span>
-            <span className="text-red-400">🕷️</span>
-          </div>
-        </div>
-      )}
-
       {/* Enter / Skip Button */}
       <div className="absolute bottom-6 right-8 z-30">
         <button
