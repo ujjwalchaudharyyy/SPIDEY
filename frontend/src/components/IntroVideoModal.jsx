@@ -10,34 +10,44 @@ export default function IntroVideoModal({ onComplete }) {
     const video = videoRef.current
     if (!video) return
 
-    // Start playing immediately — muted first (browser policy), then try unmuted
+    // Critical for 0-second instant play:
+    // Browser autoplay policy requires muted=true to start without user interaction.
+    // Starting with muted=true guarantees playback starts the microsecond bytes arrive!
     video.muted = true
-    video.currentTime = 0
+    video.defaultMuted = true
 
-    const tryPlay = () => {
-      // First try with sound
-      video.muted = false
-      video.volume = 1.0
-      video.play()
-        .then(() => setHasSound(true))
-        .catch(() => {
-          // Browser blocked sound — play muted (autoplay policy)
-          video.muted = true
-          video.play().catch(() => {})
-          setHasSound(false)
-        })
+    const startInstantPlay = () => {
+      const playPromise = video.play()
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            // Video is already rolling instantly!
+            // Now attempt to unmute with audio in the background
+            video.muted = false
+            video.volume = 1.0
+            setHasSound(true)
+          })
+          .catch(() => {
+            // If unmuting triggered an error, revert to muted playback without interruption
+            video.muted = true
+            video.play().catch(() => {})
+            setHasSound(false)
+          })
+      }
     }
 
-    // Play as soon as enough data is loaded
-    if (video.readyState >= 2) {
-      // Already has enough data — play right now
-      tryPlay()
-    } else {
-      video.addEventListener('canplay', tryPlay, { once: true })
-    }
+    // Trigger immediate playback attempt
+    startInstantPlay()
+
+    // Also attach events to fire the instant first frame/metadata/canplay is available
+    video.addEventListener('loadedmetadata', startInstantPlay, { once: true })
+    video.addEventListener('loadeddata', startInstantPlay, { once: true })
+    video.addEventListener('canplay', startInstantPlay, { once: true })
 
     return () => {
-      video.removeEventListener('canplay', tryPlay)
+      video.removeEventListener('loadedmetadata', startInstantPlay)
+      video.removeEventListener('loadeddata', startInstantPlay)
+      video.removeEventListener('canplay', startInstantPlay)
     }
   }, [])
 
@@ -95,6 +105,7 @@ export default function IntroVideoModal({ onComplete }) {
         <video
           ref={videoRef}
           src="/assets/videos/before_login.mp4"
+          poster="/assets/videos/before_login_poster.jpg"
           autoPlay
           muted
           playsInline
