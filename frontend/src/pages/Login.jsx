@@ -315,12 +315,12 @@ export default function Login() {
 
       {/* Left Branding (Desktop) */}
       <div className="absolute top-8 left-10 z-20 hidden lg:block">
-        <div className="flex items-center space-x-3 mb-2">
-          <div className="w-14 h-14 rounded-2xl bg-black/80 border border-red-500/60 flex items-center justify-center shadow-spider-glow overflow-hidden p-0.5">
-            <img src="/assets/logo.png" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
+        <div className="flex items-center space-x-4 mb-2">
+          <div className="w-20 h-20 rounded-2xl bg-black/90 border-2 border-red-500/70 flex items-center justify-center shadow-[0_0_30px_rgba(226,27,36,0.6)] overflow-hidden p-1 hover:scale-105 transition-transform shrink-0">
+            <img src="/logo.png?v=2" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h1 className="spider-heading text-2xl">
+            <h1 className="spider-heading text-2xl tracking-wide">
               GRAPHIC ERA <span className="text-red-500">EVENT HUB</span>
             </h1>
             <p className="text-xs font-mono text-red-300">
@@ -332,8 +332,8 @@ export default function Login() {
 
       {/* Mobile Top Header (Visible on phone to anchor the video look) */}
       <div className="sm:hidden relative z-20 w-full max-w-sm mt-8 mb-4 text-center">
-        <div className="inline-flex items-center space-x-2.5 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-red-500/40">
-          <img src="/assets/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
+        <div className="inline-flex items-center space-x-2.5 bg-black/80 backdrop-blur-md px-4 py-2 rounded-full border border-red-500/50 shadow-spider-glow">
+          <img src="/logo.png?v=2" alt="Logo" className="w-8 h-8 object-contain rounded-full" />
           <span className="font-chakra italic font-bold text-sm text-white">
             GRAPHIC ERA <span className="text-red-500 not-italic font-mono text-xs">EVENT HUB</span>
           </span>
@@ -344,8 +344,10 @@ export default function Login() {
       <div className="relative z-20 w-full sm:w-[440px] md:w-[460px] max-w-md mx-auto sm:mx-0 sm:mr-8 md:mr-12 my-auto">
         <div className="bg-[#090D18]/85 backdrop-blur-xl border border-red-500/40 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-modal-glow">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1E293B]">
-            <div className="flex items-center gap-2.5">
-              <img src="/assets/logo.png" alt="Logo" className="w-7 h-7 object-contain" />
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 rounded-xl bg-black border border-red-500/60 p-0.5 shadow-spider-glow flex items-center justify-center shrink-0">
+                <img src="/logo.png?v=2" alt="Logo" className="w-full h-full object-contain" />
+              </div>
               <div>
                 <h2 className="spider-heading text-base sm:text-lg text-white">SPIDER-ID LOGIN</h2>
                 <p className="text-[10px] sm:text-[11px] font-mono text-red-400">GRAPHIC ERA CAMPUS GRID</p>

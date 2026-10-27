@@ -30,12 +30,12 @@ export default function Navbar() {
               onClick={() => handleNavClick('HEADQUARTERS')}
               className="flex items-center space-x-3.5 group cursor-pointer"
             >
-              <div className="w-12 h-12 rounded-2xl bg-black/80 border border-red-500/60 flex items-center justify-center shadow-spider-glow group-hover:scale-105 transition-transform overflow-hidden p-0.5">
-                <img src="/assets/logo.png" alt="Graphic Era Event Hub" className="w-full h-full object-contain" />
+              <div className="w-14 h-14 rounded-2xl bg-black/90 border border-red-500/60 flex items-center justify-center shadow-spider-glow group-hover:scale-105 transition-transform overflow-hidden p-0.5 shrink-0">
+                <img src="/logo.png?v=2" alt="Graphic Era Event Hub" className="w-full h-full object-contain" />
               </div>
               <div>
                 <div className="spider-heading text-lg flex items-center gap-2">
-                  GRAPHIC ERA <span className="text-red-500">SPIDER-HUB</span>
+                  GRAPHIC ERA <span className="text-red-500">EVENT HUB</span>
                 </div>
                 <p className="text-[11px] font-mono text-red-400">
                   QUAD-CAMPUS MULTIVERSE GRID

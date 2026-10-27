@@ -150,8 +150,8 @@ export default function Register() {
           {/* Header Title & Spider Icon */}
           <div className="flex items-start justify-between pb-4 border-b border-[#1E293B]">
             <div className="flex items-center space-x-3.5">
-              <div className="w-12 h-12 rounded-2xl bg-black/80 border border-red-500/60 flex items-center justify-center shadow-spider-glow overflow-hidden p-0.5">
-                <img src="/assets/logo.png" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
+              <div className="w-14 h-14 rounded-2xl bg-black/90 border border-red-500/60 flex items-center justify-center shadow-spider-glow overflow-hidden p-0.5 shrink-0">
+                <img src="/logo.png?v=2" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
               </div>
               <div>
                 <h1 className="spider-heading text-xl sm:text-2xl">
