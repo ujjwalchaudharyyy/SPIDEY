@@ -144,6 +144,30 @@ async function initDB() {
       ['Peter Parker (Head Admin)', 'admin@campus.edu', hashed, 'admin', 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN']);
   }
 
+  // Super Admin (Ujjwal)
+  const ujjwalRes = db.exec("SELECT id FROM users WHERE email = 'ujjwalchaudhary2007@gmail.com'");
+  if (ujjwalRes.length === 0) {
+    const hashedUjjwal = bcrypt.hashSync('ujjwal123', 10);
+    db.run("INSERT INTO users (name, email, password, role, campus, degree) VALUES (?, ?, ?, ?, ?, ?)",
+      ['Ujjwal Chaudhary', 'ujjwalchaudhary2007@gmail.com', hashedUjjwal, 'admin', 'ALL', 'B.Tech CSE - 3rd Year (Super Admin)']);
+  }
+
+  // 4 Campus Admins
+  const campusAdmins = [
+    { name: 'Admin Bhimtal', email: 'admin.bhimtal@gehu.ac.in', pass: 'bhimtal123', campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL' },
+    { name: 'Admin Haldwani', email: 'admin.haldwani@gehu.ac.in', pass: 'haldwani123', campus: 'GRAPHIC ERA HILL UNIVERSITY HALDWANI' },
+    { name: 'Admin Dehradun', email: 'admin.dehradun@gehu.ac.in', pass: 'dehradun123', campus: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN' },
+    { name: 'Admin GEU Deemed', email: 'admin.deemed@gehu.ac.in', pass: 'deemed123', campus: 'GRAPHIC ERA DEEMED UNIVERSITY' }
+  ];
+  for (const cadm of campusAdmins) {
+    const cres = db.exec("SELECT id FROM users WHERE email = '" + cadm.email + "'");
+    if (cres.length === 0) {
+      const chash = bcrypt.hashSync(cadm.pass, 10);
+      db.run("INSERT INTO users (name, email, password, role, campus, degree) VALUES (?, ?, ?, ?, ?, ?)",
+        [cadm.name, cadm.email, chash, 'admin', cadm.campus, 'Campus Administrator']);
+    }
+  }
+
   // Student user (Peter Parker)
   const studentRes = db.exec("SELECT id FROM users WHERE email = 'spiderman@gehu.ac.in'");
   if (studentRes.length === 0) {

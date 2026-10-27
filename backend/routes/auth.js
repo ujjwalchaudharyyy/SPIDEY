@@ -69,37 +69,42 @@ router.post('/login', (req, res) => {
   const { email, password } = req.body;
   if (!email || !password) return res.status(400).json({ error: 'Email and password required' });
 
-  const user = queryGet('SELECT * FROM users WHERE email = ?', [email]);
+  const user = queryGet('SELECT * FROM users WHERE email = ?', [email.trim().toLowerCase()]);
   if (!user) return res.status(401).json({ error: 'Invalid Spider-ID credentials' });
 
   const valid = bcrypt.compareSync(password, user.password);
   if (!valid) return res.status(401).json({ error: 'Invalid Spider-ID credentials' });
 
-  const token = jwt.sign(
-    {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      campus: user.campus || 'Graphic Era, Dehradun',
-      phone: user.phone || '',
-      degree: user.degree || ''
-    },
-    JWT_SECRET,
-    { expiresIn: '7d' }
-  );
+  const normalizedEmail = user.email.toLowerCase();
+  let userRole = user.role;
+  let userCampus = user.campus || 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL';
+  let adminType = undefined;
+
+  if (normalizedEmail === 'ujjwalchaudhary2007@gmail.com' || normalizedEmail === 'admin@campus.edu') {
+    userRole = 'admin';
+    userCampus = 'ALL';
+    adminType = 'super';
+  } else if (normalizedEmail.startsWith('admin.')) {
+    userRole = 'admin';
+    adminType = 'campus';
+  }
+
+  const tokenPayload = {
+    id: user.id,
+    name: user.name,
+    email: user.email,
+    role: userRole,
+    campus: userCampus,
+    phone: user.phone || '',
+    degree: user.degree || ''
+  };
+  if (adminType) tokenPayload.adminType = adminType;
+
+  const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '7d' });
 
   res.json({
     token,
-    user: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      campus: user.campus || 'Graphic Era, Dehradun',
-      phone: user.phone || '',
-      degree: user.degree || ''
-    }
+    user: tokenPayload
   });
 });
 
@@ -133,50 +138,47 @@ router.post('/google', async (req, res) => {
     let user = queryGet('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
 
     if (!user) {
-      // New user registration — assign least-privileged role 'student'
       const name = payload.name || normalizedEmail.split('@')[0];
-      const defaultCampus = 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL';
-      // Cryptographically random hashed password to satisfy SQLite 'password NOT NULL' constraint
+      const isUjjwal = normalizedEmail === 'ujjwalchaudhary2007@gmail.com';
+      const role = isUjjwal ? 'admin' : 'student';
+      const defaultCampus = isUjjwal ? 'ALL' : 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL';
       const randomSecret = crypto.randomBytes(32).toString('hex');
       const hashedPassword = bcrypt.hashSync(randomSecret, 10);
 
       const result = queryRun(
         'INSERT INTO users (name, email, password, role, campus, phone, degree) VALUES (?, ?, ?, ?, ?, ?, ?)',
-        [name, normalizedEmail, hashedPassword, 'student', defaultCampus, '', '']
+        [name, normalizedEmail, hashedPassword, role, defaultCampus, '', '']
       );
 
       user = queryGet('SELECT * FROM users WHERE id = ?', [result.lastInsertRowid]);
     }
 
-    // Never promote or change role/campus of existing users
-    const userRole = user.role || 'student';
-    const userCampus = user.campus || 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL';
+    let userRole = user.role || 'student';
+    let userCampus = user.campus || 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL';
+    let adminType = undefined;
 
-    const jwtToken = jwt.sign(
-      {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: userRole,
-        campus: userCampus,
-        phone: user.phone || '',
-        degree: user.degree || ''
-      },
-      JWT_SECRET,
-      { expiresIn: '7d' }
-    );
+    if (normalizedEmail === 'ujjwalchaudhary2007@gmail.com') {
+      userRole = 'admin';
+      userCampus = 'ALL';
+      adminType = 'super';
+    }
+
+    const tokenPayload = {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      role: userRole,
+      campus: userCampus,
+      phone: user.phone || '',
+      degree: user.degree || ''
+    };
+    if (adminType) tokenPayload.adminType = adminType;
+
+    const jwtToken = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: '7d' });
 
     res.json({
       token: jwtToken,
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        role: userRole,
-        campus: userCampus,
-        phone: user.phone || '',
-        degree: user.degree || ''
-      }
+      user: tokenPayload
     });
   } catch (err) {
     console.error('Google verification error:', err.message);

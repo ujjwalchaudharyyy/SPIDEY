@@ -18,6 +18,8 @@ const CAMPUSES = [
     key: 'campus_bhimtal',
     name: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
     shortName: 'Bhimtal Campus',
+    adminName: 'Admin Bhimtal',
+    adminEmail: 'admin.bhimtal@gehu.ac.in',
     icon: '🏔️',
     color: 'from-blue-600 to-indigo-700',
     borderColor: 'border-blue-500/40',
@@ -27,6 +29,8 @@ const CAMPUSES = [
     key: 'campus_haldwani',
     name: 'GRAPHIC ERA HILL UNIVERSITY HALDWANI',
     shortName: 'Haldwani Campus',
+    adminName: 'Admin Haldwani',
+    adminEmail: 'admin.haldwani@gehu.ac.in',
     icon: '🌊',
     color: 'from-cyan-600 to-teal-700',
     borderColor: 'border-cyan-500/40',
@@ -36,6 +40,8 @@ const CAMPUSES = [
     key: 'campus_dehradun',
     name: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
     shortName: 'Dehradun Campus',
+    adminName: 'Admin Dehradun',
+    adminEmail: 'admin.dehradun@gehu.ac.in',
     icon: '🌲',
     color: 'from-emerald-600 to-green-700',
     borderColor: 'border-emerald-500/40',
@@ -45,6 +51,8 @@ const CAMPUSES = [
     key: 'campus_deemed',
     name: 'GRAPHIC ERA DEEMED UNIVERSITY',
     shortName: 'GEU Deemed Campus',
+    adminName: 'Admin GEU Deemed',
+    adminEmail: 'admin.deemed@gehu.ac.in',
     icon: '🎓',
     color: 'from-purple-600 to-violet-700',
     borderColor: 'border-purple-500/40',
@@ -82,6 +90,7 @@ export default function AdminDashboard() {
     return (
       user.adminType === 'super' ||
       user.email === 'ujjwalchaudhary2007@gmail.com' ||
+      user.email === 'admin@campus.edu' ||
       user.campus === 'ALL' ||
       user.campus?.includes('HIGH COMMAND')
     )
@@ -903,17 +912,17 @@ export default function AdminDashboard() {
         {tab === 'registrations' && (
           <div className="space-y-6">
 
-            {/* SUPER ADMIN: 4 Campus Master Spreadsheets Cards */}
-            {isSuperAdmin && (
+            {/* 4 CAMPUS ADMINS & MASTER SPREADSHEETS (EACH CAMPUS) */}
+            {(isSuperAdmin || user?.role === 'admin') && (
               <div className="bg-[#121622]/90 border border-gray-800 rounded-2xl p-4 sm:p-5">
                 <div className="flex items-center justify-between mb-3">
                   <div>
                     <h3 className="text-sm font-bold text-white flex items-center gap-2">
                       <span>🏛️</span>
-                      <span>4 CAMPUSES MASTER GOOGLE SPREADSHEETS (OVERALL)</span>
+                      <span>4 CAMPUS ADMINS & MASTER GOOGLE SPREADSHEETS (EACH CAMPUS)</span>
                     </h3>
                     <p className="text-[11px] text-gray-400">
-                      Har campus ki overall master sheet yahan se open karein ya campus filter select karein.
+                      Har campus (Bhimtal, Haldwani, Dehradun, Deemed) ke designated campus admin, hosted events aur master spreadsheet.
                     </p>
                   </div>
                   {selectedCampusFilter !== 'ALL' && (
@@ -947,6 +956,21 @@ export default function AdminDashboard() {
                           </div>
                           <h4 className="text-xs font-bold text-white">{camp.shortName}</h4>
                           <p className="text-[10px] text-gray-400 mt-0.5">{camp.eventsCount} Events Hosted</p>
+
+                          {/* Campus Admin Badge & Credentials */}
+                          <div className="mt-2.5 pt-2 border-t border-gray-800/80 bg-black/40 rounded-lg p-2 space-y-0.5">
+                            <div className="flex items-center justify-between">
+                              <span className="text-[9px] text-gray-400 font-mono tracking-wider">CAMPUS ADMIN:</span>
+                              <span className="text-[9px] font-bold text-emerald-400 flex items-center gap-1 font-mono">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                {user?.email === camp.adminEmail ? 'LOGGED IN' : 'ACTIVE'}
+                              </span>
+                            </div>
+                            <p className="text-[11px] font-semibold text-white truncate flex items-center gap-1">
+                              <span>🛡️</span> {camp.adminName}
+                            </p>
+                            <p className="text-[10px] font-mono text-cyan-300 truncate">{camp.adminEmail}</p>
+                          </div>
                         </div>
 
                         <div className="pt-3 mt-2 border-t border-gray-800/80 flex items-center gap-1.5">

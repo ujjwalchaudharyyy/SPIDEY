@@ -335,7 +335,8 @@ export default function Login() {
           name: 'Peter Parker (Head Admin)',
           email: normalizedEmail,
           role: 'admin',
-          campus: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
+          adminType: 'super',
+          campus: 'ALL',
           exp: Math.floor(Date.now() / 1000) + 86400 * 7
         }))}.signature`
         proceedWithLogin(fakeToken, 'admin')
@@ -536,7 +537,11 @@ export default function Login() {
             </div>
 
             {/* Quick Fill Accounts */}
-            <div className="p-2.5 rounded-xl bg-[#0E1526]/80 border border-red-500/30 space-y-2">
+            <div className="p-2.5 rounded-xl bg-[#0E1526]/80 border border-red-500/30 space-y-2 max-h-64 overflow-y-auto">
+              <div className="text-[10px] font-bold text-red-400 uppercase tracking-wider pb-1 border-b border-red-500/20 flex items-center justify-between">
+                <span>🏛️ Campus Admins & Accounts</span>
+                <span className="text-[9px] font-mono text-gray-400">Tap Auto-Fill</span>
+              </div>
               <div className="flex items-center justify-between text-[11px] font-mono">
                 <div>
                   <span className="text-red-400 font-bold">🕷️ Ujjwal (Super Admin):</span>{' '}
