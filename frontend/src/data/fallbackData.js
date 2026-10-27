@@ -3410,7 +3410,7 @@ export const DEFAULT_REGISTRATIONS = [
     github_link: "https://github.com/iot-web-beacons",
     details_json: { registrationSource: "Portal" },
     created_at: "2026-11-14T09:00:00.000Z"
-  }
+  },
 
   {
     id: 601,

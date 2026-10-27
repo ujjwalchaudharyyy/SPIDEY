@@ -173,7 +173,7 @@ function doPost(e) {
   }
 }
 `.trim()
-\n
+
 // Get smart Campus Master Google Sheet URL
 export function getCampusSheetUrl(campusKey, campusName = 'Campus') {
   const configs = getEventGoogleSheetsConfig()
@@ -182,5 +182,6 @@ export function getCampusSheetUrl(campusKey, campusName = 'Campus') {
     return custom.trim()
   }
   const cleanTitle = encodeURIComponent((campusName || campusKey).replace(/[^a-zA-Z0-9 ]/g, '_').trim())
-  return https://sheets.new?title=_Master_Registrations
+  return `https://sheets.new?title=${cleanTitle}_Master_Registrations`
 }
+
