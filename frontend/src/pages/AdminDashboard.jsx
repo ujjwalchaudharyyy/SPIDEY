@@ -388,6 +388,36 @@ export default function AdminDashboard() {
     }
   }
 
+  // View specific event spreadsheet on page
+  const handleViewEventSheet = (eventId) => {
+    setSelectedEventId(String(eventId))
+    setViewMode('single')
+    setTimeout(() => {
+      document.getElementById('sheet-table-section')?.scrollIntoView({ behavior: 'smooth' })
+    }, 50)
+  }
+
+  // Smart Google Sheet Opener: If custom configured, open it. Otherwise auto-copy TSV and open sheets.new
+  const handleOpenInGoogleSheets = (ev, listToExport) => {
+    const currentCfg = sheetsConfig[ev.id]
+    const custom = currentCfg?.sheetUrl
+    if (custom && custom.trim() && custom.startsWith('https://docs.google.com') && !custom.includes('your-sheet-id') && !custom.includes('_Registry') && !custom.includes('1HTW2027')) {
+      window.open(custom.trim(), '_blank', 'noopener,noreferrer')
+      return
+    }
+
+    // Auto-copy data so when sheets.new opens, admin simply presses Ctrl+V!
+    if (listToExport && listToExport.length > 0) {
+      const tsv = copyForGoogleSheets(listToExport)
+      if (tsv) {
+        copyToClipboard(tsv)
+      }
+    }
+    const cleanTitle = encodeURIComponent((ev.title || `Event_${ev.id}`).replace(/[^a-zA-Z0-9 ]/g, '_').trim())
+    window.open(`https://sheets.new?title=${cleanTitle}_Registrations`, '_blank', 'noopener,noreferrer')
+    showToast(`Data copied for ${listToExport.length} students! Press Ctrl+V in your Google Sheet to paste all rows 📋`, 'success')
+  }
+
   // Filter a specific list of registrations
   const filterList = (list) => {
     return (list || []).filter(r => {
@@ -777,16 +807,15 @@ export default function AdminDashboard() {
 
                       {/* Action buttons on card */}
                       <div className="pt-3 mt-2 border-t border-gray-800/80 flex items-center gap-1.5">
-                        <a
-                          href={sheetLink}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600/90 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 cursor-pointer transition"
-                          title="Open separate Google Sheet"
+                        <button
+                          type="button"
+                          onClick={() => handleViewEventSheet(ev.id)}
+                          className="flex-1 py-1.5 px-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-semibold text-center flex items-center justify-center gap-1 cursor-pointer transition shadow-sm"
+                          title="View event spreadsheet table"
                         >
                           <span>📊</span>
                           <span>Open Sheet</span>
-                        </a>
+                        </button>
 
                         <button
                           onClick={() => exportToCSV(ev.title, evRegs)}
@@ -856,6 +885,7 @@ export default function AdminDashboard() {
             </div>
 
             {/* SPREADSHEETS DISPLAY */}
+            <div id="sheet-table-section"></div>
             {loading ? (
               <div className="flex justify-center py-16">
                 <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
@@ -866,10 +896,9 @@ export default function AdminDashboard() {
                 {eventsList.map(ev => {
                   const evRegs = registrationsByEvent[String(ev.id)] || []
                   const filtered = filterList(evRegs)
-                  const sheetLink = getEventSheetUrl(ev.id, ev.title)
 
                   return (
-                    <div key={ev.id} className="bg-[#121622] border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
+                    <div key={ev.id} id={`sheet-event-${ev.id}`} className="bg-[#121622] border border-gray-800 rounded-2xl overflow-hidden shadow-sm">
                       {/* Event Specific Spreadsheet Header */}
                       <div className="bg-[#0D101A] p-4 border-b border-gray-800 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                         <div className="space-y-0.5">
@@ -889,15 +918,15 @@ export default function AdminDashboard() {
 
                         {/* Event Spreadsheet Actions */}
                         <div className="flex flex-wrap items-center gap-2 shrink-0">
-                          <a
-                            href={sheetLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => handleOpenInGoogleSheets(ev, filtered)}
                             className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                            title="Open in Google Sheets with auto-copied rows"
                           >
                             <span>📊</span>
-                            <span>Open Google Sheet</span>
-                          </a>
+                            <span>Open in Google Sheets</span>
+                          </button>
 
                           <button
                             onClick={() => handleCopyForGoogleSheets(ev.title, filtered)}
@@ -1055,15 +1084,15 @@ export default function AdminDashboard() {
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 shrink-0">
-                          <a
-                            href={sheetLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
+                          <button
+                            type="button"
+                            onClick={() => handleOpenInGoogleSheets(ev, filtered)}
                             className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                            title="Open in Google Sheets with auto-copied rows"
                           >
                             <span>📊</span>
                             <span>Open in Google Sheets</span>
-                          </a>
+                          </button>
                           <button
                             onClick={() => handleCopyForGoogleSheets(ev.title, filtered)}
                             className="px-3.5 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-medium flex items-center gap-1.5 transition cursor-pointer"
