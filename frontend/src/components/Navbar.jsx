@@ -62,14 +62,24 @@ export default function Navbar() {
               {isAuthenticated ? (
                 <>
                   {(user.role === 'student' || user.role === 'admin' || user.email === 'admin@campus.edu' || user.email === 'ujjwalchaudhary2007@gmail.com') && (
-                    <Link
-                      to="/feed"
-                      onClick={() => handleNavClick('STUDENT FEED')}
-                      className="text-gray-300 hover:text-red-400 font-mono text-xs sm:text-sm font-semibold transition tracking-wider flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-950/40"
-                    >
-                      <span>🕸️</span>
-                      <span>EVENTS RADAR</span>
-                    </Link>
+                    <>
+                      <Link
+                        to="/feed"
+                        onClick={() => handleNavClick('STUDENT FEED')}
+                        className="text-gray-300 hover:text-red-400 font-mono text-xs sm:text-sm font-semibold transition tracking-wider flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-950/40"
+                      >
+                        <span>🕸️</span>
+                        <span>EVENTS RADAR</span>
+                      </Link>
+                      <Link
+                        to="/dashboard"
+                        onClick={() => handleNavClick('MY PASSES & TEAM ID CARDS')}
+                        className="text-gray-300 hover:text-red-400 font-mono text-xs sm:text-sm font-semibold transition tracking-wider flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-red-950/40"
+                      >
+                        <span>🎟️</span>
+                        <span>MY PASSES</span>
+                      </Link>
+                    </>
                   )}
 
                   <Link

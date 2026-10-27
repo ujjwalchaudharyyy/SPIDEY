@@ -77,6 +77,19 @@ router.post('/:id/register', authenticateToken, (req, res) => {
   const event = queryGet("SELECT * FROM events WHERE id = ? AND status = 'approved'", [eventId]);
   if (!event) return res.status(404).json({ error: 'Event not found or not currently approved' });
 
+  // Prevent duplicate registration with same email for the same event
+  const existingReg = queryGet(
+    "SELECT id, ticket_code FROM event_registrations WHERE event_id = ? AND (student_email = ? OR user_id = ?)",
+    [eventId, student_email.trim().toLowerCase(), req.user.id]
+  );
+  if (existingReg) {
+    return res.status(400).json({
+      error: `Aap pehle hi is event me register kar chuke hain (${existingReg.ticket_code})! Ek email ID se dobara register nahi ho sakta.`,
+      alreadyRegistered: true,
+      ticketCode: existingReg.ticket_code
+    });
+  }
+
   // Generate futuristic Spider Ticket Code with event acronym
   let prefix = 'SPIDEY';
   if (event.title.includes('Winter')) prefix = 'HTW-2027';
@@ -268,6 +281,26 @@ router.get('/verify/:ticketCode', (req, res) => {
     pass: pass,
     registration: pass
   });
+});
+
+// POST /api/events/verify/:ticketCode/update-photo — Save live captured verification photo
+router.post('/verify/:ticketCode/update-photo', (req, res) => {
+  const code = (req.params.ticketCode || '').trim().toUpperCase();
+  const { photo_url } = req.body;
+
+  if (!photo_url) {
+    return res.status(400).json({ error: 'No photo provided' });
+  }
+
+  try {
+    queryRun(`
+      UPDATE verified_passes 
+      SET photo_url = ?
+      WHERE ticket_code = ?
+    `, [photo_url, code]);
+  } catch (err) {}
+
+  res.json({ success: true, message: 'Live photo updated successfully!' });
 });
 
 // POST /api/events/verify/:ticketCode/checkin — Gatekeeper / Organizer Mark Attendance

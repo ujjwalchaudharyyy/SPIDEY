@@ -8,6 +8,7 @@ import OrganizerDashboard from './pages/OrganizerDashboard'
 import AdminDashboard from './pages/AdminDashboard'
 import Placement from './pages/Placement'
 import VerifyPass from './pages/VerifyPass'
+import StudentDashboard from './pages/StudentDashboard'
 import ProtectedRoute from './components/ProtectedRoute'
 import IntroVideoModal from './components/IntroVideoModal'
 
@@ -60,6 +61,11 @@ export default function App() {
       <Route path="/feed" element={
         <ProtectedRoute roles={['student']}>
           <StudentFeed />
+        </ProtectedRoute>
+      } />
+      <Route path="/dashboard" element={
+        <ProtectedRoute roles={['student', 'admin', 'organizer']}>
+          <StudentDashboard />
         </ProtectedRoute>
       } />
       <Route path="/my-rsvps" element={

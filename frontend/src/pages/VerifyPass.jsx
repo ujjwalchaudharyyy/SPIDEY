@@ -36,11 +36,17 @@ export default function VerifyPass() {
   const [manualCode, setManualCode] = useState('')
   const [isMarkingCheckin, setIsMarkingCheckin] = useState(false)
 
-  // Camera Scanner States
+  // Camera QR Scanner States
   const [isCameraActive, setIsCameraActive] = useState(false)
   const [cameraError, setCameraError] = useState('')
   const [cameraFacing, setCameraFacing] = useState('environment') // 'environment' (back) or 'user' (front)
   const html5QrCodeRef = useRef(null)
+
+  // Live Selfie / Photo Capture State
+  const [isLivePhotoActive, setIsLivePhotoActive] = useState(false)
+  const [livePhotoStream, setLivePhotoStream] = useState(null)
+  const [isSavingLivePhoto, setIsSavingLivePhoto] = useState(false)
+  const liveVideoRef = useRef(null)
 
   // Read query params or route param
   const queryCode = searchParams.get('code') || routeParams.code || ''
@@ -257,7 +263,7 @@ export default function VerifyPass() {
     }
   }, [queryCode])
 
-  // Start Live Camera Scanner
+  // Start Live Camera QR Scanner
   const startCamera = async (facing = cameraFacing) => {
     setCameraError('')
     setIsCameraActive(true)
@@ -329,12 +335,81 @@ export default function VerifyPass() {
     setIsCameraActive(false)
   }
 
-  // Switch between front and back camera
+  // Switch between front and back camera for QR scanner
   const switchCamera = () => {
     const nextFacing = cameraFacing === 'environment' ? 'user' : 'environment'
     setCameraFacing(nextFacing)
     if (isCameraActive) {
       startCamera(nextFacing)
+    }
+  }
+
+  // ─── LIVE PHOTO CAPTURE FEATURE ───
+  const startLivePhotoCapture = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 640 } },
+        audio: false
+      })
+      setLivePhotoStream(stream)
+      setIsLivePhotoActive(true)
+      setTimeout(() => {
+        if (liveVideoRef.current) {
+          liveVideoRef.current.srcObject = stream
+          liveVideoRef.current.play().catch(() => {})
+        }
+      }, 100)
+    } catch (err) {
+      alert('Could not access front camera for live photo capture. Please ensure camera permissions are allowed.')
+    }
+  }
+
+  const stopLivePhotoCapture = () => {
+    if (livePhotoStream) {
+      livePhotoStream.getTracks().forEach(track => track.stop())
+      setLivePhotoStream(null)
+    }
+    setIsLivePhotoActive(false)
+  }
+
+  const captureAndSavePhoto = async () => {
+    if (!liveVideoRef.current || !passData) return
+    setIsSavingLivePhoto(true)
+
+    try {
+      const video = liveVideoRef.current
+      const canvas = document.createElement('canvas')
+      canvas.width = 400
+      canvas.height = 480
+      const ctx = canvas.getContext('2d')
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height)
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.88)
+
+      // Update local state
+      setPassData(prev => ({ ...prev, photoUrl: dataUrl }))
+
+      // Update localStorage pass
+      try {
+        const storedPassStr = localStorage.getItem(`spider_verified_pass_${passData.ticketCode}`)
+        if (storedPassStr) {
+          const parsed = JSON.parse(storedPassStr)
+          parsed.photoUrl = dataUrl
+          localStorage.setItem(`spider_verified_pass_${passData.ticketCode}`, JSON.stringify(parsed))
+        }
+      } catch (e) {}
+
+      // Update backend database
+      try {
+        await axios.post(`/api/events/verify/${encodeURIComponent(passData.ticketCode)}/update-photo`, {
+          photo_url: dataUrl
+        })
+      } catch (e) {}
+
+      stopLivePhotoCapture()
+    } catch (err) {
+      console.error('Failed to capture photo:', err)
+    } finally {
+      setIsSavingLivePhoto(false)
     }
   }
 
@@ -346,8 +421,11 @@ export default function VerifyPass() {
           html5QrCodeRef.current.stop()
         } catch (e) {}
       }
+      if (livePhotoStream) {
+        livePhotoStream.getTracks().forEach(track => track.stop())
+      }
     }
-  }, [])
+  }, [livePhotoStream])
 
   const handleManualSearch = (e) => {
     e.preventDefault()
@@ -399,6 +477,13 @@ export default function VerifyPass() {
         </Link>
 
         <div className="flex items-center gap-3">
+          <Link
+            to="/dashboard"
+            className="px-3.5 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-500/40 text-xs font-semibold transition flex items-center gap-1.5"
+          >
+            <span>🎟️</span>
+            <span>My Passes</span>
+          </Link>
           <Link
             to="/feed"
             className="px-3.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold transition"
@@ -490,28 +575,40 @@ export default function VerifyPass() {
               </div>
             </div>
 
-            {/* Attendee Credentials Card with Exact Photo & Name */}
+            {/* Attendee Credentials Card with Exact Photo & Live Camera Click */}
             <div className="rounded-3xl bg-[#0D111C] border border-gray-800 p-6 sm:p-8 shadow-2xl space-y-6">
               {/* Photo & Name Section */}
               <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-gray-800">
-                <div className="relative w-32 sm:w-36 h-40 sm:h-44 rounded-2xl overflow-hidden border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.4)] bg-[#0A0D15] shrink-0">
-                  {passData.photoUrl ? (
-                    <img
-                      src={passData.photoUrl}
-                      alt={passData.name}
-                      className="w-full h-full object-cover object-top filter contrast-[1.03] brightness-[1.02]"
-                    />
-                  ) : (
-                    <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#181D2C] to-[#0D101A] text-gray-400 p-2 text-center">
-                      <span className="text-4xl mb-1">👤</span>
-                      <span className="text-[10px] font-mono text-gray-400 uppercase font-semibold">
-                        Student Photo
-                      </span>
+                <div className="flex flex-col items-center gap-2 shrink-0">
+                  <div className="relative w-32 sm:w-36 h-40 sm:h-44 rounded-2xl overflow-hidden border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.4)] bg-[#0A0D15]">
+                    {passData.photoUrl ? (
+                      <img
+                        src={passData.photoUrl}
+                        alt={passData.name}
+                        className="w-full h-full object-cover object-top filter contrast-[1.03] brightness-[1.02]"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#181D2C] to-[#0D101A] text-gray-400 p-2 text-center">
+                        <span className="text-4xl mb-1">👤</span>
+                        <span className="text-[10px] font-mono text-gray-400 uppercase font-semibold">
+                          Student Photo
+                        </span>
+                      </div>
+                    )}
+                    <div className="absolute bottom-0 inset-x-0 bg-emerald-600/90 text-[9px] text-white font-mono font-bold text-center py-0.5">
+                      ✓ PASS VERIFIED
                     </div>
-                  )}
-                  <div className="absolute bottom-0 inset-x-0 bg-emerald-600/90 text-[9px] text-white font-mono font-bold text-center py-0.5">
-                    ✓ PASS VERIFIED
                   </div>
+
+                  {/* Live Photo Click Trigger */}
+                  <button
+                    type="button"
+                    onClick={startLivePhotoCapture}
+                    className="px-3 py-1.5 rounded-xl bg-red-950/80 hover:bg-red-900 border border-red-500/50 text-white text-[11px] font-bold font-mono transition flex items-center gap-1.5 cursor-pointer shadow active:scale-95"
+                  >
+                    <span>📸</span>
+                    <span>Click Live Photo</span>
+                  </button>
                 </div>
 
                 {/* Exact Student Name & Credentials */}
@@ -540,6 +637,65 @@ export default function VerifyPass() {
                   </p>
                 </div>
               </div>
+
+              {/* Live Photo Capture Modal Overlay */}
+              {isLivePhotoActive && (
+                <div className="p-4 rounded-2xl bg-black border-2 border-red-500 shadow-2xl space-y-3 animate-fade-in text-center">
+                  <div className="flex items-center justify-between pb-2 border-b border-gray-800">
+                    <span className="text-xs font-mono font-bold text-red-400 flex items-center gap-1.5">
+                      <span className="w-2 h-2 rounded-full bg-red-500 animate-ping" />
+                      LIVE GATE VERIFICATION CAMERA
+                    </span>
+                    <button
+                      type="button"
+                      onClick={stopLivePhotoCapture}
+                      className="text-gray-400 hover:text-white text-xs font-bold"
+                    >
+                      ✕ Cancel
+                    </button>
+                  </div>
+
+                  <div className="relative w-64 h-64 mx-auto rounded-2xl overflow-hidden border-2 border-emerald-500 bg-black">
+                    <video
+                      ref={liveVideoRef}
+                      playsInline
+                      muted
+                      autoPlay
+                      className="w-full h-full object-cover"
+                    />
+                    <div className="animate-scan-line pointer-events-none" />
+                  </div>
+
+                  <p className="text-[11px] text-gray-400 font-mono">
+                    Align student face in the frame and click capture.
+                  </p>
+
+                  <div className="flex items-center justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={captureAndSavePhoto}
+                      disabled={isSavingLivePhoto}
+                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 text-white font-bold text-xs shadow-lg transition active:scale-95 cursor-pointer flex items-center gap-2"
+                    >
+                      {isSavingLivePhoto ? (
+                        <span>Saving Live Photo...</span>
+                      ) : (
+                        <>
+                          <span>📸</span>
+                          <span>Capture &amp; Attach Photo</span>
+                        </>
+                      )}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={stopLivePhotoCapture}
+                      className="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {/* Exact Event & Timing Details */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">

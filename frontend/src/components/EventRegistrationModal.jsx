@@ -702,8 +702,31 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
   // Step 1 -> Step 2: Validate details & proceed to payment
-  const handleProceedToPayment = (e) => {
+  const handleProceedToPayment = async (e) => {
     e.preventDefault()
+
+    // Check duplicate registration for leader and members in localStorage
+    const localRegs = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
+    const currentMemberEmails = members.map(m => (m.email || '').trim().toLowerCase()).filter(Boolean)
+    
+    for (const reg of localRegs) {
+      if (reg.event_id === event.id || reg.event_title === event.title) {
+        // Check leader email
+        if (currentMemberEmails.includes((reg.student_email || '').trim().toLowerCase())) {
+          setError(`Aap pehle hi is event me register kar chuke hain (Pass: ${reg.ticket_code})! Ek email ID se dobara register nahi ho sakta.`)
+          return
+        }
+        // Check attendee emails
+        if (Array.isArray(reg.attendees)) {
+          for (const att of reg.attendees) {
+            if (currentMemberEmails.includes((att.email || '').trim().toLowerCase())) {
+              setError(`${att.name || 'Member'} (${att.email}) pehle hi is event me registered hain (Pass: ${att.ticketCode || reg.ticket_code})!`)
+              return
+            }
+          }
+        }
+      }
+    }
 
     // Validate that each member has name, email, roll number
     for (let i = 0; i < members.length; i++) {
@@ -815,7 +838,11 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
           { headers }
         )
       } catch (beErr) {
-        // Safe offline fallback
+        if (beErr?.response?.data?.alreadyRegistered) {
+          setError(beErr.response.data.error || 'Aap pehle hi is event me register kar chuke hain!')
+          setIsProcessingPayment(false)
+          return
+        }
       }
 
       const stored = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
