@@ -54,6 +54,47 @@ p, .font-rajdhani, article, .text-justify-all {
     box-shadow: 0 0 45px rgba(226, 27, 36, 0.35);
   }
 
+  /* Input fields matching screenshot: dark navy, subtle border, rounded-xl */
+  .spider-input-modern {
+    display: block;
+    width: 100%;
+    background-color: rgba(14, 21, 38, 0.95) !important;
+    border: 1px solid #1E293B !important;
+    border-radius: 0.75rem;
+    padding: 0.625rem 1rem;
+    color: #ffffff !important;
+    font-size: 0.875rem;
+    font-family: 'JetBrains Mono', 'Rajdhani', monospace;
+    font-weight: 500;
+    text-align: left !important;
+    transition: all 0.2s ease-in-out;
+  }
+  .spider-input-modern:hover {
+    background-color: #121B30 !important;
+    border-color: rgba(226, 27, 36, 0.5) !important;
+  }
+  .spider-input-modern:focus {
+    background-color: #121B30 !important;
+    border-color: #E21B24 !important;
+    outline: none !important;
+    box-shadow: 0 0 0 2px rgba(226, 27, 36, 0.25) !important;
+  }
+  .spider-input-modern::placeholder {
+    color: #64748b;
+  }
+
+  .spider-label-modern {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 500;
+    color: #cbd5e1;
+    margin-bottom: 0.375rem;
+    text-align: left !important;
+  }
+
   /* Authentic Cyber Web Border Effect */
   .spider-border-glow {
     position: relative;
@@ -152,6 +193,16 @@ p, .font-rajdhani, article, .text-justify-all {
     border-color: rgba(226, 27, 36, 0.6);
     box-shadow: 0 0 25px rgba(226, 27, 36, 0.45);
   }
+}
+
+/* Prevent browser autofill white background override */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #0E1526 inset !important;
+  -webkit-text-fill-color: #ffffff !important;
+  transition: background-color 5000s ease-in-out 0s;
 }
 
 /* Custom Scrollbar */
