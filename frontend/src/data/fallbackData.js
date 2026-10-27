@@ -267,5 +267,52 @@ export const DEFAULT_EVENTS = [
     event_time: "02:30 PM",
     organizer_name: "Formula Student GEU Racing",
     rsvp_count: 240
+  },
+  {
+    id: 14,
+    title: "🔥 Dussehra Mahotsav & Ravan Dahan 2026 — Victory of Light",
+    description: "Grand annual Vijyadashami celebration at Graphic Era Deemed University main ground featuring the ceremonial burning of the towering Ravan effigy, traditional sparklers & fireworks, with the sacred flame lit by Hon'ble Chairman Prof. Dr. Kamal Ghanshala amidst thousands of cheering students and faculty.",
+    category: "Cultural",
+    venue: "Main University Ground, Graphic Era Deemed Campus",
+    campus: "GRAPHIC ERA DEEMED UNIVERSITY",
+    image_url: "/assets/events/dussehra/dussehra_1.jpg",
+    gallery: [
+      "/assets/events/dussehra/dussehra_1.jpg",
+      "/assets/events/dussehra/dussehra_2.jpg",
+      "/assets/events/dussehra/dussehra_3.jpg",
+      "/assets/events/dussehra/dussehra_4.jpg",
+      "/assets/events/dussehra/dussehra_5.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/dussehra/dussehra_1.jpg",
+        title: "Grand Ravan Dahan Spectacle & Crowds",
+        caption: "Towering 50-foot effigy ablaze amidst cheering students and faculty against the illuminated university architecture."
+      },
+      {
+        url: "/assets/events/dussehra/dussehra_2.jpg",
+        title: "Towering Blazing Effigy & Night Sky",
+        caption: "Spectacular vertical shot of the effigy engulfed in celebratory flames and sparks illuminating Clement Town."
+      },
+      {
+        url: "/assets/events/dussehra/dussehra_3.jpg",
+        title: "Fiery Effigy & Festive Fireworks",
+        caption: "Night pyrotechnics, crackling fireworks, and smoke billowing across the main university ground."
+      },
+      {
+        url: "/assets/events/dussehra/dussehra_4.jpg",
+        title: "Hon'ble Chairman Prof. Dr. Kamal Ghanshala with Dignitaries",
+        caption: "Graphic Era Group Chairman Prof. Dr. Kamal Ghanshala and university leadership holding the sacred flame torch."
+      },
+      {
+        url: "/assets/events/dussehra/dussehra_5.jpg",
+        title: "Lighting the Sacred Flame Pyre",
+        caption: "Ceremonial moment as Chairman Prof. Dr. Kamal Ghanshala lights the base of the effigy, symbolizing the victory of light over darkness."
+      }
+    ],
+    event_date: "2026-10-20",
+    event_time: "07:30 PM",
+    organizer_name: "Student Activity Council (SAC) • Graphic Era Deemed University",
+    rsvp_count: 1420
   }
 ];
