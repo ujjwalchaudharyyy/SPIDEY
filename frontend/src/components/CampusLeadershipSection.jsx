@@ -36,6 +36,7 @@ export default function CampusLeadershipSection({ activeCampus }) {
   const campusId = activeCampus?.id || 'bhimtal'
   const isBhimtal  = campusId === 'bhimtal'  || activeCampus?.name?.includes('BHIMTAL')
   const isHaldwani = campusId === 'haldwani' || activeCampus?.name?.includes('HALDWANI')
+  const isDehradun = campusId === 'dehradun' || activeCampus?.name?.includes('DEHRADUN')
 
   return (
     <section className="mt-16 mb-20 space-y-12">
@@ -391,10 +392,145 @@ export default function CampusLeadershipSection({ activeCampus }) {
         </div>
       )}
 
-      {/* Placeholder for Dehradun / Deemed */}
-      {!isBhimtal && !isHaldwani && (
+      {/* ══════════════════════════════════════════════ */}
+      {/* DEHRADUN CAMPUS SECTION                       */}
+      {/* ══════════════════════════════════════════════ */}
+      {isDehradun && (
+        <div className="space-y-12">
+
+          {/* ── Dehradun Campus Photos (FIRST) ── */}
+          <SpotlightCard
+            glowColor="rgba(234, 179, 8, 0.18)"
+            className="bg-[#090D18]/90 border border-yellow-500/30 rounded-3xl p-6 sm:p-8 shadow-2xl backdrop-blur-2xl"
+          >
+            <div className="relative z-20 space-y-4">
+              <div className="flex items-center gap-2">
+                <span className="text-yellow-400">📸</span>
+                <h4 className="spider-heading text-base sm:text-lg text-white">DEHRADUN CAMPUS — 4K HIGHLIGHTS</h4>
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {[
+                  { src: '/assets/leadership/dehradun_main.jpg',       label: 'Main Campus Building',    sub: 'Clement Town, Doon Valley • Dehradun' },
+                  { src: '/assets/leadership/dehradun_flagday.jpg',    label: 'Independence Day',         sub: 'Flag Hoisting Ceremony' },
+                  { src: '/assets/leadership/dehradun_faculty.jpg',    label: 'Faculty & Staff',          sub: 'Republic Day Celebrations' },
+                  { src: '/assets/leadership/dehradun_foundation.jpg', label: '13th Foundation Day',      sub: 'Annual Celebration' },
+                ].map(img => (
+                  <div key={img.label} className="group relative rounded-2xl overflow-hidden border border-yellow-500/40 h-64 sm:h-60">
+                    <img src={img.src} alt={img.label}
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent pointer-events-none" />
+                    <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between">
+                      <div>
+                        <span className="font-chakra italic font-bold text-sm text-white block">{img.label}</span>
+                        <span className="text-[11px] font-mono text-yellow-300">{img.sub}</span>
+                      </div>
+                      <span className="px-2 py-0.5 rounded-md bg-black/80 text-[10px] font-mono text-gray-300 border border-gray-700">4K</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </SpotlightCard>
+
+          {/* ── Dehradun Director Placeholder (BELOW PHOTOS) ── */}
+          <SpotlightCard
+            glowColor="rgba(234, 179, 8, 0.2)"
+            className="bg-[#090D18]/90 border border-yellow-500/30 rounded-3xl p-6 sm:p-10 shadow-modal-glow backdrop-blur-2xl"
+          >
+            <div className="relative z-20 flex flex-col lg:flex-row items-center gap-8 lg:gap-12">
+              <div className="relative flex-shrink-0 group">
+                <div className="absolute -inset-1.5 bg-gradient-to-r from-yellow-600 via-amber-500 to-yellow-700 rounded-3xl blur-md opacity-40 group-hover:opacity-80 transition duration-700" />
+                <div className="relative w-56 h-64 sm:w-64 sm:h-72 rounded-2xl overflow-hidden border-2 border-yellow-500/60 shadow-2xl bg-[#0E1526] flex items-center justify-center">
+                  <div className="text-center space-y-3 p-6">
+                    <span className="text-6xl">🕷️</span>
+                    <p className="text-xs font-mono text-yellow-400 font-bold">DIRECTOR PHOTO</p>
+                    <p className="text-[10px] font-mono text-gray-500">Coming Soon</p>
+                  </div>
+                  <div className="absolute bottom-3 left-0 right-0 text-center">
+                    <span className="px-3 py-1 rounded-full text-[10px] font-mono font-bold bg-yellow-950/90 border border-yellow-500 text-yellow-300">
+                      CAMPUS DIRECTOR
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex-1 space-y-4 text-left">
+                <div className="flex flex-wrap items-center gap-2.5">
+                  <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-yellow-600/20 border border-yellow-500 text-yellow-300 flex items-center gap-1.5">
+                    <span>🏛️</span> CAMPUS DIRECTOR — DEHRADUN
+                  </span>
+                  <span className="px-3 py-1 rounded-full text-[11px] font-mono font-bold bg-[#0E1526] border border-[#1E293B] text-gray-300">
+                    📍 DEHRADUN CAMPUS
+                  </span>
+                </div>
+                <div>
+                  <h3 className="spider-heading text-2xl sm:text-3xl text-white">Director — GEHU Dehradun</h3>
+                  <p className="text-xs sm:text-sm font-mono text-yellow-400 font-semibold mt-0.5">
+                    Director — Graphic Era Hill University, Dehradun Campus
+                  </p>
+                </div>
+                <div className="p-4 rounded-2xl bg-[#0E1526] border border-yellow-500/20 flex items-center gap-3">
+                  <span className="text-2xl animate-pulse">🕷️</span>
+                  <p className="text-sm font-rajdhani text-gray-300 font-medium">
+                    Director profile and photo will be updated soon. Stay tuned for the full Dehradun leadership dossier!
+                  </p>
+                </div>
+              </div>
+            </div>
+          </SpotlightCard>
+
+          {/* ── Dehradun Campus About (BELOW DIRECTOR) ── */}
+          <SpotlightCard
+            glowColor="rgba(234, 179, 8, 0.18)"
+            className="bg-[#090D18]/90 border border-yellow-500/30 rounded-3xl p-6 sm:p-10 shadow-2xl backdrop-blur-2xl"
+          >
+            <div className="relative z-20 space-y-6 text-left">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#1E293B]">
+                <div>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-yellow-950/60 border border-yellow-500/40 text-yellow-400 text-xs font-mono mb-2">
+                    <span>🏙️</span> CAMPUS FOUNDATION &amp; PROFILE
+                  </div>
+                  <h3 className="spider-heading text-2xl sm:text-3xl text-white">About Graphic Era Hill University, Dehradun</h3>
+                  <p className="text-xs font-mono text-gray-400 mt-1">Clement Town, Near Rajaji National Park, Doon Valley, Uttarakhand</p>
+                </div>
+                <div className="p-3.5 rounded-2xl bg-[#0E1526] border border-yellow-500/40 text-left sm:text-right flex-shrink-0 shadow-spider-glow">
+                  <span className="text-[10px] font-mono text-gray-400 uppercase tracking-wider block">Official Date of Establishment</span>
+                  <span className="font-chakra italic font-bold text-base sm:text-lg text-yellow-400">🎂 28 APRIL 2011</span>
+                  <span className="block text-[10px] font-mono text-gray-500">Act No. 12 of 2011</span>
+                </div>
+              </div>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 text-xs sm:text-sm font-rajdhani text-gray-300 leading-relaxed font-medium">
+                <div className="space-y-3">
+                  <p>
+                    <strong className="text-white font-semibold">Graphic Era Hill University (GEHU), Dehradun</strong> is a private university in Uttarakhand, established on <strong className="text-yellow-400 font-semibold">28 April 2011</strong> under Uttarakhand Act No. 12 of 2011. The university was founded by <strong className="text-amber-300 font-semibold">Prof. (Dr.) Kamal Ghanshala</strong>, whose vision was to provide quality higher education and create opportunities for young people to build successful careers.
+                  </p>
+                  <p>
+                    Its roots trace back to <strong className="text-yellow-400">1993</strong>, when Graphic Era began as a small computer training centre in Dehradun. Since then, the institution has expanded its educational programmes, infrastructure and academic activities across the Doon Valley.
+                  </p>
+                  <p>
+                    The Dehradun campus offers programmes across various fields, including <strong className="text-white font-semibold">Engineering, Computer Science, Artificial Intelligence &amp; Machine Learning, Management, Law, Computer Applications, Humanities</strong> and Applied Sciences.
+                  </p>
+                </div>
+                <div className="space-y-3">
+                  <p>
+                    Located in the scenic Doon Valley, near <strong className="text-white font-semibold">Rajaji National Park</strong> and Clement Town Cantonment, the campus provides an inspiring environment for academic learning, practical training, research, innovation and extracurricular activities.
+                  </p>
+                  <p>
+                    GEHU Dehradun encourages students to develop technical expertise, critical thinking, leadership, teamwork and industry-relevant skills essential for a rapidly evolving professional world.
+                  </p>
+                  <p className="text-gray-400">
+                    Its broader educational vision focuses on academic excellence, professional development, entrepreneurship and the holistic growth of students — preparing them to contribute meaningfully to society and the nation.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </SpotlightCard>
+        </div>
+      )}
+
+      {/* Placeholder for Deemed only */}
+      {!isBhimtal && !isHaldwani && !isDehradun && (
         <SpotlightCard
-          glowColor="rgba(234,179,8,0.15)"
+          glowColor="rgba(0, 240, 255, 0.15)"
           className="bg-[#090D18]/90 border border-gray-700 rounded-3xl p-8 sm:p-12 shadow-2xl backdrop-blur-2xl text-left space-y-6"
         >
           <div className="relative z-20 space-y-4">
