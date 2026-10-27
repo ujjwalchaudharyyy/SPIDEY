@@ -107,6 +107,30 @@ async function initDB() {
       ['Peter Parker (Head Admin)', 'admin@campus.edu', hashed, 'admin', 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN']);
   }
 
+  // Student user (Peter Parker)
+  const studentRes = db.exec("SELECT id FROM users WHERE email = 'spiderman@gehu.ac.in'");
+  if (studentRes.length === 0) {
+    const hashedStudent = bcrypt.hashSync('student123', 10);
+    db.run("INSERT INTO users (name, email, password, role, campus, degree) VALUES (?, ?, ?, ?, ?, ?)",
+      ['Peter Parker', 'spiderman@gehu.ac.in', hashedStudent, 'student', 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL', 'B.Tech CSE - 3rd Year']);
+  }
+
+  // Generic Student user
+  const genericStudentRes = db.exec("SELECT id FROM users WHERE email = 'student@campus.edu'");
+  if (genericStudentRes.length === 0) {
+    const hashedGeneric = bcrypt.hashSync('student123', 10);
+    db.run("INSERT INTO users (name, email, password, role, campus, degree) VALUES (?, ?, ?, ?, ?, ?)",
+      ['Miles Morales', 'student@campus.edu', hashedGeneric, 'student', 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL', 'B.Tech AI/ML - 2nd Year']);
+  }
+
+  // Organizer user
+  const orgRes = db.exec("SELECT id FROM users WHERE email = 'organizer@campus.edu'");
+  if (orgRes.length === 0) {
+    const hashedOrg = bcrypt.hashSync('org123', 10);
+    db.run("INSERT INTO users (name, email, password, role, campus) VALUES (?, ?, ?, ?, ?)",
+      ['Tony Stark', 'organizer@campus.edu', hashedOrg, 'organizer', 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN']);
+  }
+
   saveDB();
   return db;
 }

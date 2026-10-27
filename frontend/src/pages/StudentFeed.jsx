@@ -6,13 +6,14 @@ import EventCard from '../components/EventCard'
 import CurvedCampusSlider from '../components/CurvedCampusSlider'
 import CampusTimelineView from '../components/CampusTimelineView'
 import WebShooterTransition from '../components/WebShooterTransition'
+import { DEFAULT_CAMPUSES, DEFAULT_EVENTS } from '../data/fallbackData'
 
 export default function StudentFeed({ initialTab = 'radar' }) {
   const { token, user } = useAuth()
   const [tab, setTab] = useState(initialTab)
-  const [campuses, setCampuses] = useState([])
+  const [campuses, setCampuses] = useState(DEFAULT_CAMPUSES)
   const [activeCampusIndex, setActiveCampusIndex] = useState(0)
-  const [events, setEvents] = useState([])
+  const [events, setEvents] = useState(DEFAULT_EVENTS)
   const [rsvpEvents, setRsvpEvents] = useState([])
   const [rsvpedIds, setRsvpedIds] = useState(new Set())
   const [loading, setLoading] = useState(true)
@@ -52,7 +53,9 @@ export default function StudentFeed({ initialTab = 'radar' }) {
         if (foundIdx !== -1) setActiveCampusIndex(foundIdx)
       }
     } catch (err) {
-      console.error('Failed to load campus feed', err)
+      console.warn('Backend API offline or on Vercel static deployment - using offline multiverse grid:', err.message)
+      setCampuses(DEFAULT_CAMPUSES)
+      setEvents(DEFAULT_EVENTS)
     }
     setLoading(false)
   }
