@@ -65,6 +65,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const [cardPhotoIdx, setCardPhotoIdx] = useState(0)
   const [isHovered, setIsHovered] = useState(false)
   const cardTouchStartX = useRef(null)
+  const cardTouchStartY = useRef(null)
 
   // Smooth auto-cycling on hover when card has multiple photos
   useEffect(() => {
@@ -87,6 +88,17 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
 
   const handleCardTouchStart = (e) => {
     cardTouchStartX.current = e.touches[0].clientX
+    cardTouchStartY.current = e.touches[0].clientY
+  }
+
+  const handleCardTouchMove = (e) => {
+    if (cardTouchStartX.current === null || !hasMultiplePhotos) return
+    const dx = e.touches[0].clientX - cardTouchStartX.current
+    const dy = e.touches[0].clientY - (cardTouchStartY.current || 0)
+    // If swipe is more horizontal than vertical, prevent page scroll
+    if (Math.abs(dx) > Math.abs(dy) && Math.abs(dx) > 10) {
+      e.preventDefault()
+    }
   }
 
   const handleCardTouchEnd = (e) => {
@@ -98,6 +110,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
       cardPrev(e)
     }
     cardTouchStartX.current = null
+    cardTouchStartY.current = null
   }
 
   // Keyboard nav for modal
@@ -145,7 +158,9 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
           onMouseEnter={() => setIsHovered(true)}
           onMouseLeave={() => setIsHovered(false)}
           onTouchStart={handleCardTouchStart}
+          onTouchMove={handleCardTouchMove}
           onTouchEnd={handleCardTouchEnd}
+          style={{ touchAction: hasMultiplePhotos ? 'pan-y' : 'auto' }}
         >
           {/* Pre-rendered Hardware-Accelerated Photo Layers */}
           <div className="absolute inset-0 w-full h-full bg-black">
@@ -303,7 +318,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                 <span>{isPast ? 'EVENT MEMORIES' : 'LIVE PHOTOS'} ({gallery.length})</span>
               </span>
               <span className="text-[10px] bg-amber-500 group-hover/banner:bg-amber-400 text-black px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0 shadow-md flex items-center gap-1">
-                MEMORIES OF EVENTS ➔
+                MEMORIES ➔
               </span>
             </div>
           )}
@@ -410,7 +425,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                     className="w-full py-2 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-red-600 via-red-700 to-red-800 text-white hover:brightness-110 shadow-spider-glow flex items-center justify-center gap-2 cursor-pointer transition-all active:scale-95 border border-red-500/50"
                   >
                     <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
-                    <span>📸 MEMORIES OF EVENTS ({gallery.length})</span>
+                    <span>📸 MEMORIES ({gallery.length})</span>
                   </button>
                 )}
               </div>
@@ -424,7 +439,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                     onClick={handleOpenGallery}
                     className="flex-1 py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black hover:brightness-110 shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
                   >
-                    <span>📸 MEMORIES OF EVENTS</span>
+                    <span>📸 MEMORIES</span>
                   </button>
                 )}
                 <div className={`py-2.5 text-xs font-mono text-gray-400 bg-[#0E1526]/80 border border-gray-800 rounded-xl text-center ${hasGallery ? 'px-3' : 'w-full'}`}>
