@@ -17,6 +17,7 @@ const categoryStyles = {
   'Student Festival / Cultural and Entertainment Event': 'bg-rose-950/60 text-rose-300 border-rose-500/40',
   'Technology / Innovation / Ideathon': 'bg-cyan-950/60 text-cyan-300 border-cyan-500/40',
   'Cultural / Religious Festival': 'bg-orange-950/60 text-orange-300 border-orange-500/40',
+  'Technical / Cultural Fest': 'bg-indigo-950/60 text-indigo-300 border-indigo-500/40',
 }
 
 const statusStyles = {

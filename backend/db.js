@@ -852,6 +852,63 @@ async function initDB() {
       event_time: "10:30 AM",
       organizer_name: "Cultural Council & Campus Community • GEHU Bhimtal",
       highlight_tag: "GANESH UTSAV • BHIMTAL"
+    },
+    {
+      title: "PRAYUKTI 2.0 – Tech Fest 2026",
+      description: "PRAYUKTI 2.0 at Graphic Era Hill University, Bhimtal Campus, was a grand technical and cultural festival celebrating student innovation, robotics, creativity, and talent under the theme 'Tech Today, Transform Tomorrow'. The festival brought together students from across departments to compete in high-octane Robowars, RC vehicle racing, strategic chess championships, classical musical performances, and vibrant cultural showcases.",
+      overview: "PRAYUKTI 2.0 was Graphic Era Hill University Bhimtal Campus's signature annual tech festival, uniting brilliant student minds under the inspiring motto 'Tech Today, Transform Tomorrow'. Organized by the IEEE Student Branch and the university's technical societies, the festival featured high-adrenaline engineering competitions, strategic mental showdowns, traditional performing arts, and a bustling campus carnival.",
+      highlights_title: "FESTIVAL & TECH HIGHLIGHTS",
+      highlights: JSON.stringify([
+        "High-stakes Robowars battle bots combat and custom remote-controlled RC vehicle track races",
+        "Official keynote addresses and festival inauguration on the main outdoor stage under 'Tech Today, Transform Tomorrow'",
+        "Strategic chess tournament matchups with digital timers and classical Indian solo Tabla performances",
+        "International and regional cultural showcases featuring Nepalese folk presentations and traditional ethnic dance",
+        "Creative 'PRAYUKTI 2026 TECH FEST' photo booth with student memories and campus food street carnival"
+      ]),
+      closing_message: "Empowering student creators to innovate, compete, and celebrate the transformative power of technology, engineering, and culture at Graphic Era Hill University, Bhimtal.",
+      category: "Technical / Cultural Fest",
+      venue: "Main Ground & Computing Arena, GEHU Bhimtal",
+      campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+      image_url: "/assets/events/prayukti/prayukti_1_keynote_stage.jpg",
+      gallery: JSON.stringify([
+        "/assets/events/prayukti/prayukti_1_keynote_stage.jpg",
+        "/assets/events/prayukti/prayukti_2_robowars_combat.jpg",
+        "/assets/events/prayukti/prayukti_3_chess_and_tabla.jpg",
+        "/assets/events/prayukti/prayukti_4_cultural_showcase.jpg",
+        "/assets/events/prayukti/prayukti_5_photobooth.jpg"
+      ]),
+      photos: JSON.stringify([
+        {
+          url: "/assets/events/prayukti/prayukti_1_keynote_stage.jpg",
+          title: "Keynote Address & Main Stage Gathering",
+          caption: "University dignitaries and faculty addressing the large student assembly on the main stage under the official PRAYUKTI 2.0 banner with campus food stalls."
+        },
+        {
+          url: "/assets/events/prayukti/prayukti_2_robowars_combat.jpg",
+          title: "Robowars Combat & RC Vehicle Lineup",
+          caption: "Student roboticists lined up with transmitters controlling custom-engineered combat battle bots and RC cars in the arena."
+        },
+        {
+          url: "/assets/events/prayukti/prayukti_3_chess_and_tabla.jpg",
+          title: "Strategic Chess Match & Classical Tabla Recital",
+          caption: "Students competing in intense chess matches with digital timers alongside captivating solo classical Tabla performances."
+        },
+        {
+          url: "/assets/events/prayukti/prayukti_4_cultural_showcase.jpg",
+          title: "Nepalese Folk & Ethnic Cultural Dance Showcase",
+          caption: "Students proudly presenting their cultural heritage with the Nepal national flag followed by traditional folk dance in elaborate attire."
+        },
+        {
+          url: "/assets/events/prayukti/prayukti_5_photobooth.jpg",
+          title: "PRAYUKTI 2026 Tech Fest Photo Booth",
+          caption: "Students capturing festival memories at the creative PRAYUKTI 2026 photo booth decorated with AI, robotics, and gear illustrations."
+        }
+      ]),
+      event_date: "2026-04-22",
+      display_date: "April 22-23, 2026",
+      event_time: "10:00 AM",
+      organizer_name: "IEEE Student Branch & Prayukti Tech Cell • GEHU Bhimtal",
+      highlight_tag: "PRAYUKTI 2.0 • BHIMTAL"
     }
   ];
 
