@@ -94,16 +94,24 @@ export const DEFAULT_EVENTS = [
   // 2. GEHU Haldwani
   {
     id: 4,
-    title: "🦾 Stark Cyber-Robotics & AI Kinematics Conclave",
-    description: "Exhibition of quadruped spider-bots, automated web-line rovers, and real-time inverse kinematics controllers.",
+    title: "⚡ Watch The Code: National Level Hackathon",
+    description: "A flagship national-level 24-hour coding marathon bringing developers together. Huge congratulations to Team TECH4ALL for winning the prestigious Consolation Prize and cash award of ₹5,000 with exceptional presentation and code execution!",
     category: "Technical",
-    venue: "Robotics Arena 3, GEHU Haldwani",
+    venue: "Main Auditorium & Computing Arena, GEHU Haldwani",
     campus: "GRAPHIC ERA HILL UNIVERSITY HALDWANI",
-    image_url: "/assets/campuses/haldwani.png",
+    image_url: "/assets/events/watch_the_code_1.jpg",
+    gallery: [
+      "/assets/events/watch_the_code_1.jpg",
+      "/assets/events/watch_the_code_stage.jpg",
+      "/assets/events/watch_the_code_team.jpg",
+      "/assets/events/watch_the_code_trophy1.jpg",
+      "/assets/events/watch_the_code_trophy2.jpg"
+    ],
+    winner_team: "Team TECH4ALL (Consolation Prize ₹5,000 & Trophy)",
     event_date: "2026-10-10",
-    event_time: "10:30 AM",
-    organizer_name: "Department of Mechanical & Robotics",
-    rsvp_count: 67
+    event_time: "10:00 AM",
+    organizer_name: "Watch The Code & Graphic Era Hill University",
+    rsvp_count: 189
   },
   {
     id: 5,

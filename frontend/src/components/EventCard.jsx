@@ -38,6 +38,8 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const [rsvpLoading, setRsvpLoading] = useState(false)
   const [showRegisterModal, setShowRegisterModal] = useState(false)
   const [registeredTicket, setRegisteredTicket] = useState(null)
+  const [showGalleryModal, setShowGalleryModal] = useState(false)
+  const [activePhotoIndex, setActivePhotoIndex] = useState(0)
 
   const handleRsvp = async () => {
     setRsvpLoading(true)
@@ -54,12 +56,20 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const todayStr = '2026-10-27'
   const isPast = event.event_date < todayStr
   const isPresent = event.event_date === todayStr
+  const hasGallery = event.gallery && event.gallery.length > 0
 
   return (
     <>
       <div className="spider-card group flex flex-col justify-between overflow-hidden p-0 border-[#1E293B] hover:border-red-500/70">
         {/* Event Header Photo */}
-        <div className="relative h-44 w-full overflow-hidden bg-black">
+        <div 
+          className="relative h-48 w-full overflow-hidden bg-black cursor-pointer"
+          onClick={() => {
+            if (hasGallery) {
+              setShowGalleryModal(true)
+            }
+          }}
+        >
           <img
             src={event.image_url || '/assets/campuses/bhimtal.png'}
             alt={event.title}
@@ -81,8 +91,8 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                 </span>
               )}
               {isPast && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-black/80 text-gray-400 border border-gray-700">
-                  ARCHIVED
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-black/80 text-yellow-400 border border-yellow-500/50 shadow-spider-glow">
+                  🏆 ARCHIVED
                 </span>
               )}
               <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/80 border border-red-500/40 text-xs font-mono font-bold text-red-300">
@@ -91,6 +101,14 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
               </div>
             </div>
           </div>
+
+          {/* Winner Banner if applicable */}
+          {event.winner_team && (
+            <div className="absolute bottom-2 left-2 right-2 z-10 bg-gradient-to-r from-amber-950/90 via-black/90 to-amber-950/90 border border-amber-500/60 rounded-xl px-2.5 py-1 text-[11px] font-mono text-amber-300 flex items-center justify-between shadow-spider-glow backdrop-blur-md">
+              <span className="truncate">🏆 {event.winner_team}</span>
+              <span className="text-[10px] text-amber-400 font-bold ml-1 flex-shrink-0">📸 5 PHOTOS</span>
+            </div>
+          )}
         </div>
 
         {/* Card Details Body */}
@@ -129,7 +147,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             )}
           </div>
 
-          {/* Footer Action Buttons (REGISTER FOR EVENT + RSVP) */}
+          {/* Footer Action Buttons */}
           <div className="pt-2 border-t border-[#1E293B] space-y-2">
             {isStudent && event.status === 'approved' && !isPast && (
               <div className="grid grid-cols-2 gap-2">
@@ -169,8 +187,19 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             )}
 
             {isPast && (
-              <div className="w-full text-center py-2 text-xs font-mono text-gray-500 bg-[#0E1526]/40 rounded-xl">
-                Event concluded
+              <div className="flex items-center gap-2">
+                {hasGallery && (
+                  <button
+                    type="button"
+                    onClick={() => setShowGalleryModal(true)}
+                    className="flex-1 py-2 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-yellow-600 via-amber-600 to-yellow-500 text-black hover:brightness-110 shadow-spider-glow flex items-center justify-center gap-1.5 cursor-pointer transition-all"
+                  >
+                    <span>🏆 VIEW WINNERS & PHOTOS</span>
+                  </button>
+                )}
+                <div className={`py-2 text-xs font-mono text-gray-400 bg-[#0E1526]/80 border border-gray-800 rounded-xl text-center ${hasGallery ? 'px-3' : 'w-full'}`}>
+                  Concluded
+                </div>
               </div>
             )}
 
@@ -213,6 +242,82 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             onRsvp?.(event.id)
           }}
         />
+      )}
+
+      {/* Full Winner Gallery Modal Popup */}
+      {showGalleryModal && hasGallery && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xl flex items-center justify-center p-4 sm:p-6"
+          onClick={() => setShowGalleryModal(false)}
+        >
+          <div 
+            className="relative bg-[#090D18] border border-amber-500/50 rounded-3xl max-w-3xl w-full p-6 shadow-[0_0_50px_rgba(245,158,11,0.25)] space-y-4 max-h-[90vh] overflow-y-auto"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#1E293B]">
+              <div>
+                <span className="text-[10px] font-mono text-amber-400 uppercase tracking-widest block">Event Winners & Highlights</span>
+                <h3 className="spider-heading text-lg sm:text-xl text-white">{event.title}</h3>
+              </div>
+              <button
+                onClick={() => setShowGalleryModal(false)}
+                className="w-8 h-8 rounded-full bg-black/80 border border-gray-700 text-gray-400 hover:text-white flex items-center justify-center text-sm"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Winner Badge Callout */}
+            {event.winner_team && (
+              <div className="p-3.5 rounded-2xl bg-amber-950/40 border border-amber-500/50 flex items-center gap-3">
+                <span className="text-2xl">🏆</span>
+                <div>
+                  <span className="text-[10px] font-mono text-amber-400 uppercase font-bold block">Winner Ceremony</span>
+                  <p className="text-xs sm:text-sm font-rajdhani font-semibold text-white">{event.winner_team}</p>
+                </div>
+              </div>
+            )}
+
+            {/* Big Active Image */}
+            <div className="relative rounded-2xl overflow-hidden border border-[#1E293B] h-64 sm:h-96 bg-black">
+              <img
+                src={event.gallery[activePhotoIndex]}
+                alt="Event Winner Photo"
+                className="w-full h-full object-contain"
+              />
+              <div className="absolute bottom-3 left-3 px-3 py-1 rounded-full bg-black/80 border border-gray-700 text-xs font-mono text-gray-300">
+                Photo {activePhotoIndex + 1} of {event.gallery.length}
+              </div>
+            </div>
+
+            {/* Thumbnails Row */}
+            <div className="grid grid-cols-5 gap-2 pt-2">
+              {event.gallery.map((photo, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActivePhotoIndex(idx)}
+                  className={`relative rounded-xl overflow-hidden h-16 sm:h-20 border-2 transition-all cursor-pointer ${
+                    activePhotoIndex === idx
+                      ? 'border-amber-400 scale-105 shadow-spider-glow'
+                      : 'border-transparent opacity-60 hover:opacity-100'
+                  }`}
+                >
+                  <img src={photo} alt={`Thumb ${idx + 1}`} className="w-full h-full object-cover" />
+                </button>
+              ))}
+            </div>
+
+            <div className="pt-2 text-center">
+              <button
+                onClick={() => setShowGalleryModal(false)}
+                className="btn-spider-pill text-xs py-2 px-6"
+              >
+                CLOSE GALLERY ➔
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   )
