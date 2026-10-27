@@ -546,6 +546,117 @@ async function initDB() {
       event_date: "2024-04-28",
       event_time: "10:00 AM",
       organizer_name: "Office of Student Affairs & Cultural Council • GEHU Dehradun"
+    },
+    // --- UPCOMING EVENTS: GEHU HALDWANI ---
+    {
+      title: "🤖 RoboKriti 2026: Foothills Autonomous Robotics Challenge",
+      description: "Annual high-stakes robotics challenge featuring obstacle navigation, autonomous line-trackers, and combat battle-bots engineered by tech enthusiasts across Uttarakhand.",
+      category: "Technical",
+      venue: "Robotics & AI Innovation Hub, GEHU Haldwani",
+      campus: "GRAPHIC ERA HILL UNIVERSITY HALDWANI",
+      image_url: "/assets/campuses/haldwani.png",
+      event_date: "2026-11-15",
+      event_time: "10:00 AM",
+      organizer_name: "Robotics & IoT Innovation Club • GEHU Haldwani",
+      highlight_tag: "ROBOTICS CHALLENGE"
+    },
+    {
+      title: "🎨 Terai Youth Conclave & Literary Arts Gala '26",
+      description: "A grand confluence of creative writing, slam poetry, bilingual youth debates, Nukkad Natak street play, and live art exhibitions celebrating Kumaon's rising creators.",
+      category: "Cultural",
+      venue: "Main University Auditorium, GEHU Haldwani",
+      campus: "GRAPHIC ERA HILL UNIVERSITY HALDWANI",
+      image_url: "/assets/campuses/haldwani.png",
+      event_date: "2026-11-26",
+      event_time: "11:30 AM",
+      organizer_name: "Literary & Cultural Society • GEHU Haldwani",
+      highlight_tag: "LITERARY GALA"
+    },
+    {
+      title: "⚽ Kumaon Premier Inter-College Sports Carnival",
+      description: "High-octane inter-departmental athletic showdown featuring 7v7 football championship, box cricket league, badminton smash tournament, and volleyball finals.",
+      category: "Sports",
+      venue: "Sports Pavilion & Athletic Arena, GEHU Haldwani",
+      campus: "GRAPHIC ERA HILL UNIVERSITY HALDWANI",
+      image_url: "/assets/campuses/haldwani.png",
+      event_date: "2026-12-04",
+      event_time: "08:30 AM",
+      organizer_name: "Directorate of Physical Education • GEHU Haldwani",
+      highlight_tag: "SPORTS CARNIVAL"
+    },
+    // --- UPCOMING EVENTS: GEHU DEHRADUN ---
+    {
+      title: "🌐 Doon CyberShield '26: National CTF & Ethical Hacking Sprint",
+      description: "30-hour national Capture The Flag (CTF) tournament, zero-day exploit defenses, cloud penetration testing drills, and cybersecurity keynotes by top industry leaders.",
+      category: "Technical",
+      venue: "CS & IT Supercomputing Arena, GEHU Dehradun",
+      campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
+      image_url: "/assets/campuses/dehradun.png",
+      event_date: "2026-11-18",
+      event_time: "09:30 AM",
+      organizer_name: "Cyber Security & Bug Bounty Cell • GEHU Dehradun",
+      highlight_tag: "CYBER CTF '26"
+    },
+    {
+      title: "🎭 Doon Valley Youth Theatre & Acoustic Music Fest '26",
+      description: "An evening of dramatic stage acts, acoustic indie band face-offs, fusion instrumental jams, and contemporary solo choreography by students across departments.",
+      category: "Cultural",
+      venue: "KP Nautiyal Memorial Auditorium, GEHU Dehradun",
+      campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
+      image_url: "/assets/campuses/dehradun.png",
+      event_date: "2026-12-02",
+      event_time: "05:30 PM",
+      organizer_name: "Cultural Council & Drama Guild • GEHU Dehradun",
+      highlight_tag: "THEATRE & MUSIC"
+    },
+    {
+      title: "🏸 Spardha Inter-University Badminton & Table Tennis Open",
+      description: "State-level indoor athletic tournament featuring men's & women's singles/doubles badminton, lightning table tennis showdowns, and rapid blitz chess championships.",
+      category: "Sports",
+      venue: "Indoor Sports Complex, Clement Town Campus",
+      campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
+      image_url: "/assets/campuses/dehradun.png",
+      event_date: "2026-12-12",
+      event_time: "09:00 AM",
+      organizer_name: "Department of Sports & Athletics • GEHU Dehradun",
+      highlight_tag: "INDOOR OPEN"
+    },
+    // --- UPCOMING EVENTS: GRAPHIC ERA DEEMED UNIVERSITY ---
+    {
+      title: "⚡ InnovateGEU '26: Grand AI & DeepTech Conclave",
+      description: "Flagship national technology symposium bringing global AI researchers, deep-tech startup founders, and student builders together for AI agent demos, patent expos, and seed pitches.",
+      category: "Technical",
+      venue: "Convention Centre & Multiverse Research Arena, GEU Deemed",
+      campus: "GRAPHIC ERA DEEMED UNIVERSITY",
+      image_url: "/assets/campuses/deemed.png",
+      event_date: "2026-11-16",
+      event_time: "10:00 AM",
+      organizer_name: "Center for Artificial Intelligence & DeepTech • GEU Deemed",
+      highlight_tag: "AI & DEEPTECH"
+    },
+    {
+      title: "🏆 All-India Inter-University Cricket Championship 2026",
+      description: "T20 cricket championship featuring 16 top university squads battling for the prestigious Graphic Era Chancellor's Trophy under professional floodlights with live streaming.",
+      category: "Sports",
+      venue: "Main University Stadium, Graphic Era Deemed Campus",
+      campus: "GRAPHIC ERA DEEMED UNIVERSITY",
+      image_url: "/assets/campuses/dehradun.png",
+      event_date: "2026-11-22",
+      event_time: "08:00 AM",
+      organizer_name: "Sports Council • Graphic Era Deemed University",
+      highlight_tag: "CHANCELLOR'S CUP"
+    },
+    {
+      title: "🎶 Swarotsav '26: Annual Sufi & Rock Fusion Night",
+      description: "Grand cultural music evening with soulful Sufi melodies, high-voltage rock fusion bands, student choir showcases, and food street stalls under the starry Dehradun skies.",
+      category: "Cultural",
+      venue: "Open Air Amphitheatre, Bell Road Campus, GEU Deemed",
+      campus: "GRAPHIC ERA DEEMED UNIVERSITY",
+      image_url: "/assets/campuses/deemed.png",
+      event_date: "2026-12-10",
+      event_time: "06:00 PM",
+      organizer_name: "Music & Cultural Affairs Society • GEU Deemed",
+      highlight_tag: "MUSIC NIGHT"
     }
   ];
 
