@@ -136,6 +136,32 @@ async function initDB() {
     try { db.run(colSql); } catch (e) {}
   }
 
+  // Verified Passes Table (High Security Public QR Verification & Attendance)
+  db.run(
+    CREATE TABLE IF NOT EXISTS verified_passes (
+      ticket_code TEXT PRIMARY KEY,
+      event_id INTEGER,
+      event_title TEXT,
+      event_venue TEXT,
+      event_date TEXT,
+      event_time TEXT,
+      event_campus TEXT,
+      student_name TEXT NOT NULL,
+      student_email TEXT NOT NULL,
+      phone TEXT,
+      roll_no TEXT,
+      campus TEXT,
+      degree TEXT,
+      team_name TEXT,
+      role_in_team TEXT,
+      track_info TEXT,
+      photo_url TEXT,
+      attendance_status TEXT DEFAULT 'REGISTERED & VERIFIED',
+      checkin_time TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    )
+  );
+
   // Admin user
   const adminRes = db.exec("SELECT id FROM users WHERE email = 'admin@campus.edu'");
   if (adminRes.length === 0) {

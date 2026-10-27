@@ -1376,7 +1376,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                 return (
                   <div
                     key={idx}
-                    className="relative transition-all duration-500 transform hover:rotate-0 hover:translate-y-0 hover:scale-105 hover:z-50 shrink-0 w-80 sm:w-84 animate-snake-drop"
+                    className="relative transition-all duration-300 ease-out hover:rotate-0 hover:translate-y-0 hover:scale-105 hover:z-50 shrink-0 w-80 sm:w-84 animate-snake-drop gpu-accelerated"
                     style={{
                       transform: `rotate(${tilt}deg) translateY(${yOffset}px)`,
                       animationDelay: `${idx * 160}ms`,
