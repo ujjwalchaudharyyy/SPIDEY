@@ -2,12 +2,13 @@ import { useRef, useEffect, useState } from 'react'
 
 export default function SigninVideoModal({ onComplete }) {
   const videoRef = useRef(null)
-  const [hasSound, setHasSound] = useState(false)
+  const [hasSound, setHasSound] = useState(true)
 
   useEffect(() => {
     // Keyboard shortcut to skip transition video instantly
     const handleKeyDown = (e) => {
       if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+        e.preventDefault()
         onComplete?.()
       }
     }
@@ -19,36 +20,21 @@ export default function SigninVideoModal({ onComplete }) {
     const video = videoRef.current
     if (!video) return
 
-    // Start with muted to guarantee instant 0-second play across all browsers/mobile
-    video.muted = true
-    video.defaultMuted = true
+    video.volume = 1.0
 
-    const startInstantPlay = () => {
-      const playPromise = video.play()
-      if (playPromise !== undefined) {
-        playPromise
-          .then(() => {
-            // Attempt to unmute with audio
-            video.muted = false
-            video.volume = 1.0
-            setHasSound(true)
-          })
-          .catch(() => {
-            // Browser restricted unmuted autoplay — keep smooth muted playback
-            video.muted = true
-            video.play().catch(() => {})
-            setHasSound(false)
-          })
-      }
-    }
-
-    startInstantPlay()
-    video.addEventListener('canplay', startInstantPlay, { once: true })
-    video.addEventListener('loadeddata', startInstantPlay, { once: true })
-
-    return () => {
-      video.removeEventListener('canplay', startInstantPlay)
-      video.removeEventListener('loadeddata', startInstantPlay)
+    // User just clicked the login button (valid user gesture), so audio is pre-authorized!
+    const playPromise = video.play()
+    if (playPromise !== undefined) {
+      playPromise
+        .then(() => {
+          setHasSound(!video.muted)
+        })
+        .catch(() => {
+          // If browser restricted sound, continue muted playback instantly without pausing
+          video.muted = true
+          video.play().catch(() => {})
+          setHasSound(false)
+        })
     }
   }, [])
 
@@ -65,7 +51,12 @@ export default function SigninVideoModal({ onComplete }) {
   return (
     <div
       onClick={onComplete}
-      className="fixed inset-0 z-50 bg-black flex items-center justify-center overflow-hidden cursor-pointer select-none"
+      className="fixed inset-0 z-50 bg-black flex items-center justify-center overflow-hidden cursor-pointer select-none animate-fadeIn"
+      style={{
+        contain: 'paint',
+        willChange: 'transform, opacity',
+        transform: 'translate3d(0, 0, 0)'
+      }}
     >
       {/* Dynamic Spider Radial Ambient Glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.22)_0%,_rgba(10,13,24,0.75)_55%,_#060810_100%)] pointer-events-none" />
@@ -76,7 +67,6 @@ export default function SigninVideoModal({ onComplete }) {
           ref={videoRef}
           src="/assets/videos/sign.mp4"
           autoPlay
-          muted
           playsInline
           preload="auto"
           webkit-playsinline="true"
@@ -91,8 +81,13 @@ export default function SigninVideoModal({ onComplete }) {
               e.target.play().catch(() => {})
             }
           }}
-          className="w-full max-h-[88vh] sm:max-h-full sm:h-full object-contain sm:object-cover rounded-2xl sm:rounded-none border border-red-500/40 sm:border-0 shadow-[0_0_45px_rgba(239,68,68,0.5)] sm:shadow-none transition-all duration-300"
-          style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+          className="w-full max-h-[88vh] sm:max-h-full sm:h-full object-contain sm:object-cover rounded-2xl sm:rounded-none border border-red-500/40 sm:border-0 shadow-[0_0_45px_rgba(239,68,68,0.5)] sm:shadow-none"
+          style={{
+            willChange: 'transform',
+            transform: 'translate3d(0, 0, 0)',
+            backfaceVisibility: 'hidden',
+            WebkitBackfaceVisibility: 'hidden'
+          }}
         />
       </div>
 

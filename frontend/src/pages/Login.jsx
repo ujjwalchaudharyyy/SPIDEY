@@ -73,6 +73,10 @@ export default function Login() {
   }
 
   const proceedWithLogin = (token, role = 'student') => {
+    // Immediately pause background video to free 100% GPU video decoding bandwidth
+    if (videoRef.current) {
+      try { videoRef.current.pause() } catch (e) {}
+    }
     login(token)
     const target = role === 'admin' ? '/admin' : role === 'organizer' ? '/organizer' : '/feed'
     setPendingDestination(target)
@@ -81,10 +85,6 @@ export default function Login() {
 
   const handleFinishSigninVideo = () => {
     navigate(pendingDestination || '/feed', { replace: true })
-  }
-
-  if (showSigninVideo) {
-    return <SigninVideoModal onComplete={handleFinishSigninVideo} />
   }
 
   if (isAuthenticated && !showSigninVideo && !pendingDestination) {
@@ -295,6 +295,22 @@ export default function Login() {
   }
 
   return (
+    <>
+      {/* 4K Sign-In Transition Video Overlay (Zero-Stutter Hardware Accelerated) */}
+      {showSigninVideo && (
+        <SigninVideoModal onComplete={handleFinishSigninVideo} />
+      )}
+
+      {/* Pre-warm transition video stream in background for zero-latency instant play */}
+      <video
+        src="/assets/videos/sign.mp4"
+        preload="auto"
+        muted
+        playsInline
+        className="hidden pointer-events-none"
+        aria-hidden="true"
+      />
+
     <div
       onClick={ensureSoundOnInteraction}
       className="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex flex-col sm:flex-row items-center justify-end p-4 sm:p-6 bg-black"
@@ -564,5 +580,6 @@ export default function Login() {
         </div>
       </div>
     </div>
+    </>
   )
 }
