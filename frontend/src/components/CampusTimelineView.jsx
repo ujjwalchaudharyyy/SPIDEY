@@ -36,9 +36,9 @@ export default function CampusTimelineView({ campus, events, rsvpedIds, onRsvp }
   const [showPhotoModal, setShowPhotoModal] = useState(false)
   const todayStr = '2026-10-27'
 
-  const pastEvents = events.filter(e => e.event_date < todayStr)
+  const pastEvents = [...events.filter(e => e.event_date < todayStr)].sort((a, b) => b.event_date.localeCompare(a.event_date))
   const presentEvents = events.filter(e => e.event_date === todayStr)
-  const futureEvents = events.filter(e => e.event_date > todayStr)
+  const futureEvents = [...events.filter(e => e.event_date > todayStr)].sort((a, b) => a.event_date.localeCompare(b.event_date))
 
   const theme = THEME_ACCENTS[campus.id] || THEME_ACCENTS.bhimtal
 

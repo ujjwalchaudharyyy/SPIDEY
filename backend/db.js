@@ -72,6 +72,20 @@ async function initDB() {
   try { db.run("ALTER TABLE events ADD COLUMN gallery TEXT"); } catch (e) {}
   try { db.run("ALTER TABLE events ADD COLUMN winner_team TEXT"); } catch (e) {}
 
+  // Schema upgrades for extended event metadata
+  const eventColumns = [
+    "ALTER TABLE events ADD COLUMN date_tba INTEGER DEFAULT 0",
+    "ALTER TABLE events ADD COLUMN display_date TEXT",
+    "ALTER TABLE events ADD COLUMN registration_window TEXT",
+    "ALTER TABLE events ADD COLUMN registration_deadline TEXT",
+    "ALTER TABLE events ADD COLUMN registration_status TEXT",
+    "ALTER TABLE events ADD COLUMN badge_text TEXT",
+    "ALTER TABLE events ADD COLUMN highlight_tag TEXT"
+  ];
+  for (const colSql of eventColumns) {
+    try { db.run(colSql); } catch (e) {}
+  }
+
   // RSVPs Table
   db.run(`
     CREATE TABLE IF NOT EXISTS rsvps (
@@ -106,6 +120,18 @@ async function initDB() {
     )
   `);
 
+  // Schema upgrades for event_registrations
+  const regColumns = [
+    "ALTER TABLE event_registrations ADD COLUMN team_name TEXT",
+    "ALTER TABLE event_registrations ADD COLUMN team_size TEXT",
+    "ALTER TABLE event_registrations ADD COLUMN track_info TEXT",
+    "ALTER TABLE event_registrations ADD COLUMN github_link TEXT",
+    "ALTER TABLE event_registrations ADD COLUMN details_json TEXT"
+  ];
+  for (const colSql of regColumns) {
+    try { db.run(colSql); } catch (e) {}
+  }
+
   // Admin user
   const adminRes = db.exec("SELECT id FROM users WHERE email = 'admin@campus.edu'");
   if (adminRes.length === 0) {
@@ -132,10 +158,13 @@ async function initDB() {
 
   // Organizer user
   const orgRes = db.exec("SELECT id FROM users WHERE email = 'organizer@campus.edu'");
+  let orgId = 1;
   if (orgRes.length === 0) {
     const hashedOrg = bcrypt.hashSync('org123', 10);
     db.run("INSERT INTO users (name, email, password, role, campus) VALUES (?, ?, ?, ?, ?)",
       ['Tony Stark', 'organizer@campus.edu', hashedOrg, 'organizer', 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN']);
+  } else if (orgRes[0].values.length > 0) {
+    orgId = orgRes[0].values[0][0];
   }
 
   // Seed Default Events including Smart India Hackathon
@@ -251,6 +280,135 @@ async function initDB() {
         "Student Activity Council (SAC) • Graphic Era Deemed University"
       ]
     );
+  }
+
+  // Seed Bhimtal Upcoming & Flagship Events
+  const additionalEvents = [
+    {
+      title: "❄️ Hack The Winter Hackathon '27 (Himalayan Edition)",
+      description: "The most anticipated national winter hackathon in the snow-touched hills of Bhimtal! 36 hours of non-stop adrenaline building AI agents, Web3 protocols, Mountain IoT solutions, and Cybersecurity defenses. Grand prize pool ₹1,50,000+, internship opportunities & exclusive Spider-Hacker swags. Official date revealing soon — Pre-registration & Early Bird Access is live for Jan-Feb 2027!",
+      category: "Technical",
+      venue: "Turing Computing Arena & Open Lake Hub, GEHU Bhimtal",
+      campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+      image_url: "/assets/events/graphite2026.jpg",
+      event_date: "2027-02-20",
+      event_time: "10:00 AM",
+      organizer_name: "Department of CSE & Spidey Dev-Club Bhimtal",
+      date_tba: 1,
+      display_date: "Date Revealing Soon (TBA) ❄️",
+      registration_window: "Jan 15, 2027 – Feb 20, 2027",
+      registration_status: "Early Bird & Pre-Registration Active",
+      badge_text: "❄️ DATE TO BE ANNOUNCED // REVEALING SOON",
+      highlight_tag: "HACKATHON • JAN-FEB REGISTRATION"
+    },
+    {
+      title: "🌌 AstroVerse: Himalayan Space-Tech & Galactic Exploration Fest",
+      description: "Explore the infinite cosmos from Bhimtal's high-altitude observatory (4494 ft)! Featuring deep-sky telescope stargazing, ISRO space-tech guest lectures, CubeSat & satellite telemetry workshop, planetary AI hack sprint, and high-altitude model rocketry. Expected in November 2026 — REGISTRATIONS ARE LIVE! Strictly closing on 5th November 2026 due to limited telescope time slots.",
+      category: "Technical",
+      venue: "Himalayan Ridge Observatory & APJ Abdul Kalam Arena, GEHU Bhimtal",
+      campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+      image_url: "/assets/leadership/bhimtal_aerial.jpg",
+      event_date: "2026-11-20",
+      event_time: "06:00 PM",
+      organizer_name: "Astronomy & Deep Space Guild GEHU Bhimtal",
+      registration_deadline: "2026-11-05",
+      registration_status: "LIVE NOW — CLOSING 5TH NOV 2026",
+      badge_text: "🚨 REGISTRATION CLOSES 5 NOV",
+      highlight_tag: "SPACE-TECH • CLOSING NOV 5"
+    },
+    {
+      title: "⚡ Infotsav '26: Annual Flagship Technical Fest",
+      description: "Graphic Era Hill University Bhimtal's grandest annual technical festival! Featuring Robowars, Line-Follower Bots, Drone Obstacle Racing, 24-hr Speed Web-Dev Sprint, Bug-Bounty & CTF, and Hardware IoT Expo.",
+      category: "Technical",
+      venue: "Turing Computing Block & APJ Hall, GEHU Bhimtal",
+      campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+      image_url: "/assets/campuses/bhimtal.png",
+      event_date: "2026-11-12",
+      event_time: "09:30 AM",
+      organizer_name: "Infotsav Technical Council Bhimtal",
+      registration_status: "Registration Open",
+      highlight_tag: "TECH FEST '26"
+    },
+    {
+      title: "🏆 Spardha '26: Annual Himalayan Inter-Campus Sports League",
+      description: "The ultimate inter-departmental athletic extravaganza! Featuring Football Championship (11v11), Box Cricket League, Badminton singles/doubles, Volleyball, Table Tennis, and 100m alpine sprint.",
+      category: "Sports",
+      venue: "Main Oval Ground & Sports Complex, GEHU Bhimtal",
+      campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+      image_url: "/assets/campuses/bhimtal.png",
+      event_date: "2026-11-08",
+      event_time: "08:00 AM",
+      organizer_name: "Directorate of Sports & Physical Education Bhimtal",
+      registration_status: "Team Entries Open",
+      highlight_tag: "SPORTS MEET '26"
+    },
+    {
+      title: "🎭 Grafest '26: Bhimtal Winter Mega Cultural Fest",
+      description: "Graphic Era's landmark annual cultural fest hits Bhimtal! Star-studded Celebrity Concert Night, Battle of the Rock Bands, Inter-College Dance Battles, Multiverse Fashion Walk, and mountain food streets.",
+      category: "Cultural",
+      venue: "Central Amphitheater & Open Lake Arena, GEHU Bhimtal",
+      campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+      image_url: "/assets/leadership/bhimtal_amphi.jpg",
+      event_date: "2026-11-28",
+      event_time: "05:00 PM",
+      organizer_name: "Central Fest Directorate & SAC Bhimtal",
+      registration_status: "All-Access VIP Passes Live",
+      highlight_tag: "MEGA CULTURAL FEST"
+    },
+    {
+      title: "🎨 Kalakriti & Goonj: Youth Arts, Theatre & Folk Conclave",
+      description: "A celebration of Himalayan heritage, dramatic arts, and creative expression! Features Nukkad Natak, Traditional Chholiya folk dance, Poetry Slam, Live Canvas Painting, and Digital Photography.",
+      category: "Cultural",
+      venue: "Rabindranath Tagore Auditorium, GEHU Bhimtal",
+      campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+      image_url: "/assets/campuses/bhimtal.png",
+      event_date: "2026-12-05",
+      event_time: "11:00 AM",
+      organizer_name: "Kala-Kriti Guild & Literary Society Bhimtal",
+      registration_status: "Auditions & Registration Open",
+      highlight_tag: "CULTURAL ACTIVITY"
+    },
+    {
+      title: "🚁 AeroTrek: Himalayan Eco-Drone & Aerial Survey Expedition",
+      description: "An innovative blend of adventure, technology, and environmental conservation! Experience FPV drone flight obstacle courses, high-altitude aerial photography, environmental IoT sensors, and lake ecosystem preservation.",
+      category: "Workshop",
+      venue: "Bhimtal High Ridge & Eco-Innovation Center, GEHU Bhimtal",
+      campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+      image_url: "/assets/leadership/bhimtal_aerial.jpg",
+      event_date: "2026-12-18",
+      event_time: "09:00 AM",
+      organizer_name: "Aero-Spidey Club & Eco-Tech Guild",
+      registration_status: "Workshop Seats Open",
+      highlight_tag: "WORKSHOP & ACTIVITY"
+    }
+  ];
+
+  for (const ev of additionalEvents) {
+    const existing = db.exec(`SELECT id FROM events WHERE title = '${ev.title.replace(/'/g, "''")}'`);
+    if (existing.length === 0 || existing[0].values.length === 0) {
+      db.run(`
+        INSERT INTO events (title, description, category, venue, campus, image_url, event_date, event_time, organizer_id, organizer_name, status, date_tba, display_date, registration_window, registration_deadline, registration_status, badge_text, highlight_tag)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved', ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        ev.title,
+        ev.description,
+        ev.category,
+        ev.venue,
+        ev.campus,
+        ev.image_url,
+        ev.event_date,
+        ev.event_time,
+        orgId,
+        ev.organizer_name,
+        ev.date_tba || 0,
+        ev.display_date || null,
+        ev.registration_window || null,
+        ev.registration_deadline || null,
+        ev.registration_status || null,
+        ev.badge_text || null,
+        ev.highlight_tag || null
+      ]);
+    }
   }
 
   saveDB();

@@ -62,7 +62,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-10-15",
     event_time: "11:00 AM",
     organizer_name: "Aero-Spidey Club Bhimtal",
-    rsvp_count: 84
+    rsvp_count: 84,
+    status: "approved"
   },
   {
     id: 2,
@@ -75,7 +76,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-10-27",
     event_time: "10:00 AM",
     organizer_name: "@Graphite.xo • Graphic Era Hill University",
-    rsvp_count: 328
+    rsvp_count: 328,
+    status: "approved"
   },
   {
     id: 3,
@@ -88,7 +90,126 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-11-14",
     event_time: "09:00 AM",
     organizer_name: "Department of Computer Science & Engineering",
-    rsvp_count: 215
+    rsvp_count: 215,
+    status: "approved"
+  },
+  {
+    id: 13,
+    title: "❄️ Hack The Winter Hackathon '27 (Himalayan Edition)",
+    description: "The most anticipated national winter hackathon in the snow-touched hills of Bhimtal! 36 hours of non-stop adrenaline building AI agents, Web3 protocols, Mountain IoT solutions, and Cybersecurity defenses. Grand prize pool ₹1,50,000+, internship opportunities & exclusive Spider-Hacker swags. Official date revealing soon — Pre-registration & Early Bird Access is live for Jan-Feb 2027!",
+    category: "Technical",
+    venue: "Turing Computing Arena & Open Lake Hub, GEHU Bhimtal",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    image_url: "/assets/events/graphite2026.jpg",
+    event_date: "2027-02-20",
+    event_time: "10:00 AM",
+    organizer_name: "Department of CSE & Spidey Dev-Club Bhimtal",
+    rsvp_count: 468,
+    status: "approved",
+    date_tba: true,
+    display_date: "Date Revealing Soon (TBA) ❄️",
+    registration_window: "Jan 15, 2027 – Feb 20, 2027",
+    registration_status: "Early Bird & Pre-Registration Active",
+    badge_text: "❄️ DATE TO BE ANNOUNCED // REVEALING SOON",
+    highlight_tag: "HACKATHON • JAN-FEB REGISTRATION"
+  },
+  {
+    id: 14,
+    title: "🌌 AstroVerse: Himalayan Space-Tech & Galactic Exploration Fest",
+    description: "Explore the infinite cosmos from Bhimtal's high-altitude observatory (4494 ft)! Featuring deep-sky telescope stargazing, ISRO space-tech guest lectures, CubeSat & satellite telemetry workshop, planetary AI hack sprint, and high-altitude model rocketry. Expected in November 2026 — REGISTRATIONS ARE LIVE! Strictly closing on 5th November 2026 due to limited telescope time slots.",
+    category: "Technical",
+    venue: "Himalayan Ridge Observatory & APJ Abdul Kalam Arena, GEHU Bhimtal",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    image_url: "/assets/leadership/bhimtal_aerial.jpg",
+    event_date: "2026-11-20",
+    event_time: "06:00 PM",
+    organizer_name: "Astronomy & Deep Space Guild GEHU Bhimtal",
+    rsvp_count: 382,
+    status: "approved",
+    registration_deadline: "2026-11-05",
+    registration_status: "LIVE NOW — CLOSING 5TH NOV 2026",
+    deadline_badge: "🚨 REGISTRATION CLOSES 5 NOV",
+    highlight_tag: "SPACE-TECH • CLOSING NOV 5"
+  },
+  {
+    id: 15,
+    title: "⚡ Infotsav '26: Annual Flagship Technical Fest",
+    description: "Graphic Era Hill University Bhimtal's grandest annual technical festival! Featuring heavy & light combat Robowars, high-speed Drone Obstacle Racing, 24-hr Speed Web-Dev Sprint, Bug-Bounty & CTF, and Hardware IoT Expo. Cash awards over ₹2,00,000 with participants from across 50+ universities.",
+    category: "Technical",
+    venue: "Turing Computing Block & APJ Hall, GEHU Bhimtal",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    image_url: "/assets/campuses/bhimtal.png",
+    event_date: "2026-11-12",
+    event_time: "09:30 AM",
+    organizer_name: "Infotsav Technical Council Bhimtal",
+    rsvp_count: 520,
+    status: "approved",
+    registration_status: "Registration Open",
+    highlight_tag: "TECH FEST '26"
+  },
+  {
+    id: 16,
+    title: "🏆 Spardha '26: Annual Himalayan Inter-Campus Sports League",
+    description: "The ultimate inter-departmental athletic extravaganza! Featuring Football Championship (11v11), Box Cricket League, Badminton singles/doubles, Volleyball, Table Tennis, and 100m alpine sprint. Gear up to claim the prestigious Golden Spider Trophy!",
+    category: "Sports",
+    venue: "Main Oval Ground & Sports Complex, GEHU Bhimtal",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    image_url: "/assets/campuses/bhimtal.png",
+    event_date: "2026-11-08",
+    event_time: "08:00 AM",
+    organizer_name: "Directorate of Sports & Physical Education Bhimtal",
+    rsvp_count: 435,
+    status: "approved",
+    registration_status: "Team Entries Open",
+    highlight_tag: "SPORTS MEET '26"
+  },
+  {
+    id: 17,
+    title: "🎭 Grafest '26: Bhimtal Winter Mega Cultural Fest",
+    description: "Graphic Era's landmark annual cultural fest hits Bhimtal! Star-studded Celebrity Concert Night, Battle of the Rock Bands, Inter-College Dance Battles, Multiverse Fashion Walk, and mountain food streets along the scenic Bhimtal lakeside under the Himalayan stars.",
+    category: "Cultural",
+    venue: "Central Amphitheater & Open Lake Arena, GEHU Bhimtal",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    image_url: "/assets/leadership/bhimtal_amphi.jpg",
+    event_date: "2026-11-28",
+    event_time: "05:00 PM",
+    organizer_name: "Central Fest Directorate & SAC Bhimtal",
+    rsvp_count: 980,
+    status: "approved",
+    registration_status: "All-Access VIP Passes Live",
+    highlight_tag: "MEGA CULTURAL FEST"
+  },
+  {
+    id: 18,
+    title: "🎨 Kalakriti & Goonj: Youth Arts, Theatre & Folk Conclave",
+    description: "A celebration of Himalayan heritage, dramatic arts, and creative expression! Features Nukkad Natak (Street Play), Traditional Chholiya & Kumaoni folk dance, Poetry & Shayari Slam, Live Canvas Painting, and Digital Photography showcase.",
+    category: "Cultural",
+    venue: "Rabindranath Tagore Auditorium, GEHU Bhimtal",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    image_url: "/assets/campuses/bhimtal.png",
+    event_date: "2026-12-05",
+    event_time: "11:00 AM",
+    organizer_name: "Kala-Kriti Guild & Literary Society Bhimtal",
+    rsvp_count: 290,
+    status: "approved",
+    registration_status: "Auditions & Registration Open",
+    highlight_tag: "CULTURAL ACTIVITY"
+  },
+  {
+    id: 19,
+    title: "🚁 AeroTrek: Himalayan Eco-Drone & Aerial Survey Expedition",
+    description: "An innovative blend of adventure, technology, and environmental conservation! Experience FPV drone flight obstacle courses, high-altitude aerial photography, environmental IoT sensor deployment around Bhimtal lake, and clean-up trail trek.",
+    category: "Workshop",
+    venue: "Bhimtal High Ridge & Eco-Innovation Center, GEHU Bhimtal",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    image_url: "/assets/leadership/bhimtal_aerial.jpg",
+    event_date: "2026-12-18",
+    event_time: "09:00 AM",
+    organizer_name: "Aero-Spidey Club & Eco-Tech Guild",
+    rsvp_count: 210,
+    status: "approved",
+    registration_status: "Workshop Seats Open",
+    highlight_tag: "WORKSHOP & ACTIVITY"
   },
 
   // 2. GEHU Haldwani
@@ -111,7 +232,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-10-10",
     event_time: "10:00 AM",
     organizer_name: "Watch The Code & Graphic Era Hill University",
-    rsvp_count: 189
+    rsvp_count: 189,
+    status: "approved"
   },
   {
     id: 5,
@@ -124,7 +246,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-10-27",
     event_time: "02:00 PM",
     organizer_name: "School of Design & Visual Arts",
-    rsvp_count: 98
+    rsvp_count: 98,
+    status: "approved"
   },
   {
     id: 6,
@@ -137,57 +260,11 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-11-18",
     event_time: "07:00 PM",
     organizer_name: "Student Activity Council (SAC)",
-    rsvp_count: 310
+    rsvp_count: 310,
+    status: "approved"
   },
 
   // 3. GEHU Dehradun
-  {
-    id: 13,
-    title: "Smart India Hackathon (SIH)",
-    description: "Memories and highlights from Smart India Hackathon (SIH) at Graphic Era Hill University, Dehradun Campus.",
-    category: "Hackathon / Technical Event",
-    venue: "Graphic Era Hill University, Dehradun Campus",
-    campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
-    image_url: "/assets/events/sih/sih_inauguration.jpg",
-    gallery: [
-      "/assets/events/sih/sih_inauguration.jpg",
-      "/assets/events/sih/sih_interaction.jpg",
-      "/assets/events/sih/sih_coding.jpg",
-      "/assets/events/sih/sih_presentation.jpg",
-      "/assets/events/sih/sih_feasibility.jpg"
-    ],
-    photos: [
-      {
-        url: "/assets/events/sih/sih_inauguration.jpg",
-        title: "Grand Inauguration & Ribbon-Cutting Ceremony",
-        caption: "Dignitaries, leadership, and organizing faculty inaugurating Smart India Hackathon at Graphic Era."
-      },
-      {
-        url: "/assets/events/sih/sih_interaction.jpg",
-        title: "Prime Minister & AICTE Live Interaction",
-        caption: "Auditorium live address and nationwide interactive session with Prime Minister Narendra Modi and Education Minister."
-      },
-      {
-        url: "/assets/events/sih/sih_coding.jpg",
-        title: "Intense 36-Hour Non-Stop Hackathon Sprint",
-        caption: "Student teams collaborating, debugging, and building innovative software and hardware prototypes."
-      },
-      {
-        url: "/assets/events/sih/sih_presentation.jpg",
-        title: "Mentoring & Jury Technical Evaluation",
-        caption: "Teams demonstrating live project architectures and solving real-world challenges before the expert jury."
-      },
-      {
-        url: "/assets/events/sih/sih_feasibility.jpg",
-        title: "Pitch Deck & Feasibility Analysis",
-        caption: "ByteX team showcasing project viability, scalable cloud architecture, and market implementation roadmaps."
-      }
-    ],
-    event_date: "2025-12-09",
-    event_time: "09:00 AM",
-    organizer_name: "Ministry of Education & MoE's Innovation Cell • GEHU Dehradun",
-    rsvp_count: 420
-  },
   {
     id: 7,
     title: "🏆 Inter-Campus Spider-Athletics & Track League",
@@ -199,7 +276,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-10-02",
     event_time: "08:30 AM",
     organizer_name: "Directorate of Sports",
-    rsvp_count: 175
+    rsvp_count: 175,
+    status: "approved"
   },
   {
     id: 8,
@@ -212,7 +290,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-10-27",
     event_time: "10:00 AM",
     organizer_name: "Biotechnology & Life Sciences Guild",
-    rsvp_count: 120
+    rsvp_count: 120,
+    status: "approved"
   },
   {
     id: 9,
@@ -225,7 +304,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-11-20",
     event_time: "05:00 PM",
     organizer_name: "Central Fest Directorate",
-    rsvp_count: 890
+    rsvp_count: 890,
+    status: "approved"
   },
 
   // 4. Graphic Era Deemed University
@@ -240,7 +320,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-09-28",
     event_time: "01:30 PM",
     organizer_name: "Department of Civil & Aerospace Engineering",
-    rsvp_count: 53
+    rsvp_count: 53,
+    status: "approved"
   },
   {
     id: 11,
@@ -253,7 +334,8 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-10-27",
     event_time: "09:30 AM",
     organizer_name: "Cyber Security & Forensics Society",
-    rsvp_count: 165
+    rsvp_count: 165,
+    status: "approved"
   },
   {
     id: 12,
@@ -266,10 +348,11 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-11-25",
     event_time: "02:30 PM",
     organizer_name: "Formula Student GEU Racing",
-    rsvp_count: 240
+    rsvp_count: 240,
+    status: "approved"
   },
   {
-    id: 14,
+    id: 20,
     title: "🔥 Dussehra Mahotsav & Ravan Dahan 2026 — Victory of Light",
     description: "Grand annual Vijyadashami celebration at Graphic Era Deemed University main ground featuring the ceremonial burning of the towering Ravan effigy, traditional sparklers & fireworks, with the sacred flame lit by Hon'ble Chairman Prof. Dr. Kamal Ghanshala amidst thousands of cheering students and faculty.",
     category: "Cultural",
@@ -313,6 +396,7 @@ export const DEFAULT_EVENTS = [
     event_date: "2026-10-20",
     event_time: "07:30 PM",
     organizer_name: "Student Activity Council (SAC) • Graphic Era Deemed University",
-    rsvp_count: 1420
+    rsvp_count: 1420,
+    status: "approved"
   }
 ];

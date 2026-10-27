@@ -7,6 +7,17 @@ export default function IntroVideoModal({ onComplete }) {
   const [mobileFitMode, setMobileFitMode] = useState('fit') // 'fit' (cinematic) or 'fill' (zoom)
 
   useEffect(() => {
+    // Keyboard shortcut to skip intro instantly
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+        onComplete?.()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onComplete])
+
+  useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
@@ -136,8 +147,22 @@ export default function IntroVideoModal({ onComplete }) {
         </div>
       </div>
 
-      {/* Mobile Top Controls: Sound Toggle & Aspect Ratio Switcher */}
+      {/* Top Controls: Skip Video, Sound Toggle & Aspect Ratio Switcher */}
       <div className="absolute top-4 right-4 sm:top-6 sm:right-8 z-30 flex items-center gap-2">
+        {/* Quick Skip Button on Top */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            onComplete?.()
+          }}
+          className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-red-950/80 hover:bg-red-900 border border-red-500/80 text-white font-mono text-[10px] sm:text-xs flex items-center gap-1.5 backdrop-blur-md shadow-spider-glow cursor-pointer transition-all active:scale-95"
+          title="Skip intro video"
+        >
+          <span>⏭️</span>
+          <span className="font-bold">SKIP INTRO</span>
+        </button>
+
         {/* Mobile View Toggle (Fit vs Full) */}
         <button
           type="button"
@@ -167,9 +192,9 @@ export default function IntroVideoModal({ onComplete }) {
             e.stopPropagation()
             onComplete()
           }}
-          className="btn-spider-pill py-2 px-5 sm:py-2.5 sm:px-7 text-xs sm:text-sm shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95"
+          className="btn-spider-pill py-2 px-5 sm:py-2.5 sm:px-7 text-xs sm:text-sm shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 flex items-center gap-2"
         >
-          <span>ENTER PORTAL</span>
+          <span>⏭️ SKIP TO SIGN IN</span>
           <span>➔</span>
         </button>
       </div>

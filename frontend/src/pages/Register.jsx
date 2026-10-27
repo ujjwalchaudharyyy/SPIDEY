@@ -15,6 +15,7 @@ export default function Register() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [isVideoMuted, setIsVideoMuted] = useState(false)
+  const [isVideoHidden, setIsVideoHidden] = useState(false)
   const videoRef = useRef(null)
 
   const { login } = useAuth()
@@ -45,6 +46,17 @@ export default function Register() {
       videoRef.current.muted = !videoRef.current.muted
       setIsVideoMuted(videoRef.current.muted)
     }
+  }
+
+  const toggleSkipVideo = () => {
+    setIsVideoHidden(prev => {
+      const next = !prev
+      if (videoRef.current) {
+        if (next) videoRef.current.pause()
+        else videoRef.current.play().catch(() => {})
+      }
+      return next
+    })
   }
 
   const handleNextStep = (e) => {
@@ -117,32 +129,60 @@ export default function Register() {
 
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4 bg-black">
-      {/* 4K Video Background */}
-      <video
-        ref={videoRef}
-        src="/assets/videos/login_bg.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        webkit-playsinline="true"
-        x5-playsinline="true"
-        disablePictureInPicture
-        controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
-        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105"
-      />
+      {/* 4K Video Background with sign.mp4 & fallback */}
+      {!isVideoHidden ? (
+        <video
+          ref={videoRef}
+          src="/assets/videos/sign.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          disablePictureInPicture
+          controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
+          onError={(e) => {
+            if (!e.target.dataset.fallback) {
+              e.target.dataset.fallback = '1'
+              e.target.src = '/assets/videos/login_bg.mp4'
+              e.target.play().catch(() => {})
+            }
+          }}
+          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
+          style={{ willChange: 'transform', transform: 'translateZ(0)' }}
+        />
+      ) : (
+        <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#0B1021] via-black to-[#130713]" />
+      )}
 
       {/* Cyber Overlay Gradients */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/85 via-black/40 to-black/85 pointer-events-none" />
 
-      {/* Sound Toggle (Top Right) */}
-      <button
-        onClick={toggleSound}
-        className="absolute top-3 right-3 sm:top-6 sm:right-6 z-30 bg-black/80 hover:bg-red-950/80 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full sm:rounded-xl border border-red-500/60 text-[10px] sm:text-xs font-mono flex items-center gap-1.5 sm:gap-2 backdrop-blur-md transition-all shadow-spider-glow cursor-pointer active:scale-95"
-      >
-        <span className="text-xs sm:text-sm">{isVideoMuted ? '🔇' : '🔊'}</span>
-        <span className="font-semibold">{isVideoMuted ? 'TAP AUDIO' : 'SOUND ON'}</span>
-      </button>
+      {/* Top Floating Controls: Skip Video & Sound Toggle */}
+      <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-30 flex items-center gap-2">
+        {/* Skip / Hide Video Button */}
+        <button
+          type="button"
+          onClick={toggleSkipVideo}
+          className="bg-black/80 hover:bg-red-950/80 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full sm:rounded-xl border border-red-500/60 text-[10px] sm:text-xs font-mono flex items-center gap-1.5 backdrop-blur-md transition-all shadow-spider-glow cursor-pointer active:scale-95"
+          title="Skip or pause background video"
+        >
+          <span>{isVideoHidden ? '▶️' : '⏭️'}</span>
+          <span className="font-semibold">{isVideoHidden ? 'PLAY VIDEO' : 'SKIP VIDEO'}</span>
+        </button>
+
+        {/* Sound Toggle */}
+        <button
+          type="button"
+          onClick={toggleSound}
+          className="bg-black/80 hover:bg-red-950/80 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full sm:rounded-xl border border-red-500/60 text-[10px] sm:text-xs font-mono flex items-center gap-1.5 sm:gap-2 backdrop-blur-md transition-all shadow-spider-glow cursor-pointer active:scale-95"
+        >
+          <span className="text-xs sm:text-sm">{isVideoMuted ? '🔇' : '🔊'}</span>
+          <span className="font-semibold">{isVideoMuted ? 'TAP AUDIO' : 'SOUND ON'}</span>
+        </button>
+      </div>
 
       {/* Central Modal Card Exactly Matching User Screenshot */}
       <div className="relative z-20 w-full max-w-3xl my-8">
