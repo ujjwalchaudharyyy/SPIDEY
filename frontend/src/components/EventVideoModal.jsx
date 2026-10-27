@@ -1,11 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react'
 
-export default function EventVideoModal({ event, videoUrl, title, onClose }) {
+export default function EventVideoModal({ event, videoUrl, title, onClose, defaultRotation = -90 }) {
   const videoRef = useRef(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(false)
   const [hasStarted, setHasStarted] = useState(false)
   const [loadError, setLoadError] = useState(false)
+  const [rotation, setRotation] = useState(defaultRotation)
 
   const resolvedVideoUrl = videoUrl || event?.video_url || '/assets/videos/web_drone.mp4'
   const resolvedTitle = title || event?.video_title || event?.title || '🏔️ Himalayan Web-Drone Flight & Aerial Photography'
@@ -130,23 +131,34 @@ export default function EventVideoModal({ event, videoUrl, title, onClose }) {
         </div>
 
         {/* Video Player Display */}
-        <div className="relative bg-black flex items-center justify-center min-h-[300px] max-h-[64vh] sm:max-h-[70vh] overflow-hidden group">
-          <video
-            ref={videoRef}
-            src={resolvedVideoUrl}
-            playsInline
-            controls
-            autoPlay
-            preload="auto"
-            onPlay={() => setIsPlaying(true)}
-            onPause={() => setIsPlaying(false)}
-            onError={(e) => {
-              console.error('Video error:', e)
-              setLoadError(true)
+        <div className="relative bg-black flex items-center justify-center w-full min-h-[340px] sm:min-h-[440px] md:min-h-[480px] max-h-[70vh] overflow-hidden group">
+          <div
+            className="flex items-center justify-center transition-transform duration-300 ease-out"
+            style={{
+              transform: `rotate(${rotation}deg)`,
+              width: Math.abs(rotation) % 180 !== 0 ? '56.25vh' : '100%',
+              height: Math.abs(rotation) % 180 !== 0 ? '100%' : 'auto',
+              maxWidth: Math.abs(rotation) % 180 !== 0 ? '420px' : '100%',
+              maxHeight: Math.abs(rotation) % 180 !== 0 ? '750px' : '70vh',
             }}
-            className="w-full max-h-[64vh] sm:max-h-[70vh] object-contain cursor-pointer"
-            onClick={togglePlay}
-          />
+          >
+            <video
+              ref={videoRef}
+              src={resolvedVideoUrl}
+              playsInline
+              controls
+              autoPlay
+              preload="auto"
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
+              onError={(e) => {
+                console.error('Video error:', e)
+                setLoadError(true)
+              }}
+              className="w-full h-full object-contain cursor-pointer"
+              onClick={togglePlay}
+            />
+          </div>
 
           {/* Fallback Tap to Play Overlay if blocked by browser */}
           {!isPlaying && !loadError && (
@@ -164,7 +176,24 @@ export default function EventVideoModal({ event, videoUrl, title, onClose }) {
           )}
 
           {/* Quick Floating Controls on top-right of player */}
-          <div className="absolute top-3 right-3 flex items-center gap-2 z-10 opacity-80 hover:opacity-100 transition-opacity">
+          <div className="absolute top-3 right-3 flex items-center gap-1.5 z-10 opacity-80 hover:opacity-100 transition-opacity flex-wrap justify-end">
+            <button
+              type="button"
+              onClick={() => setRotation(r => r - 90)}
+              className="px-2 py-1 rounded-lg bg-black/85 hover:bg-red-950 text-cyan-300 hover:text-cyan-200 text-[11px] font-mono border border-cyan-500/50 backdrop-blur-md flex items-center gap-1 cursor-pointer transition shadow-sm"
+              title="Rotate Left 90°"
+            >
+              <span>↺</span>
+              <span>Rotate 90°</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setRotation(0)}
+              className="px-2 py-1 rounded-lg bg-black/85 hover:bg-gray-800 text-gray-300 text-[11px] font-mono border border-gray-700 backdrop-blur-md flex items-center gap-1 cursor-pointer transition"
+              title="Reset to 0°"
+            >
+              <span>0°</span>
+            </button>
             <button
               type="button"
               onClick={toggleMute}
