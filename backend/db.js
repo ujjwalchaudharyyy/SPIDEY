@@ -267,7 +267,7 @@ async function initDB() {
       [
         "Smart India Hackathon (SIH)",
         "Memories and highlights from Smart India Hackathon (SIH) at Graphic Era Hill University, Dehradun Campus.",
-        "Hackathon / Technical Event",
+        "Hackathon",
         "Graphic Era Hill University, Dehradun Campus",
         "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
         "/assets/events/sih/sih_inauguration.jpg",
@@ -502,7 +502,7 @@ async function initDB() {
         "Final Prototype Showcase, Pitch Decks, and Scalable Cloud Feasibility Demonstrations."
       ]),
       closing_message: "Empowering young Indian minds to innovate, build scalable tech, and create transformative solutions for the nation.",
-      category: "Hackathon / Technical Event",
+      category: "Hackathon",
       venue: "Graphic Era Hill University, Dehradun Campus",
       campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
       image_url: "/assets/events/sih/sih_inauguration.jpg",
@@ -556,7 +556,7 @@ async function initDB() {
         "Pledge of Excellence: Assembly of faculty, staff, and students reaffirming dedication to research, innovation, and ethical leadership."
       ]),
       closing_message: "Honoring our roots, celebrating our achievements, and inspiring future generations towards greater heights of knowledge, innovation, and unity.",
-      category: "University Event / Cultural Celebration",
+      category: "Cultural Fest",
       venue: "Graphic Era Hill University, Dehradun Campus",
       campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
       image_url: "/assets/events/foundation_day/foundation_1_speech.jpg",
@@ -722,7 +722,7 @@ async function initDB() {
         "Musical sets featuring acoustic guitarists and student performers"
       ]),
       closing_message: "Celebrating student creativity, music, culture, and campus memories that define the vibrant spirit of Graphic Era.",
-      category: "Student Festival / Cultural and Entertainment Event",
+      category: "Cultural Fest",
       venue: "Graphic Era Hill University, Dehradun Campus",
       campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
       image_url: "/assets/events/student_grafest/student_grafest_1.jpg",
@@ -778,7 +778,7 @@ async function initDB() {
         "Collaborative platform connecting aspiring innovators and student developers across campus"
       ]),
       closing_message: "Empowering bright student minds to innovate, build, and scale transformative technology solutions in the Himalayan hills of Bhimtal.",
-      category: "Technology / Innovation / Ideathon",
+      category: "Innovation & AI",
       venue: "Graphic Era Hill University, Bhimtal Campus",
       campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
       image_url: "/assets/events/aws_ideathon/aws_ideathon_poster.jpg",
@@ -841,7 +841,7 @@ async function initDB() {
         "Spirit of devotion, cultural unity, and shared blessings uniting the entire campus family"
       ]),
       closing_message: "Celebrating Indian culture, devotional traditions, and the enduring spirit of togetherness and joy across Graphic Era Hill University, Bhimtal.",
-      category: "Cultural / Religious Festival",
+      category: "Cultural Fest",
       venue: "Graphic Era Hill University, Bhimtal Campus",
       campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
       image_url: "/assets/events/ganesh_chaturthi/ganesh_chaturthi_1.jpg",
@@ -898,7 +898,7 @@ async function initDB() {
         "Creative 'PRAYUKTI 2026 TECH FEST' photo booth with student memories and campus food street carnival"
       ]),
       closing_message: "Empowering student creators to innovate, compete, and celebrate the transformative power of technology, engineering, and culture at Graphic Era Hill University, Bhimtal.",
-      category: "Technical / Cultural Fest",
+      category: "Technical Fest",
       venue: "Main Ground & Computing Arena, GEHU Bhimtal",
       campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
       image_url: "/assets/events/prayukti/prayukti_1_keynote_stage.jpg",

@@ -32,6 +32,17 @@ function formatDate(dateStr) {
   return d.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' })
 }
 
+
+function cleanCategory(cat) {
+  if (!cat) return 'Technical'
+  if (cat.includes('Student Festival') || cat.includes('Cultural and Entertainment')) return 'Cultural Fest'
+  if (cat.includes('University Event') || cat.includes('Cultural Celebration') || cat.includes('Religious')) return 'Cultural'
+  if (cat.includes('Hackathon')) return 'Hackathon'
+  if (cat.includes('Technology / Innovation') || cat.includes('Ideathon')) return 'Innovation'
+  if (cat.includes('Technical / Cultural')) return 'Tech Fest'
+  return cat
+}
+
 function formatTime(timeStr) {
   if (!timeStr) return ''
   const [h, m] = timeStr.split(':')
@@ -215,156 +226,62 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
           </div>
           <div className="absolute inset-0 bg-gradient-to-t from-[#090D18] via-transparent to-black/50 z-10 pointer-events-none" />
 
-          {/* Badges on top of image */}
-          <div className="absolute top-3 left-3 right-3 flex items-center justify-between z-10 gap-1.5 flex-wrap">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full border backdrop-blur-md ${categoryStyles[event.category] || categoryStyles.Other}`}>
-                {event.category}
-              </span>
-              {event.highlight_tag && (
-                <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-cyan-950/80 text-cyan-300 border border-cyan-500/60 backdrop-blur-md font-bold">
-                  {event.highlight_tag}
-                </span>
-              )}
-            </div>
+          {/* Clean, Simple & Attractive Header Badges */}
+          <div className="absolute top-3 inset-x-3 flex items-center justify-between z-20 pointer-events-none">
+            {/* Category Pill */}
+            <span className="text-[10px] font-mono px-3 py-1 rounded-full bg-black/75 backdrop-blur-md border border-white/20 text-white font-bold tracking-wider uppercase shadow-md">
+              {cleanCategory(event.category)}
+            </span>
 
-            <div className="flex items-center gap-1.5 flex-wrap">
-              {event.date_tba && (
-                <span className="text-[10px] font-chakra italic font-bold px-2 py-0.5 rounded-full bg-cyan-950/90 text-cyan-200 border border-cyan-400 shadow-[0_0_15px_rgba(6,182,212,0.4)] flex items-center gap-1 animate-pulse">
-                  <span>Γ¥ä∩╕Å</span> DATE TBA
+            {/* Event Timeline Status Pill (Clean Single Badge) */}
+            <div className="flex items-center gap-1.5">
+              {isPresent ? (
+                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-red-600 text-white shadow-lg flex items-center gap-1.5 animate-pulse">
+                  <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
+                  <span>LIVE TODAY</span>
+                </span>
+              ) : event.date_tba ? (
+                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-cyan-950/90 border border-cyan-400 text-cyan-200 backdrop-blur-md shadow-md">
+                  ❄️ DATE TBA
+                </span>
+              ) : event.registration_deadline ? (
+                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-red-950/90 border border-red-500 text-red-300 backdrop-blur-md shadow-md flex items-center gap-1">
+                  <span>🚨</span> CLOSING SOON
+                </span>
+              ) : !isPast ? (
+                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-blue-950/90 border border-blue-400/80 text-blue-200 backdrop-blur-md shadow-md">
+                  🚀 UPCOMING
+                </span>
+              ) : (
+                <span className="text-[10px] font-mono font-bold px-2.5 py-1 rounded-full bg-black/80 border border-gray-700 text-gray-400 backdrop-blur-md">
+                  📜 CONCLUDED
                 </span>
               )}
-              {event.registration_deadline && (
-                <span className="text-[10px] font-chakra italic font-bold px-2 py-0.5 rounded-full bg-red-950/90 text-red-200 border border-red-500 shadow-spider-glow flex items-center gap-1 animate-pulse">
-                  <span>🚨</span> CLOSES 5 NOV
-                </span>
-              )}
-              {isPresent && (
-                <span className="text-[10px] font-chakra italic font-bold px-2 py-0.5 rounded-full bg-red-950/90 text-red-300 border border-red-500 shadow-spider-glow flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></span>
-                  LIVE TODAY
-                </span>
-              )}
-              {isPast && (
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-black/85 text-yellow-400 border border-yellow-400/80 shadow-[0_0_15px_rgba(234,179,8,0.4)] flex items-center gap-1">
-                  <span>🏆</span> MEMORIES
-                </span>
-              )}
-              <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/80 border border-red-500/40 text-xs font-mono font-bold text-red-300">
-                <span>🕷️</span>
-                <span>{event.rsvp_count || 0}</span>
-              </div>
             </div>
           </div>
 
-          {/* In-Card Prev / Next Arrows (visible on hover, only when gallery has multiple) */}
-          {hasMultiplePhotos && (
-            <>
-              <button
-                type="button"
-                onClick={cardPrev}
-                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/75 hover:bg-amber-500 hover:text-black text-white flex items-center justify-center text-lg font-bold border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer shadow-lg"
-              >
-                ‹
-              </button>
-              <button
-                type="button"
-                onClick={cardNext}
-                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/75 hover:bg-amber-500 hover:text-black text-white flex items-center justify-center text-lg font-bold border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer shadow-lg"
-              >
-                ›
-              </button>
+          {/* Subtly Placed Bottom Badges (Leaves Photo Clean & Attractive) */}
+          <div className="absolute bottom-3 inset-x-3 flex items-center justify-between z-20 pointer-events-none">
+            {/* RSVP Count Pill */}
+            <div className="flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-xs font-mono font-bold text-gray-200 shadow-md">
+              <span>👥</span>
+              <span>{event.rsvp_count || 0} RSVPs</span>
+            </div>
 
-              {/* Dot Indicators */}
-              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
-                {gallery.map((_, i) => (
-                  <button
-                    key={i}
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setCardPhotoIdx(i) }}
-                    className={`rounded-full transition-all duration-200 cursor-pointer ${
-                      i === cardPhotoIdx
-                        ? 'w-4 h-1.5 bg-amber-400'
-                        : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/80'
-                    }`}
-                  />
-                ))}
+            {/* Photo / Video Quick Indicator */}
+            {hasMultiplePhotos ? (
+              <div className="px-2.5 py-0.5 rounded-full bg-black/70 backdrop-blur-md border border-white/10 text-[10px] font-mono text-gray-300 shadow-md">
+                📸 {cardPhotoIdx + 1} / {gallery.length} Photos
               </div>
-
-              {/* Photo count pill */}
-              <div className="absolute bottom-3 right-3 z-20 px-2 py-0.5 rounded-full bg-black/75 border border-white/20 text-[10px] font-mono text-gray-200">
-                {cardPhotoIdx + 1}/{gallery.length}
+            ) : hasVideo && isPast ? (
+              <div
+                onClick={(e) => { e.stopPropagation(); setShowVideoModal(true) }}
+                className="px-2.5 py-0.5 rounded-full bg-red-600/90 hover:bg-red-500 backdrop-blur-md text-white text-[10px] font-mono font-bold flex items-center gap-1 shadow-md pointer-events-auto cursor-pointer"
+              >
+                <span>▶ WATCH DRONE VIDEO</span>
               </div>
-            </>
-          )}
-
-                    {/* Video Play Banner */}
-          {hasVideo && isPast && !event.winner_team && (
-            <div
-              className="absolute bottom-2 left-2 right-2 z-10 bg-black/85 border border-red-500/60 rounded-xl px-3 py-2 text-xs font-chakra italic font-bold text-white flex items-center justify-between shadow-[0_0_20px_rgba(239,68,68,0.5)] backdrop-blur-md cursor-pointer hover:border-red-400 hover:scale-[1.02] transition-all"
-              onClick={(e) => { e.stopPropagation(); setShowVideoModal(true) }}
-            >
-              <span className="truncate flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-ping"></span>
-                <span>▶ WATCH DRONE FLIGHT VIDEO</span>
-              </span>
-              <span className="text-[10px] bg-red-600 text-white px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0 font-mono not-italic">PLAY HD</span>
-            </div>
-          )}
-
-{/* Winner Callout Banner */}
-          {event.winner_team && (
-            <div className="absolute bottom-2 left-2 right-2 z-10 bg-black/80 border border-yellow-500/40 rounded-xl px-3 py-1.5 text-[11px] font-mono text-yellow-300 flex items-center justify-between shadow-lg backdrop-blur-md">
-              <span className="truncate font-medium flex items-center gap-1.5">
-                <span>🏆</span> {event.winner_team}
-              </span>
-              <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0">
-                MEMORIES
-              </span>
-            </div>
-          )}
-
-          {/* Date TBA Banner */}
-          {event.date_tba && (
-            <div className="absolute bottom-2 left-2 right-2 z-10 bg-cyan-950/90 border border-cyan-500/50 rounded-xl px-3 py-1.5 text-[11px] font-mono text-cyan-200 flex items-center justify-between shadow-lg backdrop-blur-md">
-              <span className="truncate font-medium flex items-center gap-1.5">
-                <span>Γ¥ä∩╕Å</span> Date Revealing Soon // Reg: Jan - Feb
-              </span>
-              <span className="text-[9px] bg-cyan-400 text-black px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0">
-                PRE-REG
-              </span>
-            </div>
-          )}
-
-          {event.registration_deadline && (
-            <div className="absolute bottom-2 left-2 right-2 z-10 bg-red-950/90 border border-red-500/60 rounded-xl px-3 py-1.5 text-[11px] font-mono text-red-200 flex items-center justify-between shadow-lg backdrop-blur-md">
-              <span className="truncate font-medium flex items-center gap-1.5">
-                <span>⚡</span> Reg Live! Strict Deadline: 5 Nov
-              </span>
-              <span className="text-[9px] bg-red-500 text-white px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0 animate-pulse">
-                HURRY
-              </span>
-            </div>
-          )}
-
-          {/* Photos Callout Banner */}
-          {hasGallery && !event.winner_team && (
-            <div 
-              onClick={(e) => {
-                e.stopPropagation()
-                handleOpenGallery()
-              }}
-              className="absolute bottom-2 left-2 right-2 z-10 bg-black/85 hover:bg-black/95 border border-amber-500/60 hover:border-amber-400 rounded-xl px-3 py-1.5 text-[11px] font-mono text-amber-300 flex items-center justify-between shadow-lg backdrop-blur-md cursor-pointer transition-all group/banner"
-            >
-              <span className="truncate font-medium flex items-center gap-1.5 text-white">
-                <span>📸</span>
-                <span>{isPast ? 'EVENT MEMORIES' : 'LIVE PHOTOS'} ({gallery.length})</span>
-              </span>
-              <span className="text-[10px] bg-amber-500 group-hover/banner:bg-amber-400 text-black px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0 shadow-md flex items-center gap-1">
-                MEMORIES ➔
-              </span>
-            </div>
-          )}
+            ) : null}
+          </div>
         </div>
 
         {/* Card Details Body */}
@@ -387,7 +304,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                 <span className="text-red-400 mr-2">📅</span>
                 {event.date_tba ? (
                   <span className="text-cyan-300 font-bold">
-                    {event.display_date || 'Date: Revealing Soon (TBA) Γ¥ä∩╕Å'}
+                    {event.display_date || 'Date: Revealing Soon (TBA) ❄️'}
                   </span>
                 ) : event.display_date ? (
                   <span>{event.display_date} • {formatTime(event.event_time)}</span>
