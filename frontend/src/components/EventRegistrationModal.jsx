@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react'
+﻿import React, { useState, useRef, useEffect } from 'react'
 import QRCode from 'qrcode'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
@@ -1343,31 +1343,6 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                   <div className="text-[10px] text-gray-400">Standard Pass</div>
                 </button>
               </div>
-            </div>
-
-            {/* Razorpay Standard Checkout Banner Button */}
-            <div className="p-3.5 rounded-xl bg-gradient-to-r from-blue-950/40 via-[#141A29] to-indigo-950/40 border border-blue-500/30 flex flex-col sm:flex-row items-center justify-between gap-3 shadow-md">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-xl bg-blue-600/20 border border-blue-400/40 flex items-center justify-center font-bold text-base text-blue-300 shrink-0">
-                  🔒
-                </div>
-                <div>
-                  <h5 className="text-xs font-bold text-white flex items-center gap-1.5">
-                    <span>Razorpay Standard Checkout</span>
-                    <span className="text-[9px] px-1.5 py-0.2 rounded bg-blue-500/20 text-blue-300 font-mono font-normal">Official Gateway</span>
-                  </h5>
-                  <p className="text-[10px] text-gray-400">Direct UPI (GPay/PhonePe), Credit/Debit Card, NetBanking &amp; Wallets</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={handleRazorpayCheckout}
-                disabled={isProcessingPayment}
-                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-500 hover:to-indigo-500 text-white text-xs font-bold shadow-md cursor-pointer flex items-center justify-center gap-1.5 transition active:scale-95 shrink-0"
-              >
-                <span>💳 Pay ₹{currentPayAmount} via Razorpay</span>
-                <span>➔</span>
-              </button>
             </div>
 
             {/* UPI QR & Mobile Intent Option */}
