@@ -27,20 +27,26 @@ function HomeRedirect() {
 export default function App() {
   const location = useLocation()
   const { isAuthenticated } = useAuth()
+
+  // Show intro video immediately — check sessionStorage synchronously (no delay)
   const [showIntroVideo, setShowIntroVideo] = useState(() => {
-    // Only show intro video if user has not already watched it in this session
-    // and user is not already logged in
-    const seen = sessionStorage.getItem('spider_intro_seen')
-    return !seen
+    try {
+      return !sessionStorage.getItem('spider_intro_seen')
+    } catch {
+      return true
+    }
   })
 
   const handleVideoComplete = () => {
-    sessionStorage.setItem('spider_intro_seen', 'true')
+    try { sessionStorage.setItem('spider_intro_seen', 'true') } catch {}
     setShowIntroVideo(false)
   }
 
-  // If intro video needs to be played on first visit to public route
-  if (showIntroVideo && !isAuthenticated && (location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register')) {
+  // Show intro video IMMEDIATELY on first visit — before any auth check / spinner
+  // Only on public entry routes (/ /login /register)
+  const isPublicRoute = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register'
+
+  if (showIntroVideo && !isAuthenticated && isPublicRoute) {
     return <IntroVideoModal onComplete={handleVideoComplete} />
   }
 

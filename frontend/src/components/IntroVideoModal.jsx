@@ -10,20 +10,35 @@ export default function IntroVideoModal({ onComplete }) {
     const video = videoRef.current
     if (!video) return
 
-    // Attempt autoplay with sound
-    video.muted = false
-    video.volume = 1.0
+    // Start playing immediately — muted first (browser policy), then try unmuted
+    video.muted = true
+    video.currentTime = 0
 
-    video.play()
-      .then(() => {
-        setHasSound(true)
-      })
-      .catch(() => {
-        // Fallback to muted autoplay (standard mobile browser policy)
-        video.muted = true
-        video.play().catch(() => {})
-        setHasSound(false)
-      })
+    const tryPlay = () => {
+      // First try with sound
+      video.muted = false
+      video.volume = 1.0
+      video.play()
+        .then(() => setHasSound(true))
+        .catch(() => {
+          // Browser blocked sound — play muted (autoplay policy)
+          video.muted = true
+          video.play().catch(() => {})
+          setHasSound(false)
+        })
+    }
+
+    // Play as soon as enough data is loaded
+    if (video.readyState >= 2) {
+      // Already has enough data — play right now
+      tryPlay()
+    } else {
+      video.addEventListener('canplay', tryPlay, { once: true })
+    }
+
+    return () => {
+      video.removeEventListener('canplay', tryPlay)
+    }
   }, [])
 
   const activateAudio = () => {
@@ -55,7 +70,7 @@ export default function IntroVideoModal({ onComplete }) {
       onClick={activateAudio}
       className="fixed inset-0 z-50 bg-black flex items-center justify-center overflow-hidden cursor-pointer select-none"
     >
-      {/* Dynamic Ambient Glow Layer for Mobile Portrait (Realtime Spidey atmosphere) */}
+      {/* Dynamic Ambient Glow Layer for Mobile Portrait */}
       <video
         ref={bgVideoRef}
         src="/assets/videos/before_login.mp4"
@@ -63,6 +78,7 @@ export default function IntroVideoModal({ onComplete }) {
         loop
         muted
         playsInline
+        preload="auto"
         webkit-playsinline="true"
         x5-playsinline="true"
         disablePictureInPicture
@@ -82,6 +98,7 @@ export default function IntroVideoModal({ onComplete }) {
           autoPlay
           muted
           playsInline
+          preload="auto"
           webkit-playsinline="true"
           x5-playsinline="true"
           disablePictureInPicture
@@ -95,7 +112,7 @@ export default function IntroVideoModal({ onComplete }) {
         />
       </div>
 
-      {/* Spider-Man Tech Branding (Responsive for Mobile & Desktop) */}
+      {/* Spider-Man Tech Branding */}
       <div className="absolute top-4 left-4 sm:top-6 sm:left-8 flex items-center space-x-2.5 sm:space-x-3 pointer-events-none z-20">
         <div className="w-9 h-9 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-red-600/40 via-red-950/80 to-black border border-red-500/60 flex items-center justify-center backdrop-blur-md shadow-spider-glow flex-shrink-0">
           <span className="text-lg sm:text-2xl animate-pulse">🕷️</span>
