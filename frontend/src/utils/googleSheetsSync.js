@@ -13,6 +13,17 @@ export function getEventGoogleSheetsConfig() {
   }
 }
 
+// Generate smart Google Sheet URL (custom or native Google Sheets creator https://sheets.new)
+export function getEventSheetUrl(eventId, eventTitle = 'Event') {
+  const configs = getEventGoogleSheetsConfig()
+  const custom = configs[eventId]?.sheetUrl
+  if (custom && custom.trim() && !custom.includes('your-sheet-id')) {
+    return custom.trim()
+  }
+  const cleanTitle = encodeURIComponent((eventTitle || `Event_${eventId}`).replace(/[^a-zA-Z0-9 ]/g, '_').trim())
+  return `https://sheets.new?title=${cleanTitle}_Registrations`
+}
+
 // Update config for a specific event
 export function updateEventGoogleSheetConfig(eventId, updates) {
   try {
@@ -54,13 +65,12 @@ export async function syncRegistrationToGoogleSheet(registration) {
   // If a valid Google Apps Script Webhook URL is configured, POST row payload
   if (sheetConfig?.webhookUrl && sheetConfig.webhookUrl.startsWith('https://script.google.com')) {
     try {
-      // Fire-and-forget or await Google Apps Script webhook
       fetch(sheetConfig.webhookUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
-      }).catch(err => console.warn('Google Sheet Webhook post non-blocking warning:', err.message))
+      }).catch(err => console.warn('Google Sheet Webhook post non-blocking notice:', err.message))
       syncedLive = true
     } catch (err) {
       console.warn('Apps Script auto-sync network notice:', err.message)
@@ -77,12 +87,50 @@ export async function syncRegistrationToGoogleSheet(registration) {
       studentEmail: registration.student_email,
       timestamp: new Date().toISOString(),
       liveWebhook: syncedLive,
-      sheetUrl: sheetConfig?.sheetUrl || ''
+      sheetUrl: getEventSheetUrl(registration.event_id, registration.event_title)
     })
     localStorage.setItem(SYNC_HISTORY_KEY, JSON.stringify(history.slice(0, 100)))
   } catch (e) {}
 
-  return { success: true, syncedLive, sheetUrl: sheetConfig?.sheetUrl }
+  return { success: true, syncedLive, sheetUrl: getEventSheetUrl(registration.event_id, registration.event_title) }
+}
+
+// Copy Tab-Separated Values (TSV) to clipboard so pasting into Google Sheets fills rows and columns instantly!
+export function copyForGoogleSheets(registrations) {
+  if (!registrations || registrations.length === 0) return false
+
+  const headers = [
+    'Ticket Code',
+    'Student Name',
+    'University Roll No',
+    'Email (Gmail)',
+    'Phone',
+    'Degree & Year',
+    'Campus',
+    'Participation',
+    'Team Name',
+    'Team Size',
+    'Track / Slot',
+    'Registration Date'
+  ]
+
+  const rows = registrations.map(r => [
+    r.ticket_code || '',
+    r.student_name || '',
+    r.roll_no || '',
+    r.student_email || '',
+    r.phone || '',
+    r.degree || '',
+    r.campus || '',
+    (r.team_name && !r.team_name.toLowerCase().includes('solo')) ? 'Team' : 'Solo',
+    r.team_name || 'Solo',
+    r.team_size || '1',
+    r.track_info || '',
+    r.created_at || ''
+  ])
+
+  const tsv = [headers.join('\t'), ...rows.map(row => row.join('\t'))].join('\n')
+  return tsv
 }
 
 // Copy-paste Google Apps Script code for admin to enable live Google Sheet appending
