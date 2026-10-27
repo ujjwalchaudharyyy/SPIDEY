@@ -1,10 +1,13 @@
 const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
+const { OAuth2Client } = require('google-auth-library');
 const { queryGet, queryRun } = require('../db');
 
 const router = express.Router();
-const JWT_SECRET = 'campus_event_hub_secret_2024';
+const JWT_SECRET = process.env.JWT_SECRET || 'campus_event_hub_secret_2024';
+const googleClient = new OAuth2Client();
 
 const authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization'];
@@ -98,6 +101,90 @@ router.post('/login', (req, res) => {
       degree: user.degree || ''
     }
   });
+});
+
+// POST /api/auth/google — Verify Google ID Token & Authenticate/Register User
+router.post('/google', async (req, res) => {
+  const { token } = req.body;
+  if (!token) {
+    return res.status(400).json({ error: 'Google ID token required' });
+  }
+
+  const clientId = process.env.GOOGLE_CLIENT_ID;
+  if (!clientId) {
+    return res.status(500).json({ error: 'Google authentication is not configured on the server (missing GOOGLE_CLIENT_ID)' });
+  }
+
+  try {
+    const ticket = await googleClient.verifyIdToken({
+      idToken: token,
+      audience: clientId,
+    });
+    const payload = ticket.getPayload();
+
+    if (!payload || !payload.email) {
+      return res.status(401).json({ error: 'Google account email unavailable' });
+    }
+
+    if (!payload.email_verified) {
+      return res.status(401).json({ error: 'Google email address must be verified' });
+    }
+
+    const normalizedEmail = payload.email.trim().toLowerCase();
+
+    // Look for existing user by normalized email
+    let user = queryGet('SELECT * FROM users WHERE email = ?', [normalizedEmail]);
+
+    if (!user) {
+      // New user registration — assign least-privileged role 'student'
+      const name = payload.name || normalizedEmail.split('@')[0];
+      const defaultCampus = 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL';
+      // Cryptographically random hashed password to satisfy SQLite 'password NOT NULL' constraint
+      const randomSecret = crypto.randomBytes(32).toString('hex');
+      const hashedPassword = bcrypt.hashSync(randomSecret, 10);
+
+      const result = queryRun(
+        'INSERT INTO users (name, email, password, role, campus, phone, degree) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [name, normalizedEmail, hashedPassword, 'student', defaultCampus, '', '']
+      );
+
+      user = queryGet('SELECT * FROM users WHERE id = ?', [result.lastInsertRowid]);
+    }
+
+    // Never promote or change role/campus of existing users
+    const userRole = user.role || 'student';
+    const userCampus = user.campus || 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL';
+
+    const jwtToken = jwt.sign(
+      {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: userRole,
+        campus: userCampus,
+        phone: user.phone || '',
+        degree: user.degree || ''
+      },
+      JWT_SECRET,
+      { expiresIn: '7d' }
+    );
+
+    res.json({
+      token: jwtToken,
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: userRole,
+        campus: userCampus,
+        phone: user.phone || '',
+        degree: user.degree || ''
+      }
+    });
+  } catch (err) {
+    console.error('Google verification error:', err.message);
+    return res.status(401).json({ error: 'Invalid or expired Google authentication token' });
+  }
 });
 
 router.get('/me', authenticateToken, (req, res) => {
