@@ -73,6 +73,9 @@ router.get('/', (req, res) => {
     if (item.gallery && typeof item.gallery === 'string') {
       try { item.gallery = JSON.parse(item.gallery); } catch (err) {}
     }
+    if (item.highlights && typeof item.highlights === 'string') {
+      try { item.highlights = JSON.parse(item.highlights); } catch (err) {}
+    }
     return item;
   
   });

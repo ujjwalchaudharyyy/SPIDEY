@@ -276,7 +276,7 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
                       className="px-3.5 py-1.5 rounded-full text-xs font-chakra italic font-bold bg-black/70 hover:bg-black/90 text-white border border-white/30 hover:border-white transition-all backdrop-blur-md flex items-center gap-1.5 shadow-lg group/btn"
                     >
                       <span className="text-sm">🔍</span>
-                      <span className="hidden xs:inline">VIEW 4K PHOTO</span>
+                      <span className="hidden xs:inline">MEMORIES OF EVENTS</span>
                     </button>
                   </div>
 

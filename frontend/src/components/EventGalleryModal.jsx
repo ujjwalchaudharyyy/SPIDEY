@@ -1,6 +1,16 @@
 import React, { useState, useEffect, useRef } from 'react'
 
 export default function EventGalleryModal({ event, onClose }) {
+  const formatEventDate = (dateStr) => {
+    if (!dateStr) return ''
+    try {
+      const d = new Date(dateStr)
+      return d.toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric', year: 'numeric' })
+    } catch {
+      return dateStr
+    }
+  }
+
   const rawList = (event.photos && event.photos.length > 0)
     ? event.photos
     : (event.gallery && event.gallery.length > 0)
@@ -146,7 +156,7 @@ export default function EventGalleryModal({ event, onClose }) {
               </div>
               <div className="flex items-center gap-2 text-gray-400">
                 <span className="text-red-400">📅</span>
-                <span>December 9, 2025</span>
+                <span>{formatEventDate(event.event_date) || 'December 9, 2025'}</span>
                 <span>•</span>
                 <span className="text-blue-400">🏛️</span>
                 <span>{event.campus || 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN'}</span>
@@ -154,8 +164,18 @@ export default function EventGalleryModal({ event, onClose }) {
             </div>
 
             <p className="text-sm font-rajdhani text-gray-200 leading-relaxed italic border-l-2 border-amber-500/60 pl-3">
-              "{event.description || 'Memories and highlights from Smart India Hackathon (SIH) at Graphic Era Hill University, Dehradun Campus.'}"
+              "{event.description || 'Memories and highlights from the event at Graphic Era Hill University, Dehradun Campus.'}"
             </p>
+
+            {/* Extended Event Overview */}
+            {event.overview && (
+              <div className="p-3.5 rounded-xl bg-[#090D18]/90 border border-gray-800 text-xs sm:text-sm font-rajdhani text-gray-300 leading-relaxed">
+                <span className="text-amber-400 font-mono text-xs font-bold block mb-1 uppercase tracking-wider">
+                  📖 EVENT OVERVIEW
+                </span>
+                <p>{event.overview}</p>
+              </div>
+            )}
 
             {event.organizer_name && (
               <div className="text-[11px] font-mono text-gray-400 flex items-center gap-1.5 pt-1 border-t border-gray-800/80">
@@ -181,11 +201,35 @@ export default function EventGalleryModal({ event, onClose }) {
             )}
           </div>
 
+          {/* Highlights of the Celebration Section */}
+          {event.highlights && event.highlights.length > 0 && (
+            <div className="p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-amber-950/20 via-[#0E1526] to-[#090D18] border border-amber-500/30 space-y-3">
+              <h3 className="spider-heading text-base sm:text-lg text-amber-300 flex items-center gap-2">
+                <span>✨</span>
+                <span>HIGHLIGHTS OF THE CELEBRATION</span>
+              </h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                {event.highlights.map((highlight, hIdx) => (
+                  <div
+                    key={hIdx}
+                    className="p-3 rounded-xl bg-black/60 border border-gray-800/80 hover:border-amber-500/40 transition-colors flex items-start gap-2.5"
+                  >
+                    <span className="text-amber-400 text-sm mt-0.5 shrink-0">⭐</span>
+                    <p className="text-xs sm:text-sm font-rajdhani text-gray-200 leading-relaxed font-medium">
+                      {highlight}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* Gallery Section Header & Controls */}
           <div className="flex flex-wrap items-center justify-between gap-3 pt-1">
             <div>
               <h3 className="spider-heading text-lg text-white flex items-center gap-2">
-                <span>📸 HACKATHON PHOTO HIGHLIGHTS</span>
+                <span>📸</span>
+                <span>EVENT PHOTO GALLERY & MEMORIES</span>
                 <span className="text-xs font-mono text-amber-400 normal-case">
                   ({photos.length} Real Event Photos)
                 </span>
@@ -286,6 +330,19 @@ export default function EventGalleryModal({ event, onClose }) {
               </div>
             ))}
           </div>
+
+          {/* Closing Message Tribute Banner */}
+          {event.closing_message && (
+            <div className="p-5 rounded-2xl bg-gradient-to-r from-amber-950/30 via-black/80 to-red-950/30 border border-amber-500/40 text-center space-y-2 shadow-lg">
+              <span className="text-2xl">🎓</span>
+              <p className="text-sm sm:text-base font-rajdhani text-amber-200 italic font-semibold max-w-3xl mx-auto leading-relaxed">
+                "{event.closing_message}"
+              </p>
+              <p className="text-[10px] font-mono text-gray-400 uppercase tracking-widest">
+                Graphic Era Spirit • Excellence, Innovation & Togetherness
+              </p>
+            </div>
+          )}
         </div>
 
         {/* ======================================================== */}
@@ -294,7 +351,7 @@ export default function EventGalleryModal({ event, onClose }) {
         <div className="p-4 sm:p-5 bg-gradient-to-r from-[#0E1526] via-[#090D18] to-black border-t border-gray-800 flex flex-wrap items-center justify-between gap-3">
           <p className="text-xs font-mono text-gray-400 flex items-center gap-1.5">
             <span className="text-amber-400">📍</span>
-            <span>Graphic Era Hill University, Dehradun Campus • Smart India Hackathon</span>
+            <span>{event.venue || 'Graphic Era Hill University, Dehradun Campus'} • {event.title}</span>
           </p>
 
           <button

@@ -315,6 +315,120 @@ export const DEFAULT_EVENTS = [
     rsvp_count: 890,
     status: "approved"
   },
+  {
+    id: 22,
+    title: "Smart India Hackathon (SIH)",
+    description: "Memories and highlights from Smart India Hackathon (SIH) at Graphic Era Hill University, Dehradun Campus. A nationwide collaborative initiative to provide students with a platform to solve pressing problems of society, ministries, and industries.",
+    overview: "Smart India Hackathon (SIH) is a premier nationwide initiative by the Ministry of Education's Innovation Cell (MIC) and AICTE. Graphic Era Hill University, Dehradun served as a prestigious nodal center, hosting 30+ finalist teams from across India for an intense 36-hour non-stop digital product development marathon.",
+    highlights: [
+      "Grand Inauguration & Ribbon-Cutting Ceremony with distinguished leadership, guest dignitaries, and AICTE representatives.",
+      "Live Nationwide Keynote Interaction with Hon'ble Prime Minister Narendra Modi and Union Education Minister.",
+      "36-Hour Non-Stop Coding Sprint tackling mission-critical real-world problem statements.",
+      "Rigorous Mentoring & Technical Jury Evaluations by industry veterans and academic experts.",
+      "Final Prototype Showcase, Pitch Decks, and Scalable Cloud Feasibility Demonstrations."
+    ],
+    closing_message: "Empowering young Indian minds to innovate, build scalable tech, and create transformative solutions for the nation.",
+    category: "Hackathon / Technical Event",
+    venue: "Graphic Era Hill University, Dehradun Campus",
+    campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
+    image_url: "/assets/events/sih/sih_inauguration.jpg",
+    gallery: [
+      "/assets/events/sih/sih_inauguration.jpg",
+      "/assets/events/sih/sih_interaction.jpg",
+      "/assets/events/sih/sih_coding.jpg",
+      "/assets/events/sih/sih_presentation.jpg",
+      "/assets/events/sih/sih_feasibility.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/sih/sih_inauguration.jpg",
+        title: "Grand Inauguration & Ribbon-Cutting Ceremony",
+        caption: "Dignitaries, university leadership, and organizing faculty inaugurating Smart India Hackathon at Graphic Era."
+      },
+      {
+        url: "/assets/events/sih/sih_interaction.jpg",
+        title: "Prime Minister & AICTE Live Interaction",
+        caption: "Auditorium live address and nationwide interactive session with Prime Minister Narendra Modi and Education Minister."
+      },
+      {
+        url: "/assets/events/sih/sih_coding.jpg",
+        title: "Intense 36-Hour Non-Stop Hackathon Sprint",
+        caption: "Student teams collaborating, debugging, and building innovative software and hardware prototypes."
+      },
+      {
+        url: "/assets/events/sih/sih_presentation.jpg",
+        title: "Mentoring & Jury Technical Evaluation",
+        caption: "Teams demonstrating live project architectures and solving real-world challenges before the expert jury."
+      },
+      {
+        url: "/assets/events/sih/sih_feasibility.jpg",
+        title: "Pitch Deck & Feasibility Analysis",
+        caption: "ByteX team showcasing project viability, scalable cloud architecture, and market implementation roadmaps."
+      }
+    ],
+    event_date: "2025-12-09",
+    event_time: "09:00 AM",
+    organizer_name: "Ministry of Education & MIC • GEHU Dehradun",
+    rsvp_count: 512,
+    status: "approved"
+  },
+  {
+    id: 23,
+    title: "13th Foundation Day Celebration",
+    description: "Commemorating 13 years of academic brilliance, visionary leadership, and holistic student empowerment at Graphic Era Hill University, Dehradun Campus.",
+    overview: "Graphic Era Hill University celebrated its 13th Foundation Day with immense pride, pomp, and grandeur at the Dehradun Campus. The milestone celebration commemorated 13 transformative years of academic excellence, world-class research, and community leadership. The campus was adorned with festive decorations, celebratory banners, and vibrant floral arrangements, bringing together leadership, faculty members, alumni, and thousands of students in an inspiring spirit of oneness.",
+    highlights: [
+      "Visionary Leadership Address: Keynote speeches on the university's growth from inception to premier Himalayan higher education hub.",
+      "Grand Cake-Cutting Ceremony: Leadership, faculty deans, and student representatives uniting around the 13th Foundation Day celebratory cake.",
+      "Folk & Classical Cultural Performances: Electrifying traditional Himalayan dance drama and classical choreographies celebrating cultural heritage.",
+      "Felicitation & Bouquet Ceremony: Honoring distinguished faculty, research scholars, and exceptional student achievers.",
+      "Pledge of Excellence: Assembly of faculty, staff, and students reaffirming dedication to research, innovation, and ethical leadership."
+    ],
+    closing_message: "Honoring our roots, celebrating our achievements, and inspiring future generations towards greater heights of knowledge, innovation, and unity.",
+    category: "University Event / Cultural Celebration",
+    venue: "Graphic Era Hill University, Dehradun Campus",
+    campus: "GRAPHIC ERA HILL UNIVERSITY DEHRADUN",
+    image_url: "/assets/events/foundation_day/foundation_1_speech.jpg",
+    gallery: [
+      "/assets/events/foundation_day/foundation_1_speech.jpg",
+      "/assets/events/foundation_day/foundation_2_address.jpg",
+      "/assets/events/foundation_day/foundation_3_gathering.jpg",
+      "/assets/events/foundation_day/foundation_4_cultural_dance.jpg",
+      "/assets/events/foundation_day/foundation_5_bouquet_presentation.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/foundation_day/foundation_1_speech.jpg",
+        title: "Keynote Address & Foundation Day Ceremonial Cake",
+        caption: "University representative speaking at the podium with the grand 13th Foundation Day celebration cake and festive decorations in the foreground."
+      },
+      {
+        url: "/assets/events/foundation_day/foundation_2_address.jpg",
+        title: "Faculty Address to Assembly",
+        caption: "Distinguished faculty member addressing the attentive audience of students, faculty, and invited guests from the university podium."
+      },
+      {
+        url: "/assets/events/foundation_day/foundation_3_gathering.jpg",
+        title: "Grand Gathering & Cake-Cutting Celebration",
+        caption: "A large gathering of faculty leadership, teachers, and student attendees celebrating together around the ceremonial Foundation Day cake."
+      },
+      {
+        url: "/assets/events/foundation_day/foundation_4_cultural_dance.jpg",
+        title: "Traditional Folk Dance Performance",
+        caption: "Students performing a vibrant traditional cultural folk dance in authentic regional attire on stage with the 13th Foundation Day backdrop."
+      },
+      {
+        url: "/assets/events/foundation_day/foundation_5_bouquet_presentation.jpg",
+        title: "Bouquet Felicitation Ceremony",
+        caption: "University leadership and organizers presenting ceremonial bouquets to guests and distinguished achievers during the felicitation ceremony."
+      }
+    ],
+    event_date: "2024-04-28",
+    event_time: "10:00 AM",
+    organizer_name: "Office of Student Affairs & Cultural Council • GEHU Dehradun",
+    rsvp_count: 670,
+    status: "approved"
+  },
 
   // 4. Graphic Era Deemed University
   {
