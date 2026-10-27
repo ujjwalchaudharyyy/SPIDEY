@@ -461,6 +461,66 @@ export const DEFAULT_EVENTS = [
     rsvp_count: 310,
     status: "approved"
   },
+  {
+    id: 36,
+    title: "Student Grafest",
+    description: "Student Grafest was a vibrant celebration of talent, creativity, music, dance, and student life. The event brought students together to showcase their artistic skills, enjoy live performances, celebrate culture, and create unforgettable campus memories.",
+    overview: "Student Grafest at Graphic Era Hill University, Haldwani Campus, was a spectacular celebration uniting students, faculty, and celebrated artists. Featuring dazzling pyrotechnic fireworks, an electrifying live concert, mesmerizing solo vocal recitals, and high-energy dance choreographies, Grafest stands as Haldwani's signature campus festival.",
+    highlights_title: "FESTIVAL HIGHLIGHTS",
+    highlights: [
+      "Spectacular night sky firework displays and pyrotechnic stage effects illuminating the Haldwani campus",
+      "High-voltage live musical concert and soulful vocal performances by renowned artists",
+      "Dynamic student dance troupe choreographies and traditional-fusion stage showcases",
+      "Thousands of students uniting with flashlight waves creating an electric festival atmosphere",
+      "Vibrant celebration of student creativity, music, culture, and unforgettable campus memories"
+    ],
+    closing_message: "Celebrating student talent, musical brilliance, and unforgettable campus memories that define the vibrant spirit of Graphic Era Hill University, Haldwani.",
+    category: "Cultural Fest / Student Festival",
+    venue: "Graphic Era Hill University, Haldwani Campus",
+    campus: "GRAPHIC ERA HILL UNIVERSITY HALDWANI",
+    theme: "Unite, Celebrate & Shine",
+    image_url: "/assets/events/haldwani_grafest/haldwani_grafest_1.jpg",
+    gallery: [
+      "/assets/events/haldwani_grafest/haldwani_grafest_1.jpg",
+      "/assets/events/haldwani_grafest/haldwani_grafest_2.jpg",
+      "/assets/events/haldwani_grafest/haldwani_grafest_3.jpg",
+      "/assets/events/haldwani_grafest/haldwani_grafest_4.jpg",
+      "/assets/events/haldwani_grafest/haldwani_grafest_5.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/haldwani_grafest/haldwani_grafest_1.jpg",
+        title: "Main Stage Spectacular & Night Fireworks",
+        caption: "Dazzling pyrotechnic fireworks illuminate the night sky over the Haldwani campus main stage as students and faculty gather for the grand festival opening."
+      },
+      {
+        url: "/assets/events/haldwani_grafest/haldwani_grafest_2.jpg",
+        title: "Ocean of Flashlights & Crimson Pyrotechnics",
+        caption: "Thousands of students creating an electric sea of glowing phone lights amidst bursts of red aerial fireworks during the live musical concert."
+      },
+      {
+        url: "/assets/events/haldwani_grafest/haldwani_grafest_3.jpg",
+        title: "Celebrity Live Vocal Performance",
+        caption: "Renowned vocalist holding red roses delivering an emotional, high-energy live performance on stage beneath the concert lighting."
+      },
+      {
+        url: "/assets/events/haldwani_grafest/haldwani_grafest_4.jpg",
+        title: "Dynamic Student Bollywood Dance Showcase",
+        caption: "Student dance crew performing vibrant, synchronized choreography in traditional-fusion costumes, capturing the spirited energy of campus youth."
+      },
+      {
+        url: "/assets/events/haldwani_grafest/haldwani_grafest_5.jpg",
+        title: "Grand Stage Finale with Flame Effects",
+        caption: "Spectacular concert finale featuring massive vertical flame jets and high-voltage production lighting bringing Grafest to an unforgettable crescendo."
+      }
+    ],
+    event_date: "2026-10-20",
+    display_date: "October 20-21, 2026",
+    event_time: "06:00 PM",
+    organizer_name: "Student Activity Council (SAC) • GEHU Haldwani",
+    rsvp_count: 580,
+    status: "approved"
+  },
 
   // 3. GEHU Dehradun
   {
