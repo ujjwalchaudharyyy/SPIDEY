@@ -1607,13 +1607,18 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                 return (
                   <div
                     key={idx}
-                    className="relative transition-all duration-300 ease-out hover:rotate-0 hover:translate-y-0 hover:scale-105 hover:z-50 shrink-0 w-80 sm:w-84 animate-snake-drop gpu-accelerated"
+                    className="shrink-0 w-80 sm:w-84 animate-snake-drop will-change-transform"
                     style={{
-                      transform: `rotate(${tilt}deg) translateY(${yOffset}px)`,
-                      animationDelay: `${idx * 160}ms`,
+                      animationDelay: `${idx * 120}ms`,
                       zIndex: 10 + idx
                     }}
                   >
+                    <div
+                      className="relative transition-transform duration-300 ease-out hover:!rotate-0 hover:!translate-y-0 hover:scale-105 hover:z-50"
+                      style={{
+                        transform: `rotate(${tilt}deg) translateY(${yOffset}px)`
+                      }}
+                    >
                     {/* Snake Member Indicator Tag */}
                     <div className="text-center mb-1">
                       <span
@@ -1638,6 +1643,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                       onCopy={handleCopyCode}
                       copiedCode={copiedCode}
                     />
+                    </div>
                   </div>
                 )
               })}

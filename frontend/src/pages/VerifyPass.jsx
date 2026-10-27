@@ -1,19 +1,46 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useSearchParams, useParams, useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
+import { Html5Qrcode } from 'html5-qrcode'
+
+// Audio Chime on Successful Scan
+function playScanChime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)()
+    const osc = ctx.createOscillator()
+    const gain = ctx.createGain()
+    osc.type = 'sine'
+    osc.frequency.setValueAtTime(880, ctx.currentTime) // A5
+    osc.frequency.exponentialRampToValueAtTime(1320, ctx.currentTime + 0.12) // E6
+    gain.gain.setValueAtTime(0.3, ctx.currentTime)
+    gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.2)
+    osc.connect(gain)
+    gain.connect(ctx.destination)
+    osc.start()
+    osc.stop(ctx.currentTime + 0.2)
+  } catch (e) {
+    // Audio context may require prior interaction
+  }
+}
 
 export default function VerifyPass() {
   const [searchParams] = useSearchParams()
   const routeParams = useParams()
   const navigate = useNavigate()
 
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(false)
   const [verified, setVerified] = useState(false)
   const [passData, setPassData] = useState(null)
   const [checkedIn, setCheckedIn] = useState(false)
   const [checkInTime, setCheckInTime] = useState('')
   const [manualCode, setManualCode] = useState('')
   const [isMarkingCheckin, setIsMarkingCheckin] = useState(false)
+
+  // Camera Scanner States
+  const [isCameraActive, setIsCameraActive] = useState(false)
+  const [cameraError, setCameraError] = useState('')
+  const [cameraFacing, setCameraFacing] = useState('environment') // 'environment' (back) or 'user' (front)
+  const html5QrCodeRef = useRef(null)
 
   // Read query params or route param
   const queryCode = searchParams.get('code') || routeParams.code || ''
@@ -30,221 +57,302 @@ export default function VerifyPass() {
   const queryRole = searchParams.get('role') || ''
   const queryTrack = searchParams.get('track') || ''
 
-  useEffect(() => {
-    async function verifyTicket() {
-      setLoading(true)
+  // Function to load and verify a ticket code
+  const loadPassDetails = async (targetCode) => {
+    if (!targetCode || !targetCode.trim()) return
 
-      const targetCode = queryCode.trim()
+    setLoading(true)
+    const code = targetCode.trim().toUpperCase()
 
-      if (!targetCode) {
-        setLoading(false)
-        setVerified(false)
-        return
+    // 1. First fetch from backend verification endpoint
+    let backendPass = null
+    try {
+      const res = await axios.get(`/api/events/verify/${encodeURIComponent(code)}`)
+      if (res.data?.verified && (res.data?.pass || res.data?.registration)) {
+        backendPass = res.data.pass || res.data.registration
       }
+    } catch (err) {}
 
-      // 1. First attempt to fetch from backend verification endpoint
-      let backendPass = null
-      try {
-        const res = await axios.get(`/api/events/verify/${encodeURIComponent(targetCode)}`)
-        if (res.data?.verified && (res.data?.pass || res.data?.registration)) {
-          backendPass = res.data.pass || res.data.registration
-        }
-      } catch (err) {
-        // Safe fallback if offline
+    // 2. Check local storage for pass data (including photo dataURL)
+    let localPass = null
+    try {
+      const storedPassStr = localStorage.getItem(`spider_verified_pass_${code}`)
+      if (storedPassStr) {
+        localPass = JSON.parse(storedPassStr)
       }
+    } catch (err) {}
 
-      // 2. Check local storage for pass data (including high-res photo dataURL)
-      let localPass = null
+    // Check registration array in local storage
+    if (!localPass) {
       try {
-        const storedPassStr = localStorage.getItem(`spider_verified_pass_${targetCode}`)
-        if (storedPassStr) {
-          localPass = JSON.parse(storedPassStr)
-        }
-      } catch (err) {}
-
-      // Check registration array in local storage
-      if (!localPass) {
-        try {
-          const allRegs = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
-          for (const reg of allRegs) {
-            if (reg.ticket_code === targetCode) {
-              localPass = reg
+        const allRegs = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
+        for (const reg of allRegs) {
+          if ((reg.ticket_code || '').toUpperCase() === code) {
+            localPass = reg
+            break
+          }
+          if (Array.isArray(reg.attendees)) {
+            const found = reg.attendees.find(
+              (a) => (a.ticketCode || '').toUpperCase() === code
+            )
+            if (found) {
+              localPass = {
+                ...found,
+                event_title: reg.event_title,
+                event_campus: reg.event_campus,
+                team_name: reg.team_name,
+                track_info: reg.track_info,
+                transaction_id: reg.transaction_id,
+                created_at: reg.created_at
+              }
               break
             }
-            if (Array.isArray(reg.attendees)) {
-              const found = reg.attendees.find(
-                (a) => (a.ticketCode || '').toUpperCase() === targetCode.toUpperCase()
-              )
-              if (found) {
-                localPass = {
-                  ...found,
-                  event_title: reg.event_title,
-                  event_campus: reg.event_campus,
-                  team_name: reg.team_name,
-                  track_info: reg.track_info,
-                  transaction_id: reg.transaction_id,
-                  created_at: reg.created_at
-                }
-                break
-              }
-            }
           }
-        } catch (err) {}
-      }
-
-      // Merge and prioritize authentic student details
-      const studentName =
-        backendPass?.student_name ||
-        localPass?.name ||
-        localPass?.student_name ||
-        queryName ||
-        'Graphic Era Student'
-
-      const rollNumber =
-        backendPass?.roll_no ||
-        localPass?.rollNo ||
-        localPass?.roll_no ||
-        queryRoll ||
-        'GEHU-STUDENT'
-
-      const email =
-        backendPass?.student_email ||
-        localPass?.email ||
-        localPass?.student_email ||
-        queryEmail ||
-        'student@gehu.ac.in'
-
-      const phone =
-        backendPass?.phone ||
-        localPass?.phone ||
-        queryPhone ||
-        '+91 98765 43210'
-
-      const campus =
-        backendPass?.campus ||
-        backendPass?.event_campus ||
-        localPass?.campus ||
-        localPass?.event_campus ||
-        queryCampus ||
-        'GRAPHIC ERA HILL UNIVERSITY BHIMTAL'
-
-      const degree =
-        backendPass?.degree ||
-        localPass?.degree ||
-        queryDegree ||
-        'B.Tech CSE'
-
-      const eventTitle =
-        backendPass?.event_title ||
-        localPass?.event_title ||
-        queryEvent ||
-        "Graphite'26 Event"
-
-      const eventVenue =
-        backendPass?.event_venue ||
-        localPass?.event_venue ||
-        'Block C Auditorium'
-
-      // Clean Event Time (no double "AM AM")
-      let cleanTime = backendPass?.event_time || localPass?.event_time || queryTime || '10:30 AM'
-      cleanTime = cleanTime.replace(/\b(AM|PM)\s+\1\b/gi, '$1').trim()
-
-      const eventDate =
-        backendPass?.event_date ||
-        localPass?.event_date ||
-        queryDate ||
-        'Wed, Nov 25, 2026'
-
-      const team =
-        backendPass?.team_name ||
-        localPass?.teamName ||
-        localPass?.team_name ||
-        queryTeam ||
-        'Solo Entrant'
-
-      const role =
-        backendPass?.role_in_team ||
-        localPass?.roleInTeam ||
-        (queryRole ? `Team ${queryRole}` : 'Verified Participant')
-
-      const track =
-        backendPass?.track_info ||
-        localPass?.track_info ||
-        queryTrack ||
-        'General Track'
-
-      // Prioritize authentic uploaded photo
-      const photo =
-        backendPass?.photo_url ||
-        localPass?.photoUrl ||
-        localPass?.photo ||
-        ''
-
-      const isAlreadyCheckedIn =
-        backendPass?.attendance_status === 'PRESENT & VERIFIED' ||
-        !!backendPass?.checkin_time
-
-      if (isAlreadyCheckedIn) {
-        setCheckedIn(true)
-        setCheckInTime(backendPass?.checkin_time || 'Checked In')
-      }
-
-      const merged = {
-        ticketCode: targetCode,
-        name: studentName,
-        rollNo: rollNumber,
-        email,
-        phone,
-        campus,
-        degree,
-        eventTitle,
-        eventVenue,
-        eventDate,
-        eventTime: cleanTime,
-        teamName: team,
-        role,
-        track,
-        photoUrl: photo,
-        attendanceStatus: isAlreadyCheckedIn ? 'PRESENT & VERIFIED' : 'REGISTERED & ACTIVE',
-        verifiedAt: new Date().toLocaleTimeString('en-US', {
-          hour: '2-digit',
-          minute: '2-digit',
-          second: '2-digit',
-          hour12: true
-        }),
-        verifiedDate: new Date().toLocaleDateString('en-US', {
-          weekday: 'short',
-          month: 'short',
-          day: 'numeric',
-          year: 'numeric'
-        })
-      }
-
-      setPassData(merged)
-      setVerified(true)
-      setLoading(false)
+        }
+      } catch (err) {}
     }
 
-    verifyTicket()
-  }, [
-    queryCode,
-    queryName,
-    queryRoll,
-    queryCampus,
-    queryDegree,
-    queryEvent,
-    queryTime,
-    queryDate,
-    queryTeam,
-    queryRole,
-    queryTrack,
-    queryEmail,
-    queryPhone
-  ])
+    // Merge attendee details
+    const studentName =
+      backendPass?.student_name ||
+      localPass?.name ||
+      localPass?.student_name ||
+      queryName ||
+      'Graphic Era Student'
+
+    const rollNumber =
+      backendPass?.roll_no ||
+      localPass?.rollNo ||
+      localPass?.roll_no ||
+      queryRoll ||
+      'GEHU-STUDENT'
+
+    const email =
+      backendPass?.student_email ||
+      localPass?.email ||
+      localPass?.student_email ||
+      queryEmail ||
+      'student@gehu.ac.in'
+
+    const phone =
+      backendPass?.phone ||
+      localPass?.phone ||
+      queryPhone ||
+      '+91 98765 43210'
+
+    const campus =
+      backendPass?.campus ||
+      backendPass?.event_campus ||
+      localPass?.campus ||
+      localPass?.event_campus ||
+      queryCampus ||
+      'GRAPHIC ERA HILL UNIVERSITY BHIMTAL'
+
+    const degree =
+      backendPass?.degree ||
+      localPass?.degree ||
+      queryDegree ||
+      'B.Tech CSE'
+
+    const eventTitle =
+      backendPass?.event_title ||
+      localPass?.event_title ||
+      queryEvent ||
+      "Graphite '26"
+
+    const eventVenue =
+      backendPass?.event_venue ||
+      localPass?.event_venue ||
+      'Auditorium Block C'
+
+    let cleanTime = backendPass?.event_time || localPass?.event_time || queryTime || '10:30 AM'
+    cleanTime = cleanTime.replace(/\b(AM|PM)\s+\1\b/gi, '$1').trim()
+
+    const eventDate =
+      backendPass?.event_date ||
+      localPass?.event_date ||
+      queryDate ||
+      'Wed, Nov 25, 2026'
+
+    const team =
+      backendPass?.team_name ||
+      localPass?.teamName ||
+      localPass?.team_name ||
+      queryTeam ||
+      'Solo Entrant'
+
+    const role =
+      backendPass?.role_in_team ||
+      localPass?.roleInTeam ||
+      (queryRole ? `Team ${queryRole}` : 'Verified Participant')
+
+    const track =
+      backendPass?.track_info ||
+      localPass?.track_info ||
+      queryTrack ||
+      'General Track'
+
+    const photo =
+      backendPass?.photo_url ||
+      localPass?.photoUrl ||
+      localPass?.photo ||
+      ''
+
+    const isAlreadyCheckedIn =
+      backendPass?.attendance_status === 'PRESENT & VERIFIED' ||
+      !!backendPass?.checkin_time
+
+    if (isAlreadyCheckedIn) {
+      setCheckedIn(true)
+      setCheckInTime(backendPass?.checkin_time || 'Checked In')
+    } else {
+      setCheckedIn(false)
+      setCheckInTime('')
+    }
+
+    const merged = {
+      ticketCode: code,
+      name: studentName,
+      rollNo: rollNumber,
+      email,
+      phone,
+      campus,
+      degree,
+      eventTitle,
+      eventVenue,
+      eventDate,
+      eventTime: cleanTime,
+      teamName: team,
+      role,
+      track,
+      photoUrl: photo,
+      attendanceStatus: isAlreadyCheckedIn ? 'PRESENT & VERIFIED' : 'REGISTERED & ACTIVE',
+      verifiedAt: new Date().toLocaleTimeString('en-US', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit',
+        hour12: true
+      }),
+      verifiedDate: new Date().toLocaleDateString('en-US', {
+        weekday: 'short',
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      })
+    }
+
+    setPassData(merged)
+    setVerified(true)
+    setLoading(false)
+  }
+
+  // Load pass if queryCode exists on mount or URL change
+  useEffect(() => {
+    if (queryCode && queryCode.trim()) {
+      loadPassDetails(queryCode)
+    } else {
+      setVerified(false)
+      setPassData(null)
+      setLoading(false)
+    }
+  }, [queryCode])
+
+  // Start Live Camera Scanner
+  const startCamera = async (facing = cameraFacing) => {
+    setCameraError('')
+    setIsCameraActive(true)
+
+    // Stop existing instance if any
+    if (html5QrCodeRef.current) {
+      try {
+        await html5QrCodeRef.current.stop()
+      } catch (e) {}
+    }
+
+    setTimeout(async () => {
+      try {
+        const qrScannerId = 'qr-camera-feed'
+        const scannerElement = document.getElementById(qrScannerId)
+        if (!scannerElement) return
+
+        const qrCodeInstance = new Html5Qrcode(qrScannerId)
+        html5QrCodeRef.current = qrCodeInstance
+
+        await qrCodeInstance.start(
+          { facingMode: facing },
+          {
+            fps: 12,
+            qrbox: { width: 260, height: 260 }
+          },
+          async (decodedText) => {
+            // QR Code Successfully Scanned!
+            playScanChime()
+            let extractedCode = decodedText
+
+            try {
+              if (decodedText.includes('code=')) {
+                const urlObj = new URL(decodedText)
+                extractedCode = urlObj.searchParams.get('code') || decodedText
+              }
+            } catch (err) {}
+
+            // Stop Camera
+            try {
+              await qrCodeInstance.stop()
+            } catch (e) {}
+            setIsCameraActive(false)
+
+            // Navigate and load pass
+            navigate(`/verify?code=${encodeURIComponent(extractedCode)}`)
+          },
+          () => {
+            // Frame parse error (silent per-frame scan)
+          }
+        )
+      } catch (err) {
+        setCameraError(
+          'Camera access was denied or not available. Please allow camera permissions or enter the code manually.'
+        )
+        setIsCameraActive(false)
+      }
+    }, 150)
+  }
+
+  // Stop Live Camera Scanner
+  const stopCamera = async () => {
+    if (html5QrCodeRef.current) {
+      try {
+        await html5QrCodeRef.current.stop()
+      } catch (e) {}
+      html5QrCodeRef.current = null
+    }
+    setIsCameraActive(false)
+  }
+
+  // Switch between front and back camera
+  const switchCamera = () => {
+    const nextFacing = cameraFacing === 'environment' ? 'user' : 'environment'
+    setCameraFacing(nextFacing)
+    if (isCameraActive) {
+      startCamera(nextFacing)
+    }
+  }
+
+  // Clean up camera on component unmount
+  useEffect(() => {
+    return () => {
+      if (html5QrCodeRef.current) {
+        try {
+          html5QrCodeRef.current.stop()
+        } catch (e) {}
+      }
+    }
+  }, [])
 
   const handleManualSearch = (e) => {
     e.preventDefault()
     if (manualCode.trim()) {
+      stopCamera()
       navigate(`/verify?code=${encodeURIComponent(manualCode.trim().toUpperCase())}`)
     }
   }
@@ -265,33 +373,8 @@ export default function VerifyPass() {
 
     try {
       await axios.post(`/api/events/verify/${encodeURIComponent(passData.ticketCode)}/checkin`)
-    } catch (err) {
-      // Safe offline fallback
-    } finally {
-      setIsMarkingCheckin(false)
-    }
-  }
-
-  // Handle in-page photo upload if photo was missing
-  const handlePhotoUploadLocal = (e) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-
-    const reader = new FileReader()
-    reader.onload = (ev) => {
-      const dataUrl = ev.target?.result
-      if (dataUrl && passData) {
-        const updated = { ...passData, photoUrl: dataUrl }
-        setPassData(updated)
-        try {
-          localStorage.setItem(
-            `spider_verified_pass_${passData.ticketCode}`,
-            JSON.stringify(updated)
-          )
-        } catch (err) {}
-      }
-    }
-    reader.readAsDataURL(file)
+    } catch (err) {}
+    setIsMarkingCheckin(false)
   }
 
   return (
@@ -306,20 +389,16 @@ export default function VerifyPass() {
             <div className="font-black text-base tracking-wider text-white uppercase flex items-center gap-1.5 font-chakra">
               <span>SPIDEY</span>
               <span className="text-red-500 font-mono text-xs px-1.5 py-0.5 rounded bg-red-950/60 border border-red-800/50">
-                OFFICIAL VERIFICATION
+                LIVE CAMERA SCANNER
               </span>
             </div>
             <p className="text-[10px] text-gray-400 font-mono">
-              Graphic Era University Gatekeeper &amp; Attendance Validator
+              Graphic Era University Instant Gate Verification
             </p>
           </div>
         </Link>
 
         <div className="flex items-center gap-3">
-          <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/60 border border-emerald-500/40 text-emerald-400 text-xs font-mono font-bold">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            SECURITY SCANNER ACTIVE
-          </span>
           <Link
             to="/feed"
             className="px-3.5 py-1.5 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold transition"
@@ -339,8 +418,9 @@ export default function VerifyPass() {
             </p>
           </div>
         ) : verified && passData ? (
+          /* ─── Verified Pass Details Card ─── */
           <div className="w-full space-y-5 animate-fade-in">
-            {/* ─── Top Success Shield Banner ─── */}
+            {/* Top Success Shield Banner */}
             <div className="relative overflow-hidden rounded-3xl bg-gradient-to-b from-emerald-950/60 via-[#0B1510] to-[#080E0B] border-2 border-emerald-500/70 p-6 sm:p-8 shadow-[0_0_60px_rgba(16,185,129,0.3)] text-center">
               <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-tr from-emerald-600 to-teal-400 flex items-center justify-center text-4xl shadow-[0_0_35px_rgba(16,185,129,0.7)] mb-3">
                 🛡️
@@ -359,7 +439,7 @@ export default function VerifyPass() {
                 {passData.verifiedDate} at {passData.verifiedAt}
               </p>
 
-              {/* ─── Attendance Status & Gate Entry Card ─── */}
+              {/* Attendance Status & Gate Entry Card */}
               <div className="mt-5 pt-4 border-t border-emerald-900/50 flex flex-col sm:flex-row items-center justify-between gap-3 bg-black/40 p-3.5 rounded-2xl">
                 <div className="text-left">
                   <span className="text-[10px] font-mono uppercase tracking-widest text-gray-400 block">
@@ -410,11 +490,10 @@ export default function VerifyPass() {
               </div>
             </div>
 
-            {/* ─── Attendee Credentials Card with Exact Photo & Name ─── */}
+            {/* Attendee Credentials Card with Exact Photo & Name */}
             <div className="rounded-3xl bg-[#0D111C] border border-gray-800 p-6 sm:p-8 shadow-2xl space-y-6">
               {/* Photo & Name Section */}
               <div className="flex flex-col sm:flex-row items-center gap-6 pb-6 border-b border-gray-800">
-                {/* Generous Portrait Photo Frame (Faces are never cut!) */}
                 <div className="relative w-32 sm:w-36 h-40 sm:h-44 rounded-2xl overflow-hidden border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.4)] bg-[#0A0D15] shrink-0">
                   {passData.photoUrl ? (
                     <img
@@ -426,17 +505,8 @@ export default function VerifyPass() {
                     <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-b from-[#181D2C] to-[#0D101A] text-gray-400 p-2 text-center">
                       <span className="text-4xl mb-1">👤</span>
                       <span className="text-[10px] font-mono text-gray-400 uppercase font-semibold">
-                        No Photo
+                        Student Photo
                       </span>
-                      <label className="mt-2 text-[9px] bg-red-600 hover:bg-red-500 text-white px-2 py-1 rounded cursor-pointer transition">
-                        <span>Upload Photo</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="hidden"
-                          onChange={handlePhotoUploadLocal}
-                        />
-                      </label>
                     </div>
                   )}
                   <div className="absolute bottom-0 inset-x-0 bg-emerald-600/90 text-[9px] text-white font-mono font-bold text-center py-0.5">
@@ -514,74 +584,127 @@ export default function VerifyPass() {
                   <span className="text-[11px] text-gray-400 font-mono block">{passData.phone}</span>
                 </div>
               </div>
-
-              {/* Security Seal & Digital Watermark */}
-              <div className="pt-3 border-t border-gray-800/80 flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
-                <div>
-                  <span className="text-[9px] text-gray-500 uppercase tracking-widest font-mono block">
-                    GRAPHIC ERA HIGH-SECURITY TAMPER SEAL
-                  </span>
-                  <span className="text-xs font-mono text-gray-400">
-                    PASS-HASH: {btoa(passData.ticketCode + passData.rollNo).substring(0, 24)}... (AUTHENTIC)
-                  </span>
-                </div>
-                <div className="px-3 py-1.5 rounded-lg bg-gray-900 border border-gray-700 font-mono text-xs text-white tracking-widest">
-                  ||||| |||| || |||||
-                </div>
-              </div>
             </div>
 
-            {/* Quick Actions */}
+            {/* Quick Actions Bar */}
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-              <button
-                type="button"
-                onClick={() => window.print()}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
-              >
-                <span>🖨️</span>
-                <span>Print Official Verification Slip</span>
-              </button>
-
               <button
                 type="button"
                 onClick={() => {
                   setVerified(false)
                   setPassData(null)
                   setManualCode('')
+                  navigate('/verify')
+                  startCamera('environment')
                 }}
-                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white text-xs font-bold flex items-center justify-center gap-2 transition cursor-pointer shadow-md"
               >
-                <span>🔍</span>
-                <span>Scan Another Pass</span>
+                <span>📹</span>
+                <span>Scan Next Student (Live Camera)</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => window.print()}
+                className="w-full sm:w-auto px-5 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
+              >
+                <span>🖨️</span>
+                <span>Print Official Slip</span>
               </button>
             </div>
           </div>
         ) : (
-          /* Manual Pass Lookup Form */
-          <div className="w-full max-w-md bg-[#0D111C] border border-gray-800 rounded-2xl p-6 sm:p-8 shadow-2xl text-center space-y-6">
-            <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-red-600 to-rose-900 flex items-center justify-center text-3xl shadow-[0_0_25px_rgba(220,38,38,0.5)]">
-              📱
-            </div>
-
+          /* ─── LIVE CAMERA SCANNER & PORTAL VIEW ─── */
+          <div className="w-full max-w-md bg-[#0D111C] border border-gray-800 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 text-center">
+            {/* Header */}
             <div>
+              <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-red-600 to-rose-900 flex items-center justify-center text-3xl shadow-[0_0_25px_rgba(220,38,38,0.5)] mb-3">
+                📹
+              </div>
               <h2 className="text-xl font-bold text-white uppercase font-chakra">
-                Pass Verification Portal
+                Live QR Code Camera Scanner
               </h2>
               <p className="text-xs text-gray-400 mt-1">
-                Scan QR Code with smartphone camera or enter the Pass Code below to verify Graphic Era event credentials.
+                Apna phone camera on karke ID Card ka QR Code scan karein ya code manually enter karein.
               </p>
             </div>
 
+            {/* Camera Viewport or Start Trigger */}
+            <div className="space-y-3">
+              {isCameraActive ? (
+                <div className="space-y-2">
+                  <div className="relative w-full aspect-square max-w-[300px] mx-auto rounded-2xl overflow-hidden border-2 border-emerald-500 shadow-[0_0_30px_rgba(16,185,129,0.3)] bg-black">
+                    {/* The Html5Qrcode video container */}
+                    <div id="qr-camera-feed" className="w-full h-full" />
+                    {/* Live Laser Scan Sweep Line */}
+                    <div className="animate-scan-line pointer-events-none" />
+                    {/* Target Reticle Overlay */}
+                    <div className="absolute inset-8 border border-emerald-400/40 rounded-xl pointer-events-none flex items-center justify-center">
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold bg-black/60 px-2 py-0.5 rounded backdrop-blur-sm">
+                        AIM AT QR CODE
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Camera Controls */}
+                  <div className="flex items-center justify-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={switchCamera}
+                      className="px-3.5 py-1.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <span>🔄</span>
+                      <span>Flip Camera</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={stopCamera}
+                      className="px-3.5 py-1.5 rounded-xl bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-500/50 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
+                    >
+                      <span>⏹</span>
+                      <span>Stop Camera</span>
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="p-4 rounded-2xl bg-black/50 border border-gray-800 space-y-3">
+                  <button
+                    type="button"
+                    onClick={() => startCamera('environment')}
+                    className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm shadow-[0_0_25px_rgba(16,185,129,0.4)] transition active:scale-95 cursor-pointer flex items-center justify-center gap-2 uppercase tracking-wider font-chakra"
+                  >
+                    <span>📹</span>
+                    <span>Start Live Camera QR Scanner</span>
+                  </button>
+
+                  <p className="text-[11px] text-gray-400 font-mono">
+                    Point camera at Graphic Era Lanyard ID Card to auto-verify credentials.
+                  </p>
+                </div>
+              )}
+
+              {cameraError && (
+                <div className="p-3 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs">
+                  {cameraError}
+                </div>
+              )}
+            </div>
+
+            {/* Divider */}
+            <div className="flex items-center gap-3 text-gray-600 text-xs font-mono">
+              <div className="flex-1 h-px bg-gray-800" />
+              <span>OR ENTER PASS CODE</span>
+              <div className="flex-1 h-px bg-gray-800" />
+            </div>
+
+            {/* Manual Code Input Form */}
             <form onSubmit={handleManualSearch} className="space-y-3">
               <div>
-                <label className="block text-[11px] font-mono text-gray-400 text-left mb-1 uppercase tracking-wider">
-                  Enter Pass Code (e.g. HTW-2027-BHM-4921):
-                </label>
                 <input
                   type="text"
                   value={manualCode}
                   onChange={(e) => setManualCode(e.target.value)}
-                  placeholder="HTW-2027-BHM-..."
+                  placeholder="e.g. HTW-2027-BHM-501"
                   className="w-full px-4 py-2.5 rounded-xl bg-[#070913] border border-gray-700 focus:border-red-500 focus:outline-none text-white font-mono text-center text-sm uppercase tracking-wider"
                   required
                 />
@@ -591,23 +714,16 @@ export default function VerifyPass() {
                 type="submit"
                 className="w-full py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-bold text-xs shadow-lg transition active:scale-95 cursor-pointer uppercase tracking-wider font-chakra"
               >
-                Verify Pass Credentials ➔
+                Verify Code ➔
               </button>
             </form>
-
-            <div className="pt-4 border-t border-gray-800 text-[11px] text-gray-500 space-y-2">
-              <p>💡 Tip: Mobile camera scanner se ID Card ka QR Code scan karte hi ye page directly verified pass open kar deta hai.</p>
-              <Link to="/feed" className="text-red-400 hover:underline block font-semibold">
-                ← Return to Student Feed
-              </Link>
-            </div>
           </div>
         )}
       </main>
 
       {/* Footer */}
       <footer className="py-4 border-t border-gray-900 text-center text-[11px] text-gray-600 font-mono">
-        Graphic Era Hill University • High Security Biometric ID Pass System • Powered by Spidey '26
+        Graphic Era Hill University • Live Camera Biometric Pass Scanner • Spidey '26
       </footer>
     </div>
   )
