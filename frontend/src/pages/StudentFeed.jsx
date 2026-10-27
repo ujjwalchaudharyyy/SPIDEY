@@ -190,6 +190,9 @@ export default function StudentFeed({ initialTab = 'radar' }) {
               />
             )}
 
+            {/* Institutional Dossier & Leadership Spotlight with Interactive Light Sensor */}
+            <CampusLeadershipSection activeCampus={activeCampus} />
+
             {/* Past, Present, Future Timeline for Selected Campus */}
             {activeCampus && (
               <CampusTimelineView
@@ -199,9 +202,6 @@ export default function StudentFeed({ initialTab = 'radar' }) {
                 onRsvp={handleRsvp}
               />
             )}
-
-            {/* Institutional Dossier & Leadership Spotlight with Interactive Light Sensor */}
-            <CampusLeadershipSection activeCampus={activeCampus} />
           </div>
         ) : (
           <div className="space-y-6">
