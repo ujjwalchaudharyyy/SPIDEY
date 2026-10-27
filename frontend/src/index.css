@@ -229,3 +229,33 @@ input:-webkit-autofill:active {
 ::-webkit-scrollbar-thumb:hover {
   background: #E21B24;
 }
+
+/* ==================================================================== */
+/* 4K ULTRA-HD CALIBRATION & 60-120 FPS GPU COMPOSITOR ANIMATION SUITE */
+/* ==================================================================== */
+@media (-webkit-min-device-pixel-ratio: 1.5), (min-resolution: 144dpi), (min-width: 1920px) {
+  html, body {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+  }
+
+  img, video, canvas, svg {
+    image-rendering: -webkit-optimize-contrast;
+  }
+}
+
+/* 4K Smooth Composited Animation Hardware Promotion */
+.animate-spider-zip,
+.animate-web-blast,
+.animate-spider-swing,
+.animate-float,
+.animate-pulse-glow,
+.animate-fadeIn,
+.animate-web-expand {
+  will-change: transform, opacity;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+}

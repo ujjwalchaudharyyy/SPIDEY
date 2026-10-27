@@ -227,9 +227,12 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
                   key={campus.id}
                   onClick={() => onSelectCampus(idx)}
                   style={{
-                    transform: `translateX(${translateX}px) translateY(${translateY}px) translateZ(${translateZ}px) rotateY(${rotateY}deg)`,
+                    transform: `translate3d(${translateX}px, ${translateY}px, ${translateZ}px) rotateY(${rotateY}deg)`,
                     opacity,
                     zIndex,
+                    willChange: 'transform, opacity',
+                    backfaceVisibility: 'hidden',
+                    WebkitBackfaceVisibility: 'hidden',
                     transition: 'all 0.65s cubic-bezier(0.22, 1, 0.36, 1)'
                   }}
                   className={`absolute w-[92vw] max-w-[800px] h-[390px] sm:h-[450px] md:h-[490px] cursor-pointer rounded-3xl overflow-hidden border backdrop-blur-2xl transition-all group ${
