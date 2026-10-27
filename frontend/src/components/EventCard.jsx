@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useEffect, useCallback, useRef } from 'react'
 import EventRegistrationModal from './EventRegistrationModal'
 import EventGalleryModal from './EventGalleryModal'
 import EventVideoModal from './EventVideoModal'
@@ -15,6 +15,8 @@ const categoryStyles = {
   'Hackathon / Technical Event': 'bg-purple-950/60 text-purple-300 border-purple-500/40',
   'University Event / Cultural Celebration': 'bg-amber-950/60 text-amber-300 border-amber-500/40',
   'Student Festival / Cultural and Entertainment Event': 'bg-rose-950/60 text-rose-300 border-rose-500/40',
+  'Technology / Innovation / Ideathon': 'bg-cyan-950/60 text-cyan-300 border-cyan-500/40',
+  'Cultural / Religious Festival': 'bg-orange-950/60 text-orange-300 border-orange-500/40',
 }
 
 const statusStyles = {

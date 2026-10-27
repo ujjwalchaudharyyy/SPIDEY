@@ -284,6 +284,65 @@ export const DEFAULT_EVENTS = [
     rsvp_count: 165,
     status: "approved"
   },
+  {
+    id: 34,
+    title: "Ganesh Chaturthi Celebration",
+    description: "Ganesh Chaturthi at Graphic Era Hill University, Bhimtal Campus, was an opportunity for the campus community to come together and celebrate the spirit of devotion, culture, and togetherness. The celebration highlighted the beauty of Indian traditions and created meaningful campus memories through festive moments and shared participation.",
+    overview: "Ganesh Chaturthi at Graphic Era Hill University, Bhimtal Campus, was an opportunity for the campus community to come together and celebrate the spirit of devotion, culture, and togetherness. The celebration highlighted the beauty of Indian traditions and created meaningful campus memories through festive moments and shared participation.",
+    highlights_title: "CELEBRATION HIGHLIGHTS",
+    highlights: [
+      "Traditional ceremonial sthapana and darshan of the exquisitely adorned Lord Ganesha idol",
+      "Active participation by university leadership, faculty members, staff, and students in festive ethnic attire",
+      "Devotional campus procession with rhythmic clapping, singing, and joyous chanting through the scenic hill campus",
+      "Sacred aarti and prayer offerings in the temple pavilion amidst brass bells and floral torans",
+      "Spirit of devotion, cultural unity, and shared blessings uniting the entire campus family"
+    ],
+    closing_message: "Celebrating Indian culture, devotional traditions, and the enduring spirit of togetherness and joy across Graphic Era Hill University, Bhimtal.",
+    category: "Cultural / Religious Festival",
+    venue: "Graphic Era Hill University, Bhimtal Campus",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    image_url: "/assets/events/ganesh_chaturthi/ganesh_chaturthi_1.jpg",
+    gallery: [
+      "/assets/events/ganesh_chaturthi/ganesh_chaturthi_1.jpg",
+      "/assets/events/ganesh_chaturthi/ganesh_chaturthi_2.jpg",
+      "/assets/events/ganesh_chaturthi/ganesh_chaturthi_3.jpg",
+      "/assets/events/ganesh_chaturthi/ganesh_chaturthi_4.jpg",
+      "/assets/events/ganesh_chaturthi/ganesh_chaturthi_5.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/ganesh_chaturthi/ganesh_chaturthi_1.jpg",
+        title: "Consecrated Idol & University Faculty Gathering",
+        caption: "University faculty and staff members holding the beautifully adorned idol of Lord Ganesha on a ceremonial chowki during the auspicious festivities."
+      },
+      {
+        url: "/assets/events/ganesh_chaturthi/ganesh_chaturthi_2.jpg",
+        title: "Adorned Lord Ganesha Idol & Devotees",
+        caption: "Close-up of the intricately crafted Lord Ganesha idol adorned in yellow and red silk garments, fresh marigold garlands, and an ornate mukut."
+      },
+      {
+        url: "/assets/events/ganesh_chaturthi/ganesh_chaturthi_3.jpg",
+        title: "Joyous Devotional Campus Procession",
+        caption: "Students and faculty joyfully clapping, singing bhajans, and raising hands in devotion during the vibrant campus procession."
+      },
+      {
+        url: "/assets/events/ganesh_chaturthi/ganesh_chaturthi_4.jpg",
+        title: "Temple Darshan & Aarti with Students and Faculty",
+        caption: "Faculty members and students offering prayers with folded hands before Lord Ganesha inside the temple pavilion beneath sacred brass bells."
+      },
+      {
+        url: "/assets/events/ganesh_chaturthi/ganesh_chaturthi_5.jpg",
+        title: "Grand Festive Procession Across Campus",
+        caption: "A large gathering of university students and faculty dancing and celebrating together along the hill campus pathway amidst pine trees."
+      }
+    ],
+    event_date: "2026-09-14",
+    display_date: "September 14, 2026",
+    event_time: "10:30 AM",
+    organizer_name: "Cultural Council & Campus Community • GEHU Bhimtal",
+    rsvp_count: 240,
+    status: "approved"
+  },
 
   // 2. GEHU Haldwani
   {

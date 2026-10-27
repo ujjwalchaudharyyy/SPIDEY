@@ -177,12 +177,16 @@ export default function EventGalleryModal({ event, onClose }) {
         {/* ======================================================== */}
         <div className="p-5 sm:p-6 border-b border-gray-800 bg-gradient-to-r from-[#121B30] via-[#090D18] to-black flex items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/30 via-red-950 to-black border border-amber-500/60 flex items-center justify-center text-2xl shadow-spider-glow flex-shrink-0">
-              ⚡
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-amber-500/30 via-orange-950 to-black border border-amber-500/60 flex items-center justify-center text-2xl shadow-spider-glow flex-shrink-0">
+              {event.icon || (event.title?.includes('Ganesh') ? '🪔' : '⚡')}
             </div>
             <div>
               <div className="flex flex-wrap items-center gap-2 mb-1">
-                <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-purple-950/80 text-purple-300 border border-purple-500/50 shadow-[0_0_12px_rgba(168,85,247,0.3)]">
+                <span className={`text-[10px] font-mono px-2.5 py-0.5 rounded-full border shadow-sm ${
+                  event.category?.includes('Religious') || event.category === 'Cultural / Religious Festival'
+                    ? 'bg-orange-950/80 text-orange-300 border-orange-500/50 shadow-[0_0_12px_rgba(249,115,22,0.3)]'
+                    : 'bg-purple-950/80 text-purple-300 border-purple-500/50 shadow-[0_0_12px_rgba(168,85,247,0.3)]'
+                }`}>
                   {event.category || 'Hackathon / Technical Event'}
                 </span>
                 <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-amber-950/80 text-amber-300 border border-amber-500/50">
