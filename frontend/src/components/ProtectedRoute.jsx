@@ -13,6 +13,17 @@ export default function ProtectedRoute({ children, roles }) {
   }
 
   if (!isAuthenticated) return <Navigate to="/login" replace />
+
+  // Admin route clearance: allow role 'admin' OR authorized admin emails
+  if (roles && roles.includes('admin')) {
+    const isAdmin = user && (
+      user.role === 'admin' ||
+      user.email === 'admin@campus.edu' ||
+      user.email === 'ujjwalchaudhary2007@gmail.com'
+    )
+    if (isAdmin) return children
+  }
+
   if (roles && !roles.includes(user.role)) return <Navigate to="/" replace />
 
   return children

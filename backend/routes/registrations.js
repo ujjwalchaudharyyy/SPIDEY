@@ -78,11 +78,27 @@ router.get('/registrations/my', authenticateToken, (req, res) => {
   res.json(registrations);
 });
 
+// GET /api/events/admin/all — High Command Admin gets all registrations across all events
+router.get('/admin/all', authenticateToken, (req, res) => {
+  if (req.user.role !== 'admin' && req.user.email !== 'admin@campus.edu' && req.user.email !== 'ujjwalchaudhary2007@gmail.com') {
+    return res.status(403).json({ error: 'High Command Admin access required' });
+  }
+
+  const registrations = queryAll(`
+    SELECT r.*, e.title as event_title, e.category as event_category, e.campus as event_campus, e.venue as event_venue
+    FROM event_registrations r
+    JOIN events e ON e.id = r.event_id
+    ORDER BY r.created_at DESC
+  `);
+
+  res.json(registrations);
+});
+
 // GET /api/events/:id/attendees — Organizer or Admin can see who registered
 router.get('/:id/attendees', authenticateToken, (req, res) => {
   const eventId = parseInt(req.params.id);
   const attendees = queryAll(`
-    SELECT student_name, student_email, phone, degree, roll_no, campus, ticket_code, created_at
+    SELECT student_name, student_email, phone, degree, roll_no, campus, ticket_code, team_name, team_size, track_info, github_link, details_json, created_at
     FROM event_registrations
     WHERE event_id = ?
     ORDER BY created_at DESC
@@ -92,3 +108,4 @@ router.get('/:id/attendees', authenticateToken, (req, res) => {
 });
 
 module.exports = router;
+

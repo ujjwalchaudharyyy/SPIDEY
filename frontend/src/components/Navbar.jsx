@@ -58,7 +58,7 @@ export default function Navbar() {
             <div className="flex items-center space-x-4">
               {isAuthenticated ? (
                 <>
-                  {user.role === 'student' && (
+                  {(user.role === 'student' || user.role === 'admin' || user.email === 'admin@campus.edu' || user.email === 'ujjwalchaudhary2007@gmail.com') && (
                     <Link
                       to="/feed"
                       onClick={() => handleNavClick('STUDENT FEED')}
@@ -80,7 +80,7 @@ export default function Navbar() {
                     </Link>
                   )}
 
-                  {user.role === 'admin' && (
+                  {(user.role === 'admin' || user.email === 'admin@campus.edu' || user.email === 'ujjwalchaudhary2007@gmail.com') && (
                     <Link
                       to="/admin"
                       onClick={() => handleNavClick('SANCTUM ADMIN')}

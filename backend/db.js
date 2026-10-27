@@ -466,8 +466,132 @@ async function initDB() {
     }
   }
 
+
+  // Seed sample event registrations if table is empty
+  const regsCountRes = db.exec("SELECT COUNT(*) FROM event_registrations");
+  const regCount = regsCountRes[0]?.values[0]?.[0] || 0;
+  if (regCount === 0) {
+    const sampleRegs = [
+      {
+        event_id: 13,
+        user_id: 2,
+        name: 'Ujjwal Chaudhary',
+        email: 'ujjwalchaudhary2007@gmail.com',
+        phone: '+91 98765 89210',
+        degree: 'B.Tech CSE - 3rd Year',
+        roll: 'GEHU-2024-BHM-842',
+        campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+        ticket: 'HTW-2027-BHM-4821',
+        team: 'Spider-Hackers Bhimtal',
+        team_size: '4',
+        track: 'AI Agents & GenAI Systems',
+        github: 'https://github.com/ujjwalchaudharyyy'
+      },
+      {
+        event_id: 13,
+        user_id: 1,
+        name: 'Rohit Joshi',
+        email: 'rohit.gehu.bhimtal@gmail.com',
+        phone: '+91 98234 56789',
+        degree: 'B.Tech CSE (AI & ML) - 3rd Year',
+        roll: 'GEHU-2024-BHM-714',
+        campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+        ticket: 'HTW-2027-BHM-3190',
+        team: 'Kumaon Code Raiders',
+        team_size: '3',
+        track: 'Autonomous Mountain IoT',
+        github: 'https://github.com/rohit-gehu'
+      },
+      {
+        event_id: 14,
+        user_id: 3,
+        name: 'Sumit Sanwal',
+        email: 'sumitsanwal8132@gmail.com',
+        phone: '+91 99123 45678',
+        degree: 'B.Tech CSE - 3rd Year',
+        roll: 'GEHU-2024-BHM-512',
+        campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+        ticket: 'ASTRO-26-BHM-1904',
+        team: 'Solo Stargazer',
+        team_size: '1',
+        track: 'Deep-Sky Telescope Stargazing & Astrophotography',
+        github: null
+      },
+      {
+        event_id: 14,
+        user_id: 1,
+        name: 'Ananya Sharma',
+        email: 'ananya.sharma.astro@gmail.com',
+        phone: '+91 98456 78912',
+        degree: 'B.Tech Aerospace - 3rd Year',
+        roll: 'GEHU-2024-BHM-321',
+        campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+        ticket: 'ASTRO-26-BHM-7412',
+        team: 'Cosmic Explorers',
+        team_size: '3',
+        track: 'Planetary AI Hack Sprint & CubeSat Telemetry',
+        github: 'https://github.com/ananya-astro'
+      },
+      {
+        event_id: 15,
+        user_id: 1,
+        name: 'Aman Rawat',
+        email: 'aman.rawat.robo@gmail.com',
+        phone: '+91 98987 12345',
+        degree: 'B.Tech Robotics - 3rd Year',
+        roll: 'GEHU-2024-BHM-188',
+        campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+        ticket: 'TECHFEST-BHM-9201',
+        team: 'Iron Spiders Combat Squad',
+        team_size: '4',
+        track: 'Robowars (Heavyweight Combat Arena)',
+        github: 'https://github.com/aman-robowars'
+      },
+      {
+        event_id: 16,
+        user_id: 1,
+        name: 'Rahul Mehra',
+        email: 'rahul.mehra.fc@gmail.com',
+        phone: '+91 99887 76655',
+        degree: 'B.Tech Civil - 3rd Year',
+        roll: 'GEHU-2024-BHM-601',
+        campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+        ticket: 'SPARDHA-BHM-6420',
+        team: 'Bhimtal Strikers FC (11v11)',
+        team_size: '11',
+        track: 'Football Championship (11v11)',
+        github: null
+      },
+      {
+        event_id: 17,
+        user_id: 1,
+        name: 'Harshit Joshi',
+        email: 'harshit.joshi.grafest@gmail.com',
+        phone: '+91 98334 45566',
+        degree: 'B.Tech CSE - 3rd Year',
+        roll: 'GEHU-2024-BHM-811',
+        campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+        ticket: 'GRAFEST-BHM-7788',
+        team: 'Solo VIP Entry',
+        team_size: '1',
+        track: 'All-Access Student VIP Concert Pass',
+        github: null
+      }
+    ];
+
+    for (const r of sampleRegs) {
+      db.run(`
+        INSERT INTO event_registrations (event_id, user_id, student_name, student_email, phone, degree, roll_no, campus, ticket_code, team_name, team_size, track_info, github_link)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      `, [
+        r.event_id, r.user_id, r.name, r.email, r.phone, r.degree, r.roll, r.campus, r.ticket, r.team, r.team_size, r.track, r.github
+      ]);
+    }
+  }
+
   saveDB();
   return db;
+
 }
 
 function getDB() {

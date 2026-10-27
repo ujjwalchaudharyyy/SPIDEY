@@ -103,12 +103,42 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
         details_json: extraDetails
       }, { headers })
 
+      let finalTicketCode = ''
       if (res.data?.ticketCode) {
-        setTicket(res.data.ticketCode)
-        onSuccess?.(res.data.ticketCode)
-        return
+        finalTicketCode = res.data.ticketCode
+      } else {
+        throw new Error('No ticket code returned')
       }
-      throw new Error('No ticket code returned')
+
+      // Save to localStorage cache so Admin sees this registration instantly
+      const newReg = {
+        id: Date.now(),
+        event_id: event.id,
+        event_title: event.title,
+        event_category: event.category,
+        event_campus: event.campus,
+        student_name: name,
+        student_email: email,
+        phone,
+        roll_no: rollNo,
+        degree,
+        campus,
+        ticket_code: finalTicketCode,
+        team_name: extraDetails.teamName,
+        team_size: extraDetails.teamSize,
+        track_info: selectedTrack,
+        github_link: githubUrl || null,
+        details_json: extraDetails,
+        created_at: new Date().toISOString()
+      }
+      try {
+        const stored = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
+        localStorage.setItem('spider_event_registrations', JSON.stringify([newReg, ...stored]))
+      } catch (e) {}
+
+      setTicket(finalTicketCode)
+      onSuccess?.(finalTicketCode)
+      return
     } catch (err) {
       // Offline / Vercel fallback - Generate authentic hologram ticket code
       let prefix = 'SPIDER'
@@ -120,6 +150,33 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
 
       const randomDigits = Math.floor(1000 + Math.random() * 9000)
       const generatedCode = `${prefix}-BHM-${randomDigits}`
+
+      // Save to localStorage cache so Admin sees this registration instantly
+      const newReg = {
+        id: Date.now(),
+        event_id: event.id,
+        event_title: event.title,
+        event_category: event.category,
+        event_campus: event.campus,
+        student_name: name,
+        student_email: email,
+        phone,
+        roll_no: rollNo,
+        degree,
+        campus,
+        ticket_code: generatedCode,
+        team_name: extraDetails.teamName,
+        team_size: extraDetails.teamSize,
+        track_info: selectedTrack,
+        github_link: githubUrl || null,
+        details_json: extraDetails,
+        created_at: new Date().toISOString()
+      }
+      try {
+        const stored = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
+        localStorage.setItem('spider_event_registrations', JSON.stringify([newReg, ...stored]))
+      } catch (e) {}
+
       setTicket(generatedCode)
       onSuccess?.(generatedCode)
     } finally {
