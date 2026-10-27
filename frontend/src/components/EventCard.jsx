@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import EventRegistrationModal from './EventRegistrationModal'
 import EventGalleryModal from './EventGalleryModal'
 
@@ -42,6 +42,37 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const [showGalleryModal, setShowGalleryModal] = useState(false)
   const [activePhotoIndex, setActivePhotoIndex] = useState(0)
 
+  // Gallery array for in-card slider
+  const gallery = (event.gallery && event.gallery.length > 0)
+    ? event.gallery
+    : (event.image_url ? [event.image_url] : ['/assets/campuses/bhimtal.png'])
+  const hasMultiplePhotos = gallery.length > 1
+
+  // Separate index for in-card sliding (independent of modal)
+  const [cardPhotoIdx, setCardPhotoIdx] = useState(0)
+
+  const cardPrev = useCallback((e) => {
+    e.stopPropagation()
+    setCardPhotoIdx(prev => (prev === 0 ? gallery.length - 1 : prev - 1))
+  }, [gallery.length])
+
+  const cardNext = useCallback((e) => {
+    e.stopPropagation()
+    setCardPhotoIdx(prev => (prev === gallery.length - 1 ? 0 : prev + 1))
+  }, [gallery.length])
+
+  // Keyboard nav for modal
+  useEffect(() => {
+    if (!showGalleryModal) return
+    const onKey = (e) => {
+      if (e.key === 'Escape') setShowGalleryModal(false)
+      if (e.key === 'ArrowRight') setActivePhotoIndex(p => (p === gallery.length - 1 ? 0 : p + 1))
+      if (e.key === 'ArrowLeft') setActivePhotoIndex(p => (p === 0 ? gallery.length - 1 : p - 1))
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [showGalleryModal, gallery.length])
+
   const handleRsvp = async () => {
     setRsvpLoading(true)
     await onRsvp?.(event.id)
@@ -68,15 +99,16 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   return (
     <>
       <div className="spider-card group flex flex-col justify-between overflow-hidden p-0 border-[#1E293B] hover:border-red-500/70 transition-all duration-300">
-        {/* Event Header Photo */}
-        <div 
-          className="relative h-52 w-full overflow-hidden bg-black cursor-pointer"
+        {/* Event Header Photo — In-Card Gallery Slider */}
+        <div
+          className="relative h-52 w-full overflow-hidden bg-black cursor-pointer select-none"
           onClick={handleOpenGallery}
         >
+          {/* Sliding Image — uses cardPhotoIdx */}
           <img
-            src={event.image_url || '/assets/campuses/bhimtal.png'}
+            src={gallery[cardPhotoIdx] || '/assets/campuses/bhimtal.png'}
             alt={event.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+            className="w-full h-full object-cover transition-all duration-500"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-[#090D18] via-transparent to-black/50" />
 
@@ -122,19 +154,60 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             </div>
           </div>
 
-          {/* Simple Clean Winner Callout Banner */}
+          {/* In-Card Prev / Next Arrows (visible on hover, only when gallery has multiple) */}
+          {hasMultiplePhotos && (
+            <>
+              <button
+                type="button"
+                onClick={cardPrev}
+                className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/75 hover:bg-amber-500 hover:text-black text-white flex items-center justify-center text-lg font-bold border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer shadow-lg"
+              >
+                ‹
+              </button>
+              <button
+                type="button"
+                onClick={cardNext}
+                className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-8 h-8 rounded-full bg-black/75 hover:bg-amber-500 hover:text-black text-white flex items-center justify-center text-lg font-bold border border-white/20 opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer shadow-lg"
+              >
+                ›
+              </button>
+
+              {/* Dot Indicators */}
+              <div className="absolute bottom-10 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1.5">
+                {gallery.map((_, i) => (
+                  <button
+                    key={i}
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setCardPhotoIdx(i) }}
+                    className={`rounded-full transition-all duration-200 cursor-pointer ${
+                      i === cardPhotoIdx
+                        ? 'w-4 h-1.5 bg-amber-400'
+                        : 'w-1.5 h-1.5 bg-white/40 hover:bg-white/80'
+                    }`}
+                  />
+                ))}
+              </div>
+
+              {/* Photo count pill */}
+              <div className="absolute bottom-3 right-3 z-20 px-2 py-0.5 rounded-full bg-black/75 border border-white/20 text-[10px] font-mono text-gray-200">
+                {cardPhotoIdx + 1}/{gallery.length}
+              </div>
+            </>
+          )}
+
+          {/* Winner Callout Banner */}
           {event.winner_team && (
             <div className="absolute bottom-2 left-2 right-2 z-10 bg-black/80 border border-yellow-500/40 rounded-xl px-3 py-1.5 text-[11px] font-mono text-yellow-300 flex items-center justify-between shadow-lg backdrop-blur-md">
               <span className="truncate font-medium flex items-center gap-1.5">
                 <span>🏆</span> {event.winner_team}
               </span>
               <span className="text-[10px] bg-yellow-400 text-black px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0">
-                4K PHOTOS
+                MEMORIES
               </span>
             </div>
           )}
 
-          {/* Special Status Banner for Astroverse or Hack The Winter */}
+          {/* Date TBA Banner */}
           {event.date_tba && (
             <div className="absolute bottom-2 left-2 right-2 z-10 bg-cyan-950/90 border border-cyan-500/50 rounded-xl px-3 py-1.5 text-[11px] font-mono text-cyan-200 flex items-center justify-between shadow-lg backdrop-blur-md">
               <span className="truncate font-medium flex items-center gap-1.5">
@@ -292,7 +365,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                     onClick={handleOpenGallery}
                     className="flex-1 py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-yellow-500 via-amber-500 to-yellow-600 text-black hover:brightness-110 shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
                   >
-                    <span>📸 VIEW 4K PHOTOS</span>
+                    <span>📸 MEMORIES</span>
                   </button>
                 )}
                 <div className={`py-2.5 text-xs font-mono text-gray-400 bg-[#0E1526]/80 border border-gray-800 rounded-xl text-center ${hasGallery ? 'px-3' : 'w-full'}`}>
@@ -408,7 +481,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
 
               <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between pointer-events-none">
                 <span className="px-3 py-1 rounded-full bg-black/85 border border-gray-700 text-xs font-mono text-gray-200">
-                  Photo {activePhotoIndex + 1} of {event.gallery.length} (4K UHD)
+                  Photo {activePhotoIndex + 1} of {gallery.length}
                 </span>
               </div>
             </div>
