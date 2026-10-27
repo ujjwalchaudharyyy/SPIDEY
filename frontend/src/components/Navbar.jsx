@@ -29,9 +29,8 @@ export default function Navbar({ onTabClick }) {
             to="/"
             onClick={() => handleNavClick('HEADQUARTERS')}
             className="flex items-center space-x-3.5 group cursor-pointer"
-          >
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600/40 via-red-950/80 to-black border border-red-500/60 flex items-center justify-center shadow-spider-glow group-hover:scale-105 transition-transform">
-              <span className="text-2xl animate-pulse">🕷️</span>
+            <div className="w-12 h-12 rounded-2xl bg-black/80 border border-red-500/60 flex items-center justify-center shadow-spider-glow group-hover:scale-105 transition-transform overflow-hidden p-0.5">
+              <img src="/assets/logo.png" alt="Graphic Era Event Hub" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="spider-heading text-lg flex items-center gap-2">

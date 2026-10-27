@@ -316,12 +316,12 @@ export default function Login() {
       {/* Left Branding (Desktop) */}
       <div className="absolute top-8 left-10 z-20 hidden lg:block">
         <div className="flex items-center space-x-3 mb-2">
-          <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-red-600/40 via-red-950/80 to-black border border-red-500/60 flex items-center justify-center shadow-spider-glow">
-            <span className="text-2xl animate-pulse">🕷️</span>
+          <div className="w-14 h-14 rounded-2xl bg-black/80 border border-red-500/60 flex items-center justify-center shadow-spider-glow overflow-hidden p-0.5">
+            <img src="/assets/logo.png" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
           </div>
           <div>
             <h1 className="spider-heading text-2xl">
-              GRAPHIC ERA <span className="text-red-500">SPIDER-HUB</span>
+              GRAPHIC ERA <span className="text-red-500">EVENT HUB</span>
             </h1>
             <p className="text-xs font-mono text-red-300">
               Bhimtal • Haldwani • Dehradun • Deemed University
@@ -332,10 +332,10 @@ export default function Login() {
 
       {/* Mobile Top Header (Visible on phone to anchor the video look) */}
       <div className="sm:hidden relative z-20 w-full max-w-sm mt-8 mb-4 text-center">
-        <div className="inline-flex items-center space-x-2 bg-black/60 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-red-500/40">
-          <span className="text-base animate-pulse">🕷️</span>
+        <div className="inline-flex items-center space-x-2.5 bg-black/75 backdrop-blur-md px-3.5 py-1.5 rounded-full border border-red-500/40">
+          <img src="/assets/logo.png" alt="Logo" className="w-6 h-6 object-contain" />
           <span className="font-chakra italic font-bold text-sm text-white">
-            GRAPHIC ERA <span className="text-red-500 not-italic font-mono text-xs">SPIDER-HUB</span>
+            GRAPHIC ERA <span className="text-red-500 not-italic font-mono text-xs">EVENT HUB</span>
           </span>
         </div>
       </div>
@@ -345,7 +345,7 @@ export default function Login() {
         <div className="bg-[#090D18]/85 backdrop-blur-xl border border-red-500/40 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-modal-glow">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1E293B]">
             <div className="flex items-center gap-2.5">
-              <span className="text-xl">🕷️</span>
+              <img src="/assets/logo.png" alt="Logo" className="w-7 h-7 object-contain" />
               <div>
                 <h2 className="spider-heading text-base sm:text-lg text-white">SPIDER-ID LOGIN</h2>
                 <p className="text-[10px] sm:text-[11px] font-mono text-red-400">GRAPHIC ERA CAMPUS GRID</p>
