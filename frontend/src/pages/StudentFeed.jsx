@@ -5,6 +5,7 @@ import Navbar from '../components/Navbar'
 import EventCard from '../components/EventCard'
 import CurvedCampusSlider from '../components/CurvedCampusSlider'
 import CampusTimelineView from '../components/CampusTimelineView'
+import CampusLeadershipSection from '../components/CampusLeadershipSection'
 import WebShooterTransition from '../components/WebShooterTransition'
 import { DEFAULT_CAMPUSES, DEFAULT_EVENTS } from '../data/fallbackData'
 
@@ -198,6 +199,9 @@ export default function StudentFeed({ initialTab = 'radar' }) {
                 onRsvp={handleRsvp}
               />
             )}
+
+            {/* Institutional Dossier & Leadership Spotlight with Interactive Light Sensor */}
+            <CampusLeadershipSection activeCampus={activeCampus} />
           </div>
         ) : (
           <div className="space-y-6">
