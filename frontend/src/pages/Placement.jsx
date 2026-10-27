@@ -1,6 +1,7 @@
 import { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import Navbar from '../components/Navbar'
+import CompanyLogo from '../components/CompanyLogo'
 import { DEFAULT_PLACED_STUDENTS, DEFAULT_COMPANIES } from '../data/fallbackData'
 
 export default function Placement() {
@@ -353,12 +354,10 @@ export default function Placement() {
 
                         {/* Student Profile Info */}
                         <div className="flex items-start gap-3.5 mb-3.5">
-                          <div className="w-13 h-13 rounded-2xl bg-[#090D15] border border-gray-700/80 p-1 shrink-0 overflow-hidden shadow-inner flex items-center justify-center">
-                            <img
-                              src={st.avatar}
-                              alt={st.studentName}
-                              className="w-full h-full object-cover rounded-xl"
-                            />
+                          <div className="w-13 h-13 rounded-2xl bg-gradient-to-br from-red-600/30 via-[#0E1526] to-emerald-600/30 border border-gray-700/80 p-0.5 shrink-0 overflow-hidden shadow-md flex items-center justify-center">
+                            <div className="w-full h-full rounded-xl bg-[#090D15] flex items-center justify-center font-chakra font-bold text-base text-white">
+                              {st.studentName.split(' ').map(n => n[0]).slice(0, 2).join('')}
+                            </div>
                           </div>
 
                           <div className="min-w-0 flex-1">
@@ -383,8 +382,10 @@ export default function Placement() {
                         {/* Company & Package Banner */}
                         <div className="bg-[#090D15] border border-gray-800/90 rounded-xl p-3 mb-3">
                           <div className="flex items-center justify-between gap-2">
-                            <div className="flex items-center gap-2 min-w-0">
-                              <span className="text-xl shrink-0">{st.companyLogo}</span>
+                            <div className="flex items-center gap-2.5 min-w-0">
+                              <div className="w-8 h-8 rounded-lg bg-[#121622] border border-gray-700/60 p-1.5 flex items-center justify-center shrink-0 shadow-sm">
+                                <CompanyLogo name={st.company} className="w-5 h-5 object-contain" size={20} />
+                              </div>
                               <div className="min-w-0">
                                 <h4 className="text-xs font-bold text-white truncate">{st.company}</h4>
                                 <p className="text-[10px] text-gray-400 truncate">{st.role}</p>
@@ -463,8 +464,8 @@ export default function Placement() {
                     {/* Header: Logo, Name, Tier */}
                     <div className="flex items-start justify-between gap-3 mb-3">
                       <div className="flex items-center gap-3">
-                        <div className="w-12 h-12 rounded-2xl bg-[#090D15] border border-gray-700 flex items-center justify-center text-2xl shrink-0">
-                          {comp.logo}
+                        <div className="w-13 h-13 rounded-2xl bg-[#090D15] border border-gray-700/80 p-2.5 flex items-center justify-center shrink-0 shadow-inner">
+                          <CompanyLogo name={comp.name} className="w-8 h-8 object-contain" size={32} />
                         </div>
                         <div>
                           <h4 className="text-base font-bold text-white">{comp.name}</h4>
@@ -660,6 +661,35 @@ export default function Placement() {
                   <p className="font-bold text-red-400 mb-1">Alumni Mock Interviews</p>
                   <p className="text-[11px] text-gray-400">1-on-1 technical and behavioral guidance from Google &amp; Microsoft engineers.</p>
                 </div>
+              </div>
+            </div>
+
+            {/* Top Recruiters Logos Wall */}
+            <div className="bg-[#121622] border border-gray-800 rounded-2xl p-6">
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                    <span>🏢</span>
+                    <span>Top Corporate Partners &amp; Hiring Giants</span>
+                  </h4>
+                  <p className="text-[11px] text-gray-400">Regular campus recruiters offering Super Dream &amp; Dream career opportunities.</p>
+                </div>
+                <span className="text-[10px] font-mono text-emerald-400">● 380+ Annual Partners</span>
+              </div>
+
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3">
+                {DEFAULT_COMPANIES.map(c => (
+                  <div
+                    key={c.id}
+                    className="bg-[#090D15] border border-gray-800/80 hover:border-emerald-500/50 rounded-xl p-3 flex flex-col items-center justify-center gap-2 transition group"
+                  >
+                    <div className="w-10 h-10 rounded-xl bg-[#121622] p-2 flex items-center justify-center group-hover:scale-110 transition-transform">
+                      <CompanyLogo name={c.name} className="w-6 h-6 object-contain" size={24} />
+                    </div>
+                    <span className="text-xs font-bold text-gray-200 truncate">{c.name}</span>
+                    <span className="text-[10px] font-mono text-emerald-400">{c.highestPackage}</span>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
