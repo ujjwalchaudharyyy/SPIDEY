@@ -4,16 +4,37 @@ import { useAuth } from '../context/AuthContext'
 import { syncRegistrationToGoogleSheet } from '../utils/googleSheetsSync'
 import { createGoogleCalendarUrl } from '../utils/calendarUtils'
 
-// ─── Graphite'26-Style Animated 3D Character Avatar ───
-// Red-glowing Spider-Man inspired character with gender variants
+// Available University Campuses
+const CAMPUS_OPTIONS = [
+  'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+  'GRAPHIC ERA HILL UNIVERSITY HALDWANI',
+  'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
+  'GRAPHIC ERA DEEMED UNIVERSITY'
+]
+
+// Standard Course / Degree List
+const COURSE_OPTIONS = [
+  'B.Tech Computer Science & Engineering (CSE)',
+  'B.Tech CSE (AI & Machine Learning)',
+  'B.Tech CSE (Data Science & Cyber Security)',
+  'BCA (Bachelor of Computer Applications)',
+  'MCA (Master of Computer Applications)',
+  'B.Tech Electronics & Communication (ECE)',
+  'B.Tech Mechanical & Automation Engineering',
+  'B.Tech Aerospace / Drone Engineering',
+  'BBA (Bachelor of Business Administration)',
+  'MBA (Master of Business Administration)',
+  'B.Sc Computer Science / Information Tech',
+  'Other University Course'
+]
+
+// ─── Graphite'26-Style Animated 3D Character Avatar (Fallback when no photo uploaded) ───
 function SpideyAvatar({ gender = 'male', avatarId = 1 }) {
   const isFemale = gender === 'female'
-  // Each avatar gets unique color shifts
-  const hue = (avatarId * 37) % 360
 
   return (
     <div className="relative w-full aspect-square flex items-center justify-center">
-      {/* Animated red glow ring behind avatar */}
+      {/* Animated red glow ring */}
       <div
         className="absolute inset-0 rounded-full opacity-60"
         style={{
@@ -21,7 +42,6 @@ function SpideyAvatar({ gender = 'male', avatarId = 1 }) {
           animation: 'pulse-glow 2.5s ease-in-out infinite alternate'
         }}
       />
-      {/* Second softer glow layer */}
       <div
         className="absolute inset-2 rounded-full opacity-40"
         style={{
@@ -49,7 +69,6 @@ function SpideyAvatar({ gender = 'male', avatarId = 1 }) {
             <stop offset="0%" stopColor="rgba(220,38,38,0.3)" />
             <stop offset="100%" stopColor="transparent" />
           </radialGradient>
-          {/* Spider web pattern for suit */}
           <pattern id={`web_${avatarId}`} x="0" y="0" width="12" height="12" patternUnits="userSpaceOnUse">
             <line x1="6" y1="0" x2="6" y2="12" stroke="rgba(0,0,0,0.15)" strokeWidth="0.5" />
             <line x1="0" y1="6" x2="12" y2="6" stroke="rgba(0,0,0,0.15)" strokeWidth="0.5" />
@@ -58,126 +77,44 @@ function SpideyAvatar({ gender = 'male', avatarId = 1 }) {
           </pattern>
         </defs>
 
-        {/* Background glow */}
         <circle cx="60" cy="65" r="55" fill={`url(#glow_${avatarId})`} />
-
-        {/* Body / Spider-themed Suit */}
-        <path
-          d="M 25 130 Q 60 100 95 130 L 95 140 L 25 140 Z"
-          fill={`url(#suit_${gender}_${avatarId})`}
-        />
-        <path
-          d="M 25 130 Q 60 100 95 130 L 95 140 L 25 140 Z"
-          fill={`url(#web_${avatarId})`}
-        />
-        {/* Suit collar */}
+        <path d="M 25 130 Q 60 100 95 130 L 95 140 L 25 140 Z" fill={`url(#suit_${gender}_${avatarId})`} />
+        <path d="M 25 130 Q 60 100 95 130 L 95 140 L 25 140 Z" fill={`url(#web_${avatarId})`} />
         <path d="M 48 108 L 60 125 L 72 108 Z" fill="#0F172A" />
-        {/* Spider emblem on chest */}
         <g transform="translate(52, 114) scale(0.5)" opacity="0.7">
           <path d="M 8 0 L 10 6 L 16 6 L 11 10 L 13 16 L 8 12 L 3 16 L 5 10 L 0 6 L 6 6 Z" fill="#FCA5A5" />
         </g>
-
-        {/* Neck */}
         <rect x="51" y="85" width="18" height="22" rx="5" fill={`url(#skin_${gender}_${avatarId})`} />
 
-        {/* Head */}
         {isFemale ? (
-          <ellipse cx="60" cy="58" rx="24" ry="28" fill={`url(#skin_${gender}_${avatarId})`} />
-        ) : (
-          <path
-            d="M 36 48 Q 36 85 60 86 Q 84 85 84 48 Q 84 30 60 30 Q 36 30 36 48 Z"
-            fill={`url(#skin_${gender}_${avatarId})`}
-          />
-        )}
+          <path d="M 32 35 Q 26 65 34 85 Q 38 88 42 75 Q 40 50 48 38 Z M 88 35 Q 94 65 86 85 Q 82 88 78 75 Q 80 50 72 38 Z" fill={`url(#hair_${gender}_${avatarId})`} />
+        ) : null}
 
-        {/* Hair (back layer) */}
-        {isFemale && (
-          <path
-            d="M 30 48 Q 25 78 32 105 Q 40 82 42 62 Q 60 22 78 62 Q 80 82 88 105 Q 95 78 90 48 Q 88 22 60 20 Q 32 22 30 48 Z"
-            fill={`url(#hair_${gender}_${avatarId})`}
-          />
-        )}
+        <ellipse cx="60" cy="58" rx="28" ry="32" fill={`url(#skin_${gender}_${avatarId})`} />
 
-        {/* Hair (front) */}
-        {isFemale ? (
-          <path
-            d="M 34 44 Q 48 26 60 36 Q 72 26 86 44 Q 78 28 60 24 Q 42 28 34 44 Z"
-            fill={`url(#hair_${gender}_${avatarId})`}
-          />
-        ) : (
-          <path
-            d="M 34 46 Q 42 20 60 20 Q 78 20 86 42 Q 78 26 66 26 Q 52 24 46 34 Q 40 40 34 46 Z"
-            fill={`url(#hair_${gender}_${avatarId})`}
-          />
-        )}
-
-        {/* Eyes */}
-        <ellipse cx="50" cy="58" rx="4.5" ry="5" fill="#0F172A" />
-        <ellipse cx="70" cy="58" rx="4.5" ry="5" fill="#0F172A" />
-        {/* Eye highlights */}
-        <circle cx="51.5" cy="56.5" r="1.8" fill="#FFFFFF" />
-        <circle cx="71.5" cy="56.5" r="1.8" fill="#FFFFFF" />
-        {/* Small secondary highlight */}
-        <circle cx="48.5" cy="59" r="0.8" fill="rgba(255,255,255,0.5)" />
-        <circle cx="68.5" cy="59" r="0.8" fill="rgba(255,255,255,0.5)" />
-
-        {/* Eyebrows */}
-        <path d="M 44 51 Q 50 48 56 51" stroke="#1E293B" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-        <path d="M 64 51 Q 70 48 76 51" stroke="#1E293B" strokeWidth="1.5" fill="none" strokeLinecap="round" />
-
-        {/* Nose */}
-        <path d="M 60 62 Q 58 66 60 67 Q 62 66 60 62" fill="rgba(0,0,0,0.1)" />
-
-        {/* Smile */}
-        <path
-          d="M 52 72 Q 60 78 68 72"
-          stroke="#991B1B"
-          strokeWidth="2"
-          strokeLinecap="round"
-          fill="none"
-        />
-
-        {/* Blush (female) */}
-        {isFemale && (
-          <>
-            <circle cx="42" cy="66" r="4" fill="#FB7185" opacity="0.45" />
-            <circle cx="78" cy="66" r="4" fill="#FB7185" opacity="0.45" />
-          </>
-        )}
-
-        {/* Glasses for odd avatars */}
-        {avatarId % 2 === 1 && (
-          <g stroke="#DC2626" strokeWidth="1.5" fill="none" opacity="0.6">
-            <rect x="43" y="53" width="14" height="10" rx="4" fill="rgba(220,38,38,0.08)" />
-            <rect x="63" y="53" width="14" height="10" rx="4" fill="rgba(220,38,38,0.08)" />
-            <line x1="57" y1="58" x2="63" y2="58" />
-          </g>
-        )}
-
-        {/* Ears */}
-        {!isFemale && (
-          <>
-            <ellipse cx="36" cy="58" rx="4" ry="6" fill={isFemale ? '#FFDFC4' : '#F0C8A0'} />
-            <ellipse cx="84" cy="58" rx="4" ry="6" fill={isFemale ? '#FFDFC4' : '#F0C8A0'} />
-          </>
-        )}
+        {/* Eyes & mask accents */}
+        <g>
+          <path d="M 40 54 Q 48 48 56 55 Q 52 64 42 61 Z" fill="#0F172A" />
+          <path d="M 43 55 Q 49 51 54 55 Q 50 61 44 59 Z" fill="#FFFFFF" />
+          <path d="M 80 54 Q 72 48 64 55 Q 68 64 78 61 Z" fill="#0F172A" />
+          <path d="M 77 55 Q 71 51 66 55 Q 70 61 76 59 Z" fill="#FFFFFF" />
+        </g>
       </svg>
     </div>
   )
 }
 
-// ─── Lanyard-Style ID Card Component (Graphite'26 Inspired) ───
+// ─── Graphite'26-Style Lanyard ID Card (With Uploaded Original Photo) ───
 function LanyardIDCard({ attendee, event, teamName, participationMode, selectedTrack, index, onCopy, copiedCode }) {
-  const isFemale = attendee.gender === 'female'
   const cardRef = useRef(null)
 
   const handleShareTwitter = () => {
-    const text = encodeURIComponent(`Just registered for ${event.title}! 🚀 My pass code: ${attendee.ticketCode} #SPIDEY #GraphicEra`)
+    const text = encodeURIComponent(`Just got my official Spider-Pass ID Card for ${event.title}! 🕷️ My pass code: ${attendee.ticketCode} #SPIDEY #GraphicEra`)
     window.open(`https://twitter.com/intent/tweet?text=${text}`, '_blank')
   }
 
   const handleShareLinkedIn = () => {
-    const text = encodeURIComponent(`Excited to participate in ${event.title} at Graphic Era University! 🎯 #GraphicEra #SPIDEY`)
+    const text = encodeURIComponent(`Excited to participate in ${event.title} at Graphic Era University! 🎟️ Pass Confirmed: ${attendee.ticketCode} #GraphicEra #SPIDEY`)
     window.open(`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent('https://gehu.ac.in')}&title=${text}`, '_blank')
   }
 
@@ -186,88 +123,127 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
   }
 
   return (
-    <div className="flex flex-col items-center w-full max-w-sm mx-auto">
-      {/* ─── Lanyard Ribbon ─── */}
-      <div className="relative w-full flex flex-col items-center">
-        {/* Ribbon going up */}
+    <div className="flex flex-col items-center max-w-sm mx-auto select-none">
+      {/* ─── Hanging Ribbon / Lanyard Strap ─── */}
+      <div className="flex flex-col items-center">
         <div
-          className="w-5 rounded-t-sm"
+          className="w-10 h-14 relative overflow-hidden shadow-lg"
           style={{
-            height: '60px',
-            background: 'linear-gradient(180deg, #DC2626 0%, #B91C1C 100%)',
-            boxShadow: '2px 2px 8px rgba(0,0,0,0.4)'
+            background: 'linear-gradient(90deg, #991B1B 0%, #DC2626 30%, #EF4444 50%, #DC2626 70%, #991B1B 100%)',
+            boxShadow: '0 4px 15px rgba(220,38,38,0.4)'
           }}
-        />
-        {/* Metal clip */}
+        >
+          <div className="absolute inset-0 flex items-center justify-center">
+            <span className="text-[7px] font-mono font-black text-white/90 tracking-widest uppercase rotate-90 whitespace-nowrap">
+              GRAPHIC ERA • SPIDEY
+            </span>
+          </div>
+          <div className="absolute left-1 inset-y-0 w-0.5 bg-yellow-400/40" />
+          <div className="absolute right-1 inset-y-0 w-0.5 bg-yellow-400/40" />
+        </div>
         <div className="w-8 h-3 bg-gradient-to-b from-gray-300 to-gray-500 rounded-b-sm shadow-md" />
-        {/* Small ring */}
         <div className="w-4 h-4 border-2 border-gray-400 rounded-full -mt-1 bg-transparent" />
       </div>
 
-      {/* ─── The Actual Badge Card ─── */}
+      {/* ─── The Actual Holographic Badge Card ─── */}
       <div
         ref={cardRef}
-        className="relative w-full rounded-2xl overflow-hidden shadow-2xl -mt-2"
+        className="relative w-full rounded-2xl overflow-hidden shadow-2xl -mt-2 transition-all duration-300 hover:shadow-[0_0_40px_rgba(220,38,38,0.35)]"
         style={{
           background: 'linear-gradient(160deg, #1A0A0A 0%, #0D0D0D 40%, #1A0505 100%)',
-          border: '1px solid rgba(220,38,38,0.25)'
+          border: '1px solid rgba(220,38,38,0.3)'
         }}
       >
-        {/* Red accent line at top */}
         <div className="h-1 w-full bg-gradient-to-r from-transparent via-red-600 to-transparent" />
 
         {/* Event Tag Badge */}
-        <div className="px-4 pt-4 pb-2">
+        <div className="px-4 pt-4 pb-1">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-950/80 border border-red-800/50">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
             <span className="text-[10px] font-bold text-red-300 uppercase tracking-widest">
-              {attendee.isLeader ? 'LEADER' : 'MEMBER'} AT {event.title?.split(':')[0]?.split('–')[0]?.toUpperCase().trim().slice(0, 25) || 'SPIDEY'}
+              {attendee.isLeader ? '👑 TEAM LEADER' : '👤 TEAM MEMBER'} • {event.title?.split(':')[0]?.split('–')[0]?.toUpperCase().trim().slice(0, 22) || 'SPIDEY'}
             </span>
           </div>
         </div>
 
-        {/* Avatar Area with Glow */}
-        <div className="px-8 py-2">
-          <div className="relative w-44 h-44 mx-auto">
-            <SpideyAvatar
-              gender={attendee.gender || 'male'}
-              avatarId={index + 1}
-            />
+        {/* ─── Original Uploaded Photo / Avatar Area ─── */}
+        <div className="px-8 py-3">
+          <div className="relative w-44 h-44 mx-auto flex items-center justify-center">
+            {attendee.photoUrl ? (
+              <div className="relative w-40 h-40 flex items-center justify-center">
+                {/* Red Neon Glow Aura */}
+                <div
+                  className="absolute inset-0 rounded-full opacity-70 blur-md pointer-events-none"
+                  style={{
+                    background: 'radial-gradient(circle, rgba(220,38,38,0.7) 0%, rgba(185,28,28,0.3) 60%, transparent 80%)',
+                    animation: 'pulse-glow 2.5s ease-in-out infinite alternate'
+                  }}
+                />
+                {/* Cyber Rotating Ring */}
+                <div className="absolute -inset-1 rounded-full border border-red-500/50 border-dashed animate-spin-slow opacity-60 pointer-events-none" />
+                
+                {/* Real Uploaded Photo */}
+                <div className="relative w-36 h-36 rounded-full overflow-hidden border-2 border-red-500 shadow-[0_0_25px_rgba(220,38,38,0.6)] bg-black z-10 group">
+                  <img
+                    src={attendee.photoUrl}
+                    alt={attendee.name}
+                    className="w-full h-full object-cover object-center filter contrast-105 brightness-105"
+                  />
+                  {/* Subtle Biometric Scan Line */}
+                  <div className="animate-scan-line" />
+                  {/* Verified Badge Overlay */}
+                  <div className="absolute bottom-1 right-2 bg-red-600/90 text-[8px] font-mono text-white px-1.5 py-0.5 rounded-full font-bold shadow-md">
+                    ✓ PASS
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <SpideyAvatar
+                gender={attendee.gender || 'male'}
+                avatarId={index + 1}
+              />
+            )}
           </div>
         </div>
 
-        {/* Name - Big & Bold (like Graphite'26 shows "deepak") */}
+        {/* Student Name - Big & Bold Typography */}
         <div className="text-center px-4 pb-2">
           <h2
-            className="text-3xl font-black tracking-tight lowercase"
+            className="text-2xl sm:text-3xl font-black tracking-tight uppercase font-chakra"
             style={{
-              color: '#DC2626',
-              textShadow: '0 0 30px rgba(220,38,38,0.4), 0 0 60px rgba(220,38,38,0.15)'
+              color: '#FFFFFF',
+              textShadow: '0 0 20px rgba(220,38,38,0.8), 0 0 40px rgba(220,38,38,0.4)'
             }}
           >
-            {attendee.name?.split(' ')[0]?.toLowerCase() || 'student'}
+            {attendee.name || 'STUDENT'}
           </h2>
-          {attendee.name?.split(' ').length > 1 && (
-            <p className="text-sm text-red-400/70 font-medium -mt-0.5">
-              {attendee.name?.split(' ').slice(1).join(' ').toLowerCase()}
-            </p>
-          )}
+          <p className="text-xs text-red-400 font-mono font-bold tracking-widest uppercase mt-0.5">
+            {attendee.campus?.split(' ').slice(-1)[0] || 'GEHU'} • {attendee.degree?.split('(')[0]?.trim() || attendee.degree || 'B.Tech'}
+          </p>
         </div>
 
         {/* Details Grid */}
         <div className="px-4 pb-3">
-          <div className="bg-black/40 rounded-xl p-3 border border-red-950/40 space-y-1.5">
+          <div className="bg-black/50 rounded-xl p-3 border border-red-950/40 space-y-1.5">
             <div className="flex items-center justify-between text-[11px]">
-              <span className="text-gray-500 uppercase tracking-wider text-[9px]">Roll No</span>
-              <span className="text-gray-300 font-mono font-semibold">{attendee.rollNo}</span>
+              <span className="text-gray-500 uppercase tracking-wider text-[9px]">Roll Number</span>
+              <span className="text-gray-200 font-mono font-semibold">{attendee.rollNo || 'GEHU-STUDENT'}</span>
             </div>
             <div className="flex items-center justify-between text-[11px]">
-              <span className="text-gray-500 uppercase tracking-wider text-[9px]">Email</span>
-              <span className="text-gray-300 text-[10px]">{attendee.email}</span>
+              <span className="text-gray-500 uppercase tracking-wider text-[9px]">Email ID</span>
+              <span className="text-gray-200 text-[10px] truncate max-w-[190px]">{attendee.email}</span>
             </div>
             <div className="flex items-center justify-between text-[11px]">
-              <span className="text-gray-500 uppercase tracking-wider text-[9px]">Degree</span>
-              <span className="text-gray-300 text-[10px]">{attendee.degree}</span>
+              <span className="text-gray-500 uppercase tracking-wider text-[9px]">Phone</span>
+              <span className="text-gray-200 font-mono text-[10px]">{attendee.phone || '+91 98765 43210'}</span>
+            </div>
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-gray-500 uppercase tracking-wider text-[9px]">Campus</span>
+              <span className="text-cyan-300 text-[10px] truncate max-w-[190px] font-semibold">{attendee.campus}</span>
+            </div>
+            <div className="flex items-center justify-between text-[11px]">
+              <span className="text-gray-500 uppercase tracking-wider text-[9px]">Course / Degree</span>
+              <span className="text-gray-200 text-[10px] truncate max-w-[190px]">{attendee.degree}</span>
             </div>
             {participationMode === 'team' && (
               <div className="flex items-center justify-between text-[11px]">
@@ -277,7 +253,7 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
             )}
             <div className="flex items-center justify-between text-[11px]">
               <span className="text-gray-500 uppercase tracking-wider text-[9px]">Track</span>
-              <span className="text-gray-300 text-[10px] truncate max-w-[180px]">{selectedTrack}</span>
+              <span className="text-gray-300 text-[10px] truncate max-w-[190px]">{selectedTrack}</span>
             </div>
           </div>
         </div>
@@ -286,7 +262,7 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
         <div className="px-4 pb-3">
           <div className="flex items-center justify-between bg-red-950/30 border border-red-900/40 rounded-lg px-3 py-2">
             <div>
-              <span className="text-[8px] text-gray-500 uppercase tracking-widest block">PASS CODE</span>
+              <span className="text-[8px] text-gray-500 uppercase tracking-widest block font-mono">OFFICIAL PASS CODE</span>
               <span className="text-sm font-mono font-black text-red-400 tracking-wider">
                 {attendee.ticketCode}
               </span>
@@ -301,13 +277,12 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
           </div>
         </div>
 
-        {/* Bottom accent line */}
         <div className="h-0.5 w-full bg-gradient-to-r from-transparent via-red-800/50 to-transparent" />
 
         {/* Campus & Event Footer */}
         <div className="px-4 py-2.5 flex items-center justify-between text-[9px] text-gray-600">
           <span className="font-mono uppercase tracking-wider">{attendee.campus?.split(' ').slice(-1)[0] || 'GEHU'} CAMPUS</span>
-          <span className="font-mono">SPIDEY '26</span>
+          <span className="font-mono">SPIDEY '26 • OFFICIAL PASS</span>
         </div>
       </div>
 
@@ -344,13 +319,14 @@ function LanyardIDCard({ attendee, event, teamName, participationMode, selectedT
           className="w-full py-1.5 rounded-lg text-gray-500 hover:text-gray-300 text-[11px] flex items-center justify-center gap-1.5 transition cursor-pointer"
         >
           <span>↓</span>
-          <span>SAVE CARD IMAGE</span>
+          <span>SAVE CARD IMAGE (PRINT)</span>
         </button>
       </div>
     </div>
   )
 }
 
+// ─── Main Event Registration Modal with Post-Payment Team Roster & Photo Upload ───
 export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const { user, token } = useAuth()
 
@@ -368,53 +344,32 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const daysUntil = getDaysUntil()
   const isRegistrationClosed = isPast || isPresent || (daysUntil >= 0 && daysUntil <= 5)
 
-  // Detect event type
+  // Event category detection
   const isHackTheWinter = event.title?.toLowerCase().includes('winter')
   const isAstroVerse = event.title?.toLowerCase().includes('astro')
   const isGrafest = event.title?.toLowerCase().includes('grafest')
   const isTechFest = event.title?.toLowerCase().includes('infotsav') || (event.category === 'Technical' && !isHackTheWinter && !isAstroVerse)
   const isSports = event.category === 'Sports' || event.title?.toLowerCase().includes('spardha')
 
-  // Multi-step modal navigation: 'form' -> 'payment' -> 'idcards'
+  // Multi-step modal navigation: 'form' -> 'payment' -> 'roster' (Photo upload) -> 'idcards'
   const [currentStep, setCurrentStep] = useState('form')
   const [activeCardIndex, setActiveCardIndex] = useState(0)
 
-  // Team Leader Details
+  // Initial Team Leader Details
   const defaultEmail = user?.email || 'student.gehu@gmail.com'
   const defaultName = user?.name || (user?.email ? user.email.split('@')[0] : 'Graphic Era Student')
 
   const [leaderName, setLeaderName] = useState(defaultName)
   const [leaderEmail, setLeaderEmail] = useState(defaultEmail)
   const [leaderPhone, setLeaderPhone] = useState(user?.phone || '+91 98765 43210')
-  const [leaderRoll, setLeaderRoll] = useState('GEHU-2026-SPIDEY')
-  const [leaderDegree, setLeaderDegree] = useState(user?.degree || 'B.Tech CSE - 3rd Year')
-  const [leaderCampus, setLeaderCampus] = useState(user?.campus || event.campus || 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL')
-  const [leaderGender, setLeaderGender] = useState('male')
+  const [leaderRoll, setLeaderRoll] = useState('GEHU-2024-BHM-842')
+  const [leaderDegree, setLeaderDegree] = useState(user?.degree || COURSE_OPTIONS[0])
+  const [leaderCampus, setLeaderCampus] = useState(user?.campus || event.campus || CAMPUS_OPTIONS[0])
 
   // Participation Mode: 'solo' or 'team'
   const [participationMode, setParticipationMode] = useState('team')
   const [teamName, setTeamName] = useState(isHackTheWinter ? 'Spider-Hackers Bhimtal' : 'Team Alpha')
   const [teamSize, setTeamSize] = useState('3')
-
-  // Dynamic Team Members list (excluding leader)
-  const [teamMembers, setTeamMembers] = useState([
-    {
-      name: 'Priya Negi',
-      email: 'priya.negi.gehu@gmail.com',
-      rollNo: 'GEHU-2025-BHM-632',
-      phone: '+91 97654 32190',
-      degree: 'B.Tech CSE - 2nd Year',
-      gender: 'female'
-    },
-    {
-      name: 'Rohit Joshi',
-      email: 'rohit.gehu.bhimtal@gmail.com',
-      rollNo: 'GEHU-2024-BHM-714',
-      phone: '+91 98234 56789',
-      degree: 'B.Tech CSE (AI & ML) - 3rd Year',
-      gender: 'male'
-    }
-  ])
 
   // Track selection
   const [selectedTrack, setSelectedTrack] = useState(() => {
@@ -428,11 +383,16 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
 
   // Payment State
   const eventFee = 199
+  const totalAmount = participationMode === 'team' ? parseInt(teamSize, 10) * eventFee : eventFee
   const [paymentMethod, setPaymentMethod] = useState('upi')
   const [upiId, setUpiId] = useState('student@oksbi')
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [paymentSuccess, setPaymentSuccess] = useState(false)
   const [transactionId, setTransactionId] = useState('')
+
+  // Post-Payment Team Roster & Photos State
+  const [rosterMembers, setRosterMembers] = useState([])
+  const [activeRosterIndex, setActiveRosterIndex] = useState(0)
 
   // Final Generated Tickets & Cards
   const [generatedTickets, setGeneratedTickets] = useState([])
@@ -442,59 +402,126 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
 
   const headers = token ? { Authorization: `Bearer ${token}` } : {}
 
-  // Handle Team Size Change
-  const handleTeamSizeChange = (newSizeStr) => {
-    const size = parseInt(newSizeStr)
-    setTeamSize(newSizeStr)
-    const neededMembers = size - 1
-
-    setTeamMembers(prev => {
-      const current = [...prev]
-      if (current.length < neededMembers) {
-        for (let i = current.length; i < neededMembers; i++) {
-          current.push({
-            name: `Team Member ${i + 2}`,
-            email: `member${i + 2}.gehu@gmail.com`,
-            rollNo: `GEHU-2025-BHM-${500 + i * 15}`,
-            phone: '+91 98123 45678',
-            degree: 'B.Tech CSE - 2nd Year',
-            gender: i % 2 === 0 ? 'female' : 'male'
-          })
-        }
-      } else if (current.length > neededMembers) {
-        current.length = neededMembers
-      }
-      return current
-    })
+  // Step 1 -> Step 2 (Proceed to Payment)
+  const handleProceedToPayment = (e) => {
+    e.preventDefault()
+    if (isRegistrationClosed) return
+    setError('')
+    setCurrentStep('payment')
   }
 
-  // Update specific team member
-  const handleUpdateMember = (index, field, value) => {
-    setTeamMembers(prev => {
+  // Step 2 -> Step 3 (Payment Complete -> Ask Team Details & Photos)
+  const handleCompletePaymentAndProceedToRoster = async () => {
+    setIsProcessingPayment(true)
+    setError('')
+
+    const txId = 'SPIDER-UPI-' + Math.floor(100000 + Math.random() * 900000)
+    setTransactionId(txId)
+    setPaymentSuccess(true)
+
+    // Build initial team roster with members
+    const count = participationMode === 'team' ? parseInt(teamSize, 10) : 1
+    const initialRoster = []
+
+    // 1. Team Leader / Entrant
+    initialRoster.push({
+      isLeader: true,
+      name: leaderName || 'Aryan Sharma',
+      email: leaderEmail || 'student@gehu.ac.in',
+      phone: leaderPhone || '+91 98765 43210',
+      campus: leaderCampus || event.campus || CAMPUS_OPTIONS[0],
+      degree: leaderDegree || COURSE_OPTIONS[0],
+      rollNo: leaderRoll || 'GEHU-2024-BHM-842',
+      gender: 'male',
+      photoUrl: ''
+    })
+
+    // 2. Additional Team Members (if team)
+    if (participationMode === 'team') {
+      const defaultNames = ['Priya Negi', 'Rohit Joshi', 'Ananya Bhatt']
+      const defaultDegrees = [
+        'B.Tech CSE (AI & Machine Learning)',
+        'B.Tech Computer Science & Engineering (CSE)',
+        'BCA (Bachelor of Computer Applications)'
+      ]
+      for (let i = 1; i < count; i++) {
+        initialRoster.push({
+          isLeader: false,
+          name: defaultNames[i - 1] || `Team Member ${i + 1}`,
+          email: `member${i + 1}.${(leaderCampus || '').toLowerCase().includes('haldwani') ? 'hld' : (leaderCampus || '').toLowerCase().includes('dehradun') ? 'ddn' : 'bhm'}@gmail.com`,
+          phone: `+91 98${Math.floor(10000000 + Math.random() * 89999999)}`,
+          campus: leaderCampus || event.campus || CAMPUS_OPTIONS[0],
+          degree: defaultDegrees[i - 1] || COURSE_OPTIONS[0],
+          rollNo: `GEHU-2025-BHM-${500 + i * 22}`,
+          gender: i % 2 === 1 ? 'female' : 'male',
+          photoUrl: ''
+        })
+      }
+    }
+
+    setRosterMembers(initialRoster)
+    setActiveRosterIndex(0)
+
+    setTimeout(() => {
+      setIsProcessingPayment(false)
+      setCurrentStep('roster')
+    }, 600)
+  }
+
+  // Update specific field for a team member
+  const handleUpdateRosterMember = (index, field, value) => {
+    setRosterMembers(prev => {
       const next = [...prev]
       next[index] = { ...next[index], [field]: value }
       return next
     })
   }
 
-  // Step 1 -> Step 2
-  const handleProceedToPayment = (e) => {
-    e.preventDefault()
-    if (!leaderName || !leaderEmail || !leaderRoll) {
-      setError('Please fill in student name, email, and university roll number.')
+  // Handle Photo Upload via FileReader
+  const handlePhotoUpload = (memberIndex, e) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Please upload a photo smaller than 5MB.')
       return
     }
-    setError('')
-    setCurrentStep('payment')
+
+    const reader = new FileReader()
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result
+      if (dataUrl) {
+        handleUpdateRosterMember(memberIndex, 'photoUrl', dataUrl)
+        setError('')
+      }
+    }
+    reader.readAsDataURL(file)
   }
 
-  // Step 2 -> Step 3
-  const handleCompletePaymentAndRegister = async () => {
-    setIsProcessingPayment(true)
-    setError('')
+  // Remove Photo
+  const handleRemovePhoto = (memberIndex) => {
+    handleUpdateRosterMember(memberIndex, 'photoUrl', '')
+  }
 
-    const txId = 'UPI-' + Math.floor(100000 + Math.random() * 900000)
-    setTransactionId(txId)
+  // Step 3 -> Step 4: Finalize & Generate Animated ID Cards
+  const handleGenerateFinalCards = async () => {
+    // Validate that all members have name and email
+    for (let i = 0; i < rosterMembers.length; i++) {
+      const m = rosterMembers[i]
+      if (!m.name || !m.name.trim()) {
+        setError(`Please enter the full name for ${m.isLeader ? 'Team Leader' : `Member ${i + 1}`}.`)
+        setActiveRosterIndex(i)
+        return
+      }
+      if (!m.email || !m.email.trim()) {
+        setError(`Please enter the email for ${m.isLeader ? 'Team Leader' : `Member ${i + 1}`}.`)
+        setActiveRosterIndex(i)
+        return
+      }
+    }
+
+    setLoading(true)
+    setError('')
 
     let prefix = 'SPIDEY'
     if (isHackTheWinter) prefix = 'HTW-2027'
@@ -503,39 +530,25 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     else if (isTechFest) prefix = 'TECHFEST'
     else if (isSports) prefix = 'SPARDHA'
 
-    const allAttendees = []
+    const allAttendees = rosterMembers.map((m, idx) => {
+      const campusAbbr = (m.campus || '').includes('HALDWANI')
+        ? 'HLD'
+        : (m.campus || '').includes('DEHRADUN')
+        ? 'DDN'
+        : (m.campus || '').includes('DEEMED')
+        ? 'DMD'
+        : 'BHM'
 
-    const leaderCode = `${prefix}-BHM-${Math.floor(1000 + Math.random() * 9000)}`
-    allAttendees.push({
-      isLeader: true,
-      ticketCode: leaderCode,
-      name: leaderName,
-      email: leaderEmail,
-      rollNo: leaderRoll,
-      phone: leaderPhone,
-      degree: leaderDegree,
-      campus: leaderCampus,
-      gender: leaderGender,
-      roleInTeam: participationMode === 'team' ? 'Team Leader' : 'Solo Entrant'
+      const ticketCode = `${prefix}-${campusAbbr}-${Math.floor(1000 + Math.random() * 9000)}`
+
+      return {
+        ...m,
+        ticketCode,
+        roleInTeam: m.isLeader ? (participationMode === 'team' ? 'Team Leader' : 'Solo Entrant') : `Team Member ${idx + 1}`
+      }
     })
 
-    if (participationMode === 'team') {
-      teamMembers.forEach((m, idx) => {
-        const mCode = `${prefix}-BHM-${Math.floor(1000 + Math.random() * 9000)}`
-        allAttendees.push({
-          isLeader: false,
-          ticketCode: mCode,
-          name: m.name,
-          email: m.email,
-          rollNo: m.rollNo,
-          phone: m.phone,
-          degree: m.degree,
-          campus: leaderCampus,
-          gender: m.gender || 'male',
-          roleInTeam: `Team Member ${idx + 2}`
-        })
-      })
-    }
+    const leaderMember = allAttendees[0] || {}
 
     try {
       const fullRegRecord = {
@@ -543,18 +556,18 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
         event_id: event.id,
         event_title: event.title,
         event_category: event.category,
-        event_campus: leaderCampus,
-        student_name: leaderName,
-        student_email: leaderEmail,
-        phone: leaderPhone,
-        roll_no: leaderRoll,
-        degree: leaderDegree,
-        campus: leaderCampus,
-        ticket_code: leaderCode,
+        event_campus: leaderMember.campus || event.campus,
+        student_name: leaderMember.name,
+        student_email: leaderMember.email,
+        phone: leaderMember.phone,
+        roll_no: leaderMember.rollNo,
+        degree: leaderMember.degree,
+        campus: leaderMember.campus,
+        ticket_code: leaderMember.ticketCode,
         team_name: participationMode === 'team' ? teamName : 'Solo Entrant',
-        team_size: participationMode === 'team' ? teamSize : '1',
+        team_size: participationMode === 'team' ? String(rosterMembers.length) : '1',
         track_info: selectedTrack,
-        transaction_id: txId,
+        transaction_id: transactionId,
         payment_status: 'Paid',
         attendees: allAttendees,
         created_at: new Date().toISOString()
@@ -562,19 +575,19 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
 
       try {
         await axios.post(`/api/events/${event.id}/register`, {
-          student_name: leaderName,
-          student_email: leaderEmail,
-          phone: leaderPhone,
-          roll_no: leaderRoll,
-          degree: leaderDegree,
-          campus: leaderCampus,
+          student_name: leaderMember.name,
+          student_email: leaderMember.email,
+          phone: leaderMember.phone,
+          roll_no: leaderMember.rollNo,
+          degree: leaderMember.degree,
+          campus: leaderMember.campus,
           team_name: fullRegRecord.team_name,
           team_size: fullRegRecord.team_size,
           track_info: selectedTrack,
           details_json: fullRegRecord
         }, { headers })
       } catch (beErr) {
-        // Fallback
+        // Safe offline fallback
       }
 
       const stored = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
@@ -583,14 +596,13 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
       syncRegistrationToGoogleSheet(fullRegRecord)
 
       setGeneratedTickets(allAttendees)
-      setPaymentSuccess(true)
       setActiveCardIndex(0)
       setCurrentStep('idcards')
-      onSuccess?.(leaderCode)
+      onSuccess?.(leaderMember.ticketCode)
     } catch (err) {
-      setError('Registration processing issue. Please try again.')
+      setError('Registration card generation failed. Please try again.')
     } finally {
-      setIsProcessingPayment(false)
+      setLoading(false)
     }
   }
 
@@ -602,32 +614,26 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     }
   }
 
-  const totalAmount = participationMode === 'team' ? eventFee * parseInt(teamSize) : eventFee
+  const activeRosterMember = rosterMembers[activeRosterIndex] || {}
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto font-sans">
-      {/* Inject keyframe animation */}
-      <style>{`
-        @keyframes pulse-glow {
-          0% { transform: scale(0.95); opacity: 0.4; }
-          100% { transform: scale(1.05); opacity: 0.7; }
-        }
-      `}</style>
-
-      <div className="relative w-full max-w-2xl my-6 bg-[#0E131F] border border-gray-700/80 rounded-2xl shadow-2xl overflow-hidden text-gray-200">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+      <div className="relative w-full max-w-2xl bg-[#0E1526] border border-red-500/40 rounded-2xl shadow-[0_0_50px_rgba(220,38,38,0.3)] overflow-hidden my-auto animate-fadeIn">
 
         {/* Modal Top Header */}
-        <div className="bg-[#141A29] px-5 py-4 border-b border-gray-800 flex items-center justify-between">
-          <div>
-            <div className="flex items-center gap-2 text-[11px] font-semibold text-red-400 uppercase tracking-wider mb-0.5">
-              <span>●</span>
-              <span>OFFICIAL EVENT REGISTRATION</span>
-              <span className="text-gray-500">•</span>
-              <span className="text-gray-400">{event.campus?.split(' ')?.[3] || 'Bhimtal Campus'}</span>
+        <div className="p-4 sm:p-5 bg-gradient-to-r from-red-950/80 via-[#0E1526] to-black border-b border-gray-800 flex items-center justify-between">
+          <div className="flex items-center space-x-3">
+            <div className="w-10 h-10 rounded-xl bg-red-600/20 border border-red-500/40 flex items-center justify-center text-xl shrink-0">
+              🎟️
             </div>
-            <h2 className="text-base sm:text-lg font-bold text-white line-clamp-1">
-              {event.title}
-            </h2>
+            <div>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-red-400 font-bold block">
+                SPIDEY OFFICIAL PASS PORTAL
+              </span>
+              <h2 className="text-base sm:text-lg font-bold text-white line-clamp-1">
+                {event.title}
+              </h2>
+            </div>
           </div>
           <button
             onClick={onClose}
@@ -637,25 +643,30 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
           </button>
         </div>
 
-        {/* 3-Step Breadcrumbs */}
-        <div className="px-5 py-2.5 bg-[#0A0D15] border-b border-gray-800 flex items-center justify-between text-xs">
-          <div className={`flex items-center gap-1.5 font-semibold ${currentStep === 'form' ? 'text-red-400' : 'text-gray-400'}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'form' ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-300'}`}>1</span>
-            <span>Team &amp; Details</span>
+        {/* 4-Step Animated Breadcrumbs */}
+        <div className="px-5 py-2.5 bg-[#0A0D15] border-b border-gray-800 flex items-center justify-between text-xs overflow-x-auto">
+          <div className={`flex items-center gap-1.5 font-semibold whitespace-nowrap ${currentStep === 'form' ? 'text-red-400 font-bold' : 'text-gray-400'}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'form' ? 'bg-red-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>1</span>
+            <span>Team &amp; Pass</span>
           </div>
-          <span className="text-gray-600">→</span>
-          <div className={`flex items-center gap-1.5 font-semibold ${currentStep === 'payment' ? 'text-emerald-400' : 'text-gray-400'}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'payment' ? 'bg-emerald-600 text-white' : 'bg-gray-800 text-gray-300'}`}>2</span>
-            <span>Secure Payment</span>
+          <span className="text-gray-600 px-1">→</span>
+          <div className={`flex items-center gap-1.5 font-semibold whitespace-nowrap ${currentStep === 'payment' ? 'text-emerald-400 font-bold' : 'text-gray-400'}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'payment' ? 'bg-emerald-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>2</span>
+            <span>Payment</span>
           </div>
-          <span className="text-gray-600">→</span>
-          <div className={`flex items-center gap-1.5 font-semibold ${currentStep === 'idcards' ? 'text-red-400' : 'text-gray-400'}`}>
-            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'idcards' ? 'bg-red-600 text-white' : 'bg-gray-800 text-gray-300'}`}>3</span>
-            <span>ID Cards</span>
+          <span className="text-gray-600 px-1">→</span>
+          <div className={`flex items-center gap-1.5 font-semibold whitespace-nowrap ${currentStep === 'roster' ? 'text-cyan-400 font-bold' : 'text-gray-400'}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'roster' ? 'bg-cyan-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>3</span>
+            <span>Details &amp; Photos</span>
+          </div>
+          <span className="text-gray-600 px-1">→</span>
+          <div className={`flex items-center gap-1.5 font-semibold whitespace-nowrap ${currentStep === 'idcards' ? 'text-red-400 font-bold' : 'text-gray-400'}`}>
+            <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] ${currentStep === 'idcards' ? 'bg-red-600 text-white shadow-md' : 'bg-gray-800 text-gray-300'}`}>4</span>
+            <span>Animated ID Cards</span>
           </div>
         </div>
 
-        {/* STEP 1: Registration Form */}
+        {/* ─── STEP 1: Registration Mode & Team Setup ─── */}
         {currentStep === 'form' && (
           <form onSubmit={handleProceedToPayment} className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
             {isRegistrationClosed && (
@@ -665,10 +676,11 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                   <span>Registration Closed for this Event</span>
                 </p>
                 <p className="text-[11px] text-gray-300 leading-relaxed">
-                  Graphic Era university guidelines: Registrations strictly close 5-6 days prior to the event date. Past and ongoing events do not accept new registrations.
+                  Graphic Era university guidelines: Registrations strictly close 5-6 days prior to event date. Past and ongoing events do not accept new registrations.
                 </p>
               </div>
             )}
+
             {error && (
               <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs flex items-center gap-2">
                 <span>⚠️</span>
@@ -678,159 +690,74 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
 
             {/* Participation Mode */}
             <div>
-              <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-                Participation Mode:
-              </label>
-              <div className="grid grid-cols-2 gap-2.5">
+              <label className="block text-xs font-semibold text-gray-300 mb-2">Select Participation Mode:</label>
+              <div className="grid grid-cols-2 gap-3">
                 <button
                   type="button"
                   onClick={() => setParticipationMode('team')}
-                  className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer ${
+                  className={`p-3.5 rounded-xl border text-left transition cursor-pointer ${
                     participationMode === 'team'
-                      ? 'bg-red-600 text-white border-red-500 shadow-md'
-                      : 'bg-[#141A29] text-gray-300 border-gray-800 hover:border-gray-700'
+                      ? 'bg-red-950/60 border-red-500 text-white ring-1 ring-red-500/50'
+                      : 'bg-[#141A29] border-gray-800 text-gray-400 hover:border-gray-700'
                   }`}
                 >
-                  <span>👥</span>
-                  <span>Team Entry</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-chakra italic font-bold text-sm">👥 Team Pass</span>
+                    <span className="text-[10px] font-mono bg-red-600/40 text-red-300 px-1.5 py-0.5 rounded">Popular</span>
+                  </div>
+                  <p className="text-[11px] text-gray-400">Multiple team members ke saath register karein. Har member ka alag ID card banega.</p>
                 </button>
+
                 <button
                   type="button"
                   onClick={() => setParticipationMode('solo')}
-                  className={`p-2.5 rounded-xl border text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer ${
+                  className={`p-3.5 rounded-xl border text-left transition cursor-pointer ${
                     participationMode === 'solo'
-                      ? 'bg-red-600 text-white border-red-500 shadow-md'
-                      : 'bg-[#141A29] text-gray-300 border-gray-800 hover:border-gray-700'
+                      ? 'bg-red-950/60 border-red-500 text-white ring-1 ring-red-500/50'
+                      : 'bg-[#141A29] border-gray-800 text-gray-400 hover:border-gray-700'
                   }`}
                 >
-                  <span>👤</span>
-                  <span>Solo Entry</span>
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-chakra italic font-bold text-sm">👤 Solo Pass</span>
+                    <span className="text-[10px] font-mono bg-blue-600/40 text-blue-300 px-1.5 py-0.5 rounded">Individual</span>
+                  </div>
+                  <p className="text-[11px] text-gray-400">Single entrant pass with verified hologram badge &amp; lanyard pass.</p>
                 </button>
               </div>
             </div>
 
-            {/* Team Settings */}
+            {/* Team Settings (if Team selected) */}
             {participationMode === 'team' && (
-              <div className="p-3.5 rounded-xl bg-[#141A29] border border-gray-800 space-y-3">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-300 mb-1">Team Name:</label>
-                    <input
-                      type="text"
-                      value={teamName}
-                      onChange={(e) => setTeamName(e.target.value)}
-                      placeholder="e.g. Spider-Hackers"
-                      className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] font-semibold text-gray-300 mb-1">Team Size:</label>
-                    <select
-                      value={teamSize}
-                      onChange={(e) => handleTeamSizeChange(e.target.value)}
-                      className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500"
-                    >
-                      <option value="2">2 Members</option>
-                      <option value="3">3 Members</option>
-                      <option value="4">4 Members</option>
-                    </select>
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#141A29] p-3.5 rounded-xl border border-gray-800">
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">Team Name:</label>
+                  <input
+                    type="text"
+                    value={teamName}
+                    onChange={(e) => setTeamName(e.target.value)}
+                    placeholder="e.g. Spider-Verse Hackers"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">Total Team Size:</label>
+                  <select
+                    value={teamSize}
+                    onChange={(e) => setTeamSize(e.target.value)}
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500"
+                  >
+                    <option value="2">2 Members (Leader + 1 Member)</option>
+                    <option value="3">3 Members (Leader + 2 Members)</option>
+                    <option value="4">4 Members (Leader + 3 Members)</option>
+                  </select>
                 </div>
               </div>
             )}
 
-            {/* Leader Details */}
-            <div className="p-3.5 rounded-xl bg-[#141A29] border border-gray-800 space-y-3">
-              <div className="flex items-center justify-between border-b border-gray-800 pb-1.5">
-                <span className="text-xs font-bold text-red-400 flex items-center gap-1.5">
-                  <span>👑</span>
-                  <span>{participationMode === 'team' ? 'Team Leader' : 'Attendee Details'}</span>
-                </span>
-                <div className="flex items-center gap-2 text-[11px]">
-                  <span className="text-gray-400">Gender:</span>
-                  <label className="flex items-center gap-1 cursor-pointer">
-                    <input type="radio" name="leaderGender" checked={leaderGender === 'male'} onChange={() => setLeaderGender('male')} />
-                    <span>Male</span>
-                  </label>
-                  <label className="flex items-center gap-1 cursor-pointer">
-                    <input type="radio" name="leaderGender" checked={leaderGender === 'female'} onChange={() => setLeaderGender('female')} />
-                    <span>Female</span>
-                  </label>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                <div>
-                  <label className="block text-[11px] text-gray-300 mb-1">Full Name:</label>
-                  <input type="text" value={leaderName} onChange={(e) => setLeaderName(e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-red-500" required />
-                </div>
-                <div>
-                  <label className="block text-[11px] text-gray-300 mb-1">Roll Number:</label>
-                  <input type="text" value={leaderRoll} onChange={(e) => setLeaderRoll(e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-red-500 font-mono" required />
-                </div>
-                <div>
-                  <label className="block text-[11px] text-gray-300 mb-1">Email:</label>
-                  <input type="email" value={leaderEmail} onChange={(e) => setLeaderEmail(e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-red-500" required />
-                </div>
-                <div>
-                  <label className="block text-[11px] text-gray-300 mb-1">Phone:</label>
-                  <input type="tel" value={leaderPhone} onChange={(e) => setLeaderPhone(e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-red-500" required />
-                </div>
-                <div>
-                  <label className="block text-[11px] text-gray-300 mb-1">Degree & Year:</label>
-                  <input type="text" value={leaderDegree} onChange={(e) => setLeaderDegree(e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-red-500" required />
-                </div>
-                <div>
-                  <label className="block text-[11px] text-gray-300 mb-1">Campus:</label>
-                  <input type="text" value={leaderCampus} onChange={(e) => setLeaderCampus(e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-red-500" required />
-                </div>
-              </div>
-            </div>
-
-            {/* Team Members */}
-            {participationMode === 'team' && teamMembers.map((member, idx) => (
-              <div key={idx} className="p-3.5 rounded-xl bg-[#141A29] border border-gray-800 space-y-3">
-                <div className="flex items-center justify-between border-b border-gray-800 pb-1.5">
-                  <span className="text-xs font-bold text-cyan-400 flex items-center gap-1.5">
-                    <span>👤</span>
-                    <span>Member #{idx + 2}</span>
-                  </span>
-                  <div className="flex items-center gap-2 text-[11px]">
-                    <label className="flex items-center gap-1 cursor-pointer">
-                      <input type="radio" name={`memberGender_${idx}`} checked={member.gender === 'male'} onChange={() => handleUpdateMember(idx, 'gender', 'male')} />
-                      <span>Male</span>
-                    </label>
-                    <label className="flex items-center gap-1 cursor-pointer">
-                      <input type="radio" name={`memberGender_${idx}`} checked={member.gender === 'female'} onChange={() => handleUpdateMember(idx, 'gender', 'female')} />
-                      <span>Female</span>
-                    </label>
-                  </div>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div>
-                    <label className="block text-[11px] text-gray-300 mb-1">Name:</label>
-                    <input type="text" value={member.name} onChange={(e) => handleUpdateMember(idx, 'name', e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-500" required />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] text-gray-300 mb-1">Roll Number:</label>
-                    <input type="text" value={member.rollNo} onChange={(e) => handleUpdateMember(idx, 'rollNo', e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-500 font-mono" required />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] text-gray-300 mb-1">Email:</label>
-                    <input type="email" value={member.email} onChange={(e) => handleUpdateMember(idx, 'email', e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-500" required />
-                  </div>
-                  <div>
-                    <label className="block text-[11px] text-gray-300 mb-1">Phone:</label>
-                    <input type="tel" value={member.phone} onChange={(e) => handleUpdateMember(idx, 'phone', e.target.value)} className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white focus:outline-none focus:border-cyan-500" />
-                  </div>
-                </div>
-              </div>
-            ))}
-
-            {/* Track */}
-            <div className="p-3.5 rounded-xl bg-[#141A29] border border-gray-800">
-              <label className="block text-[11px] font-semibold text-gray-300 mb-1">Track / Specialization:</label>
+            {/* Track Selection */}
+            <div>
+              <label className="block text-[11px] font-semibold text-gray-300 mb-1">Selected Track / Category:</label>
               <input
                 type="text"
                 value={selectedTrack}
@@ -839,13 +766,45 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
               />
             </div>
 
+            {/* Quick Leader Primary Info */}
+            <div className="p-3.5 rounded-xl bg-[#141A29] border border-gray-800 space-y-2">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-red-400 font-bold block">
+                PRIMARY CONTACT DETAILS
+              </span>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+                <div>
+                  <label className="block text-[11px] text-gray-400 mb-0.5">Contact Name:</label>
+                  <input
+                    type="text"
+                    value={leaderName}
+                    onChange={(e) => setLeaderName(e.target.value)}
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white text-xs"
+                    required
+                  />
+                </div>
+                <div>
+                  <label className="block text-[11px] text-gray-400 mb-0.5">University Email:</label>
+                  <input
+                    type="email"
+                    value={leaderEmail}
+                    onChange={(e) => setLeaderEmail(e.target.value)}
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-1.5 text-white text-xs font-mono"
+                    required
+                  />
+                </div>
+              </div>
+              <p className="text-[10px] text-gray-400">
+                Payment ke agle step me sabhi members ki full details aur photos upload hongi.
+              </p>
+            </div>
+
             {/* Bottom Actions */}
             <div className="pt-2 flex items-center justify-between border-t border-gray-800">
               <div className="text-xs text-gray-400">
                 <span>Fee: </span>
-                <span className="text-white font-bold text-sm">{'\u20B9'}{totalAmount}</span>
+                <span className="text-white font-bold text-sm">₹{totalAmount}</span>
                 <span className="text-[10px] text-gray-500 ml-1">
-                  ({participationMode === 'team' ? `${teamSize} x ${'\u20B9'}${eventFee}` : `1 x ${'\u20B9'}${eventFee}`})
+                  ({participationMode === 'team' ? `${teamSize} x ₹${eventFee}` : `1 x ₹${eventFee}`})
                 </span>
               </div>
               <div className="flex gap-2">
@@ -858,7 +817,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                   className={`px-5 py-2 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 ${
                     isRegistrationClosed
                       ? 'bg-gray-800 text-gray-500 cursor-not-allowed'
-                      : 'bg-red-600 hover:bg-red-500 text-white cursor-pointer'
+                      : 'bg-red-600 hover:bg-red-500 text-white cursor-pointer active:scale-95'
                   }`}
                 >
                   <span>{isRegistrationClosed ? 'Registration Closed' : 'Proceed to Payment'}</span>
@@ -869,24 +828,24 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
           </form>
         )}
 
-        {/* STEP 2: Payment */}
+        {/* ─── STEP 2: Secure Payment ─── */}
         {currentStep === 'payment' && (
           <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
             <div className="p-4 rounded-xl bg-[#141A29] border border-gray-800 space-y-2 text-xs">
               <div className="flex items-center justify-between border-b border-gray-800 pb-2">
                 <div>
-                  <span className="text-[10px] text-gray-400 uppercase font-mono">EVENT REGISTRATION PASS</span>
+                  <span className="text-[10px] text-gray-400 uppercase font-mono">PASS SUMMARY</span>
                   <h4 className="text-sm font-bold text-white">{event.title}</h4>
                 </div>
                 <span className="px-2.5 py-1 rounded bg-emerald-950 text-emerald-400 border border-emerald-500/30 text-[11px] font-bold">
-                  {'\u20B9'}{totalAmount} Total
+                  ₹{totalAmount} Total
                 </span>
               </div>
               <div className="grid grid-cols-2 gap-2 text-[11px] text-gray-300">
                 <div><span className="text-gray-500">Mode:</span> {participationMode === 'team' ? `Team (${teamName})` : 'Solo Entry'}</div>
                 <div><span className="text-gray-500">Attendees:</span> {participationMode === 'team' ? teamSize : '1'}</div>
-                <div><span className="text-gray-500">Leader:</span> {leaderName}</div>
-                <div><span className="text-gray-500">Roll No:</span> {leaderRoll}</div>
+                <div><span className="text-gray-500">Contact:</span> {leaderName}</div>
+                <div><span className="text-gray-500">Email:</span> {leaderEmail}</div>
               </div>
             </div>
 
@@ -894,15 +853,15 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
               <label className="block text-xs font-semibold text-gray-300 mb-2">Payment Mode:</label>
               <div className="grid grid-cols-3 gap-2 text-xs">
                 <button type="button" onClick={() => setPaymentMethod('upi')} className={`p-3 rounded-xl border text-center font-semibold transition cursor-pointer ${paymentMethod === 'upi' ? 'bg-emerald-600 text-white border-emerald-500 shadow-md' : 'bg-[#141A29] text-gray-300 border-gray-800 hover:border-gray-700'}`}>
-                  <div className="text-base mb-0.5">{'\u26A1'}</div>
+                  <div className="text-base mb-0.5">⚡</div>
                   <span>UPI</span>
                 </button>
                 <button type="button" onClick={() => setPaymentMethod('qr')} className={`p-3 rounded-xl border text-center font-semibold transition cursor-pointer ${paymentMethod === 'qr' ? 'bg-emerald-600 text-white border-emerald-500 shadow-md' : 'bg-[#141A29] text-gray-300 border-gray-800 hover:border-gray-700'}`}>
-                  <div className="text-base mb-0.5">{'\uD83D\uDCF1'}</div>
+                  <div className="text-base mb-0.5">📱</div>
                   <span>QR Code</span>
                 </button>
                 <button type="button" onClick={() => setPaymentMethod('card')} className={`p-3 rounded-xl border text-center font-semibold transition cursor-pointer ${paymentMethod === 'card' ? 'bg-emerald-600 text-white border-emerald-500 shadow-md' : 'bg-[#141A29] text-gray-300 border-gray-800 hover:border-gray-700'}`}>
-                  <div className="text-base mb-0.5">{'\uD83D\uDCB3'}</div>
+                  <div className="text-base mb-0.5">💳</div>
                   <span>Card</span>
                 </button>
               </div>
@@ -915,7 +874,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                   <input type="text" value={upiId} onChange={(e) => setUpiId(e.target.value)} placeholder="yourname@okaxis" className="flex-1 bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-500 font-mono" />
                   <span className="px-3 py-2 rounded-lg bg-gray-800 text-gray-400 text-xs font-mono">VERIFIED</span>
                 </div>
-                <p className="text-[10px] text-gray-500">0% convenience fees. Instant sync.</p>
+                <p className="text-[10px] text-gray-500">0% convenience fee. Direct confirmation.</p>
               </div>
             )}
 
@@ -939,8 +898,8 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                     <circle cx="50" cy="50" r="6" fill="#DC2626" />
                   </svg>
                 </div>
-                <p className="text-xs font-semibold text-white">Scan with any UPI App</p>
-                <p className="text-[11px] text-gray-400">Total: <span className="text-emerald-400 font-bold">{'\u20B9'}{totalAmount}</span></p>
+                <p className="text-xs font-semibold text-white">Scan with GPay, PhonePe, or Paytm</p>
+                <p className="text-[11px] text-gray-400">Total: <span className="text-emerald-400 font-bold">₹{totalAmount}</span></p>
               </div>
             )}
 
@@ -965,66 +924,342 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
 
             <div className="pt-3 flex items-center justify-between border-t border-gray-800">
               <button type="button" onClick={() => setCurrentStep('form')} className="px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold cursor-pointer">
-                {'\u2190'} Back
+                ← Back
               </button>
               <button
                 type="button"
-                onClick={handleCompletePaymentAndRegister}
+                onClick={handleCompletePaymentAndProceedToRoster}
                 disabled={isProcessingPayment}
-                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg cursor-pointer flex items-center gap-2 transition"
+                className="px-6 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg cursor-pointer flex items-center gap-2 transition active:scale-95"
               >
                 {isProcessingPayment ? (
                   <>
                     <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    <span>Processing...</span>
+                    <span>Verifying Payment...</span>
                   </>
                 ) : (
-                  <span>{'\u2713'} Pay {'\u20B9'}{totalAmount} &amp; Get ID Cards</span>
+                  <span>✓ Pay ₹{totalAmount} &amp; Fill Member Details ➔</span>
                 )}
               </button>
             </div>
           </div>
         )}
 
-        {/* STEP 3: Graphite'26-Style Lanyard ID Cards */}
+        {/* ─── STEP 3: Post-Payment Team Roster & Original Photo Upload ─── */}
+        {currentStep === 'roster' && (
+          <div className="p-5 space-y-4 max-h-[75vh] overflow-y-auto">
+            {/* Payment Verified Header Card */}
+            <div className="p-3.5 rounded-xl bg-emerald-950/40 border border-emerald-500/40 flex items-center justify-between">
+              <div className="flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 flex items-center justify-center font-bold text-sm">
+                  ✓
+                </div>
+                <div>
+                  <h4 className="text-xs font-bold text-white flex items-center gap-2">
+                    <span>Payment Verified Successfully</span>
+                    <span className="font-mono text-[10px] text-emerald-400">({transactionId})</span>
+                  </h4>
+                  <p className="text-[11px] text-gray-300 mt-0.5">
+                    Ab team ke sabhi members ki details &amp; unki original photo upload karein taaki personalized ID cards generate ho sakein.
+                  </p>
+                </div>
+              </div>
+              <span className="px-2.5 py-1 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/30 text-[10px] font-mono font-bold shrink-0">
+                {rosterMembers.length} {rosterMembers.length > 1 ? 'Cards' : 'Card'}
+              </span>
+            </div>
+
+            {error && (
+              <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/50 text-red-200 text-xs flex items-center gap-2">
+                <span>⚠️</span>
+                <span>{error}</span>
+              </div>
+            )}
+
+            {/* Member Navigation Tabs (if Team) */}
+            {rosterMembers.length > 1 && (
+              <div className="flex items-center gap-2 border-b border-gray-800 pb-2 overflow-x-auto">
+                {rosterMembers.map((m, idx) => {
+                  const isActive = activeRosterIndex === idx
+                  const hasPhoto = !!m.photoUrl
+                  return (
+                    <button
+                      key={idx}
+                      type="button"
+                      onClick={() => setActiveRosterIndex(idx)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-semibold transition cursor-pointer flex items-center gap-1.5 whitespace-nowrap ${
+                        isActive
+                          ? 'bg-red-600 text-white shadow-md'
+                          : 'bg-[#141A29] text-gray-400 hover:text-white border border-gray-800'
+                      }`}
+                    >
+                      <span>{m.isLeader ? '👑' : '👤'}</span>
+                      <span>{m.name ? m.name.split(' ')[0] : `Member ${idx + 1}`}</span>
+                      {hasPhoto && (
+                        <span className="w-2 h-2 rounded-full bg-emerald-400 ring-2 ring-black" title="Photo Uploaded ✓" />
+                      )}
+                    </button>
+                  )
+                })}
+              </div>
+            )}
+
+            {/* Active Member Details & Photo Box */}
+            <div className="p-4 rounded-xl bg-[#141A29] border border-gray-800 space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-800 pb-2">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <span>{activeRosterMember.isLeader ? '👑 TEAM LEADER DETAILS' : `👤 MEMBER ${activeRosterIndex + 1} DETAILS`}</span>
+                  <span className="text-[10px] font-mono text-red-400">({activeRosterIndex + 1} of {rosterMembers.length})</span>
+                </span>
+                <span className="text-[10px] text-gray-400">All fields required for holographic badge</span>
+              </div>
+
+              {/* Photo Upload Zone */}
+              <div className="p-4 rounded-xl bg-black/60 border border-red-950/60 flex flex-col sm:flex-row items-center gap-4">
+                <div className="relative w-28 h-28 rounded-full overflow-hidden border-2 border-red-500 shadow-[0_0_20px_rgba(220,38,38,0.5)] bg-[#0A0D15] flex items-center justify-center shrink-0">
+                  {activeRosterMember.photoUrl ? (
+                    <>
+                      <img
+                        src={activeRosterMember.photoUrl}
+                        alt={activeRosterMember.name || 'Member'}
+                        className="w-full h-full object-cover object-center"
+                      />
+                      <div className="animate-scan-line" />
+                    </>
+                  ) : (
+                    <div className="flex flex-col items-center justify-center text-gray-500 text-center p-2">
+                      <span className="text-3xl mb-1">📸</span>
+                      <span className="text-[9px] font-mono uppercase tracking-wider text-red-400 font-bold">No Photo</span>
+                    </div>
+                  )}
+                </div>
+
+                <div className="flex-1 space-y-2 text-center sm:text-left">
+                  <div>
+                    <h5 className="text-xs font-bold text-white flex items-center justify-center sm:justify-start gap-1.5">
+                      <span>Original Student Photo</span>
+                      {activeRosterMember.photoUrl ? (
+                        <span className="text-[10px] text-emerald-400 font-mono bg-emerald-950/80 px-2 py-0.5 rounded-full border border-emerald-500/30 font-bold">
+                          ✓ Photo Ready for Badge
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-amber-400 font-mono bg-amber-950/80 px-2 py-0.5 rounded-full border border-amber-500/30">
+                          Upload Required
+                        </span>
+                      )}
+                    </h5>
+                    <p className="text-[11px] text-gray-400 mt-0.5">
+                      Apni original passport photo ya clear selfie upload karein. Ye photo ID card par print hogi.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
+                    <label className="py-2 px-3.5 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold flex items-center gap-1.5 shadow-md cursor-pointer transition active:scale-95">
+                      <span>📸</span>
+                      <span>{activeRosterMember.photoUrl ? 'Change Photo' : 'Upload Original Photo'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={(e) => handlePhotoUpload(activeRosterIndex, e)}
+                      />
+                    </label>
+
+                    {activeRosterMember.photoUrl && (
+                      <button
+                        type="button"
+                        onClick={() => handleRemovePhoto(activeRosterIndex)}
+                        className="py-2 px-3 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs transition cursor-pointer"
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              {/* Form Inputs Grid for Active Member */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    Student Full Name <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={activeRosterMember.name || ''}
+                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'name', e.target.value)}
+                    placeholder="e.g. Aryan Sharma"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-medium"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    University Email ID <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="email"
+                    value={activeRosterMember.email || ''}
+                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'email', e.target.value)}
+                    placeholder="e.g. aryan.sharma@gehu.ac.in"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    Phone Number <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="tel"
+                    value={activeRosterMember.phone || ''}
+                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'phone', e.target.value)}
+                    placeholder="+91 98765 43210"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    University Roll Number <span className="text-red-400">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    value={activeRosterMember.rollNo || ''}
+                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'rollNo', e.target.value)}
+                    placeholder="e.g. GEHU-2024-BHM-842"
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
+                    required
+                  />
+                </div>
+
+                {/* Campus Dropdown */}
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    Campus <span className="text-red-400">*</span>
+                  </label>
+                  <select
+                    value={activeRosterMember.campus || event.campus || CAMPUS_OPTIONS[0]}
+                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'campus', e.target.value)}
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
+                  >
+                    {CAMPUS_OPTIONS.map((c) => (
+                      <option key={c} value={c} className="bg-black text-white">
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                {/* Course / Degree Dropdown */}
+                <div className="sm:col-span-2">
+                  <label className="block text-[11px] font-semibold text-gray-300 mb-1">
+                    Course / Degree <span className="text-red-400">*</span>
+                  </label>
+                  <select
+                    value={activeRosterMember.degree || COURSE_OPTIONS[0]}
+                    onChange={(e) => handleUpdateRosterMember(activeRosterIndex, 'degree', e.target.value)}
+                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500"
+                  >
+                    {COURSE_OPTIONS.map((c) => (
+                      <option key={c} value={c} className="bg-black text-white">
+                        {c}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Actions for Step 3 */}
+            <div className="pt-3 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-gray-800">
+              <button
+                type="button"
+                onClick={() => setCurrentStep('payment')}
+                className="w-full sm:w-auto px-4 py-2 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold cursor-pointer"
+              >
+                ← Back to Payment
+              </button>
+
+              <div className="w-full sm:w-auto flex items-center gap-2">
+                {activeRosterIndex < rosterMembers.length - 1 && (
+                  <button
+                    type="button"
+                    onClick={() => setActiveRosterIndex(prev => prev + 1)}
+                    className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-gray-200 text-xs font-semibold cursor-pointer transition"
+                  >
+                    Next: Member {activeRosterIndex + 2} ➔
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleGenerateFinalCards}
+                  disabled={loading}
+                  className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 via-rose-600 to-red-700 hover:from-red-500 hover:to-rose-500 text-white text-xs font-chakra font-bold tracking-wider shadow-spider-glow flex items-center justify-center gap-2 cursor-pointer transition active:scale-95"
+                >
+                  {loading ? (
+                    <>
+                      <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      <span>Generating Badges...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>✨ GENERATE ANIMATED ID CARDS</span>
+                      <span>➔</span>
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* ─── STEP 4: Animated Graphite'26 Lanyard ID Cards ─── */}
         {currentStep === 'idcards' && (
           <div className="max-h-[82vh] overflow-y-auto" style={{ background: 'linear-gradient(180deg, #0A0A0A 0%, #0D0505 50%, #0A0A0A 100%)' }}>
             {/* Top Header Bar */}
             <div className="px-5 py-3 flex items-center justify-between border-b border-red-950/40">
               <div>
-                <div className="text-[10px] text-gray-500 uppercase tracking-widest font-mono">STICKER CARD / {event.title?.split(':')[0]?.split('–')[0]?.toUpperCase().trim().slice(0, 20) || 'SPIDEY'}</div>
-                <h3 className="text-sm font-bold text-white mt-0.5">Your card is ready.</h3>
-                <p className="text-[11px] text-gray-400">Post it and tag <span className="text-red-400 font-semibold">SPIDEY'26</span>. The card image goes with your LinkedIn post.</p>
+                <div className="text-[10px] text-gray-500 uppercase tracking-widest font-mono">
+                  ANIMATED LANYARD CARD • {event.title?.split(':')[0]?.split('–')[0]?.toUpperCase().trim().slice(0, 20) || 'SPIDEY'}
+                </div>
+                <h3 className="text-sm font-bold text-white mt-0.5">Your ID Card is ready with original photo!</h3>
+                <p className="text-[11px] text-gray-400">
+                  Post it on LinkedIn or share on X. Original uploaded photo and credentials verified.
+                </p>
               </div>
-              {/* Event Info */}
               <div className="hidden sm:block text-right text-[10px] text-gray-500 space-y-0.5">
                 <div><span className="text-gray-600 uppercase">Dates</span> <span className="text-gray-300 ml-1">{event.display_date || event.event_date || 'TBA'}</span></div>
                 <div><span className="text-gray-600 uppercase">Venue</span> <span className="text-gray-300 ml-1">{event.campus?.split(' ').slice(-1)[0] || 'GEHU'} campus</span></div>
                 <div><span className="text-gray-600 uppercase">TxnID</span> <span className="text-emerald-400 ml-1 font-mono">{transactionId}</span></div>
               </div>
+            </div>
 
             {/* Google Calendar Quick Sync Banner */}
-            <div className="mx-5 my-2 p-3 rounded-xl bg-blue-950/40 border border-blue-500/30 flex items-center justify-between text-xs">
-              <div className="flex items-center gap-2">
-                <span className="text-xl">📅</span>
+            <div className="mx-5 my-3 p-3 rounded-xl bg-blue-950/40 border border-blue-500/30 flex items-center justify-between text-xs shadow-md">
+              <div className="flex items-center gap-2.5">
+                <span className="text-2xl">📅</span>
                 <div>
-                  <p className="font-bold text-blue-200">Google Calendar Direct Link Ready</p>
-                  <p className="text-[10px] text-gray-400">Card ke neeche &quot;ADD TO GOOGLE CALENDAR&quot; click karke date mark karein.</p>
+                  <p className="font-bold text-blue-200">Google Calendar Synced with your Gmail</p>
+                  <p className="text-[11px] text-gray-400">Card ke neeche &quot;ADD TO GOOGLE CALENDAR&quot; click karke date direct mark karein.</p>
                 </div>
               </div>
               <a
                 href={createGoogleCalendarUrl(event, generatedTickets[activeCardIndex]?.email || leaderEmail)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="py-1.5 px-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-semibold flex items-center gap-1"
+                className="py-1.5 px-3 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-[11px] font-semibold flex items-center gap-1 shadow transition"
               >
                 <span>Open Calendar</span>
                 <span>➔</span>
               </a>
             </div>
-            </div>
 
-            {/* Card Navigation Tabs (if multiple members) */}
+            {/* Card Navigation Tabs (if multiple team members) */}
             {generatedTickets.length > 1 && (
               <div className="px-5 py-2 flex items-center gap-2 border-b border-gray-900 overflow-x-auto">
                 {generatedTickets.map((t, i) => (
@@ -1032,13 +1267,14 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                     key={i}
                     type="button"
                     onClick={() => setActiveCardIndex(i)}
-                    className={`px-3 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer whitespace-nowrap ${
+                    className={`px-3.5 py-1 rounded-full text-[11px] font-semibold transition cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
                       activeCardIndex === i
                         ? 'bg-red-600 text-white shadow-md'
                         : 'bg-gray-900 text-gray-400 hover:bg-gray-800'
                     }`}
                   >
-                    {t.isLeader ? `👑 ${t.name?.split(' ')[0]}` : `👤 ${t.name?.split(' ')[0]}`}
+                    <span>{t.isLeader ? '👑' : '👤'}</span>
+                    <span>{t.name ? t.name.split(' ')[0] : `Member ${i + 1}`}</span>
                   </button>
                 ))}
               </div>
@@ -1047,7 +1283,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
             {/* The Lanyard ID Card */}
             <div className="px-5 py-6">
               <LanyardIDCard
-                attendee={generatedTickets[activeCardIndex]}
+                attendee={generatedTickets[activeCardIndex] || rosterMembers[0] || {}}
                 event={event}
                 teamName={teamName}
                 participationMode={participationMode}
@@ -1058,13 +1294,13 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
               />
             </div>
 
-            {/* Credits & Close */}
+            {/* Footer Close */}
             <div className="px-5 py-3 border-t border-gray-900 flex items-center justify-between">
-              <span className="text-[10px] text-gray-600 font-mono">DESIGNED BY SPIDEY PORTAL</span>
+              <span className="text-[10px] text-gray-600 font-mono">SPIDEY '26 • GRAPHIC ERA UNIVERSITY</span>
               <button
                 type="button"
                 onClick={onClose}
-                className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold shadow-md cursor-pointer transition"
+                className="px-5 py-2 rounded-xl bg-red-600 hover:bg-red-500 text-white text-xs font-bold shadow-md cursor-pointer transition active:scale-95"
               >
                 Done / Close
               </button>

@@ -259,3 +259,31 @@ input:-webkit-autofill:active {
   -webkit-backface-visibility: hidden;
   perspective: 1000px;
 }
+
+/* Holographic Biometric Photo Scan Line */
+@keyframes scanLineAnim {
+  0% { top: 0%; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.animate-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, transparent, #EF4444, #F87171, #EF4444, transparent);
+  box-shadow: 0 0 12px #EF4444, 0 0 24px rgba(239, 68, 68, 0.6);
+  animation: scanLineAnim 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
+}
+
+@keyframes spinSlowAnim {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin-slow {
+  animation: spinSlowAnim 15s linear infinite;
+}
