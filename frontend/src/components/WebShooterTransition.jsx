@@ -7,16 +7,16 @@ export default function WebShooterTransition({ triggerKey, label }) {
     if (!triggerKey) return
     setActive(true)
 
-    // Play real cinematic THWIP sound effect
+    // Play real movie THWIP sound effect
     try {
       const audio = new Audio('/assets/thwip.mp3')
-      audio.volume = 0.8
+      audio.volume = 0.85
       audio.play().catch(() => {})
     } catch (e) {}
 
     const timer = setTimeout(() => {
       setActive(false)
-    }, 750) // 750ms ultra fast & realistic web-shooter snap
+    }, 650) // 650ms high-velocity web-zip
     return () => clearTimeout(timer)
   }, [triggerKey])
 
@@ -24,102 +24,123 @@ export default function WebShooterTransition({ triggerKey, label }) {
 
   return (
     <div className="fixed inset-0 z-50 pointer-events-none flex items-center justify-center overflow-hidden">
-      {/* High-speed Realistic 3D Web Lines Blasting from Wrist Shooter */}
-      <svg className="absolute inset-0 w-full h-full" viewBox="0 0 1000 1000" fill="none">
-        {/* Core High-Velocity Web Cable Left */}
-        <line
-          x1="-80"
-          y1="1080"
-          x2="500"
-          y2="480"
-          stroke="#ffffff"
-          strokeWidth="7"
+      {/* High-Velocity Tensile Silk Web Lines Blasting Across Screen */}
+      <svg className="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 1200 900" fill="none">
+        <defs>
+          <linearGradient id="webGradWhite" x1="0%" y1="100%" x2="50%" y2="50%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#E21B24" stopOpacity="0.8" />
+          </linearGradient>
+          <linearGradient id="webGradBlue" x1="100%" y1="100%" x2="50%" y2="50%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#0F52BA" stopOpacity="0.8" />
+          </linearGradient>
+          <filter id="webGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        {/* Primary Web Cables Fired from Left Wrist */}
+        <path
+          d="M -50 950 Q 300 650 600 450"
+          stroke="url(#webGradWhite)"
+          strokeWidth="6"
           strokeLinecap="round"
-          className="animate-web-left filter drop-shadow-[0_0_20px_#ffffff]"
+          filter="url(#webGlow)"
+          strokeDasharray="800"
+          className="animate-web-blast"
         />
-        {/* Sub-threads */}
-        <line
-          x1="-40"
-          y1="1020"
-          x2="480"
-          y2="460"
+        <path
+          d="M -30 920 Q 320 620 580 430"
+          stroke="#ffffff"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeDasharray="800"
+          className="animate-web-blast opacity-90"
+        />
+        <path
+          d="M -80 980 Q 280 670 620 470"
           stroke="#E21B24"
-          strokeWidth="3"
-          className="animate-web-left"
-        />
-
-        {/* Core High-Velocity Web Cable Right */}
-        <line
-          x1="1080"
-          y1="1080"
-          x2="500"
-          y2="480"
-          stroke="#ffffff"
-          strokeWidth="7"
+          strokeWidth="2"
           strokeLinecap="round"
-          className="animate-web-right filter drop-shadow-[0_0_20px_#ffffff]"
-        />
-        {/* Sub-threads */}
-        <line
-          x1="1040"
-          y1="1020"
-          x2="520"
-          y2="460"
-          stroke="#0F52BA"
-          strokeWidth="3"
-          className="animate-web-right"
+          strokeDasharray="800"
+          className="animate-web-blast opacity-75"
         />
 
-        {/* Realistic Web Webbing Structure radiating from target center */}
-        {[0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330].map((angle, i) => (
-          <line
+        {/* Primary Web Cables Fired from Right Wrist */}
+        <path
+          d="M 1250 950 Q 900 650 600 450"
+          stroke="url(#webGradBlue)"
+          strokeWidth="6"
+          strokeLinecap="round"
+          filter="url(#webGlow)"
+          strokeDasharray="800"
+          className="animate-web-blast"
+        />
+        <path
+          d="M 1230 920 Q 880 620 620 430"
+          stroke="#ffffff"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          strokeDasharray="800"
+          className="animate-web-blast opacity-90"
+        />
+
+        {/* High-Tension Web Impact Splat at Target Center */}
+        {[
+          "M 600 450 L 520 370",
+          "M 600 450 L 680 370",
+          "M 600 450 L 720 450",
+          "M 600 450 L 670 530",
+          "M 600 450 L 530 530",
+          "M 600 450 L 480 450",
+          "M 600 450 L 570 330",
+          "M 600 450 L 630 330",
+        ].map((d, i) => (
+          <path
             key={i}
-            x1="500"
-            y1="480"
-            x2={500 + Math.cos((angle * Math.PI) / 180) * 550}
-            y2={480 + Math.sin((angle * Math.PI) / 180) * 550}
-            stroke="rgba(255, 255, 255, 0.85)"
-            strokeWidth="2.5"
-            strokeDasharray="4 6"
-            className="animate-web-expand"
+            d={d}
+            stroke="#ffffff"
+            strokeWidth="3"
+            strokeLinecap="round"
+            className="animate-web-expand filter drop-shadow-[0_0_8px_rgba(255,255,255,0.9)]"
           />
         ))}
 
-        {/* Spider Web Rings (Tensile Silk Strands) */}
-        <circle cx="500" cy="480" r="80" stroke="#ffffff" strokeWidth="3" fill="none" opacity="0.9" className="animate-web-expand" />
-        <circle cx="500" cy="480" r="180" stroke="#E21B24" strokeWidth="2.5" fill="none" opacity="0.8" className="animate-web-expand" />
-        <circle cx="500" cy="480" r="320" stroke="#00F0FF" strokeWidth="2" fill="none" opacity="0.7" className="animate-web-expand" />
-        <circle cx="500" cy="480" r="480" stroke="#ffffff" strokeWidth="1.5" strokeDasharray="6 6" fill="none" opacity="0.5" className="animate-web-expand" />
+        {/* Web Splat Connecting Filaments */}
+        <path
+          d="M 520 370 Q 600 390 680 370 Q 690 450 670 530 Q 600 510 530 530 Q 500 450 520 370 Z"
+          stroke="#ffffff"
+          strokeWidth="2"
+          fill="rgba(255, 255, 255, 0.08)"
+          strokeDasharray="4 4"
+          className="animate-web-expand filter drop-shadow-[0_0_12px_rgba(226,27,36,0.6)]"
+        />
       </svg>
 
-      {/* Realistic Cinematic Spider-Man Photo / Pose in Center (Extracted from 4K Video) */}
-      <div className="relative z-10 flex flex-col items-center justify-center animate-spider-swing">
-        <div className="relative w-44 h-44 sm:w-52 sm:h-52 rounded-3xl overflow-hidden border-2 border-red-500 shadow-modal-glow bg-black/80 backdrop-blur-xl">
+      {/* REAL PHOTOREALISTIC SPIDER-MAN (Transparent Cutout, No Box, No Borders!) */}
+      <div className="relative z-20 flex flex-col items-center justify-center pointer-events-none animate-spider-zip">
+        <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 flex items-center justify-center">
           <img
-            src="/assets/spiderman_action.png"
-            alt="Spider-Man Web-Shooter"
-            className="w-full h-full object-cover object-center scale-110"
+            src="/assets/spiderman_real.png"
+            alt="Spider-Man Web-Shooter Action"
+            className="w-full h-full object-contain filter drop-shadow-[0_0_40px_rgba(239,68,68,0.7)] drop-shadow-[0_0_80px_rgba(15,82,186,0.5)]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-red-950/30" />
-          
-          {/* Glowing Web Shooter Crosshair */}
-          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-            <div className="w-16 h-16 rounded-full border border-red-400/80 animate-ping" />
-            <div className="w-8 h-8 rounded-full border border-white/90 shadow-spider-glow" />
-          </div>
         </div>
 
-        {/* Modern Comic *THWIP!!* HUD Pill */}
-        <div className="mt-3 px-6 py-2.5 rounded-full bg-[#090D18]/95 border border-red-500 shadow-spider-glow flex items-center gap-3 backdrop-blur-xl">
-          <span className="font-chakra italic font-black text-red-500 text-lg tracking-widest drop-shadow-[0_0_10px_#E21B24]">
-            *THWIP!!*
-          </span>
-          {label && (
-            <span className="font-mono text-xs font-bold text-white uppercase tracking-wider border-l border-red-500/40 pl-3">
+        {/* Dynamic Holographic Tab Indicator */}
+        {label && (
+          <div className="mt-2 px-5 py-2 rounded-full bg-black/85 border border-red-500/80 shadow-[0_0_30px_rgba(239,68,68,0.7)] backdrop-blur-xl flex items-center gap-2 animate-pulse">
+            <span className="text-red-500 font-bold text-sm">🕷️</span>
+            <p className="font-chakra italic font-bold text-xs sm:text-sm text-white tracking-widest text-center">
               {label}
-            </span>
-          )}
-        </div>
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

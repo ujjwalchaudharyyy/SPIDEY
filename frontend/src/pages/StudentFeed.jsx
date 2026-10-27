@@ -61,15 +61,16 @@ export default function StudentFeed({ initialTab = 'radar' }) {
     fetchCampusesAndEvents()
   }, [])
 
+  useEffect(() => {
+    setTab(initialTab)
+  }, [initialTab])
+
   const handleSwitchTab = (newTab, label) => {
     triggerWebShoot(label)
     setTab(newTab)
   }
 
   const handleSelectCampusWithShooter = (idx) => {
-    if (campuses[idx]) {
-      triggerWebShoot(campuses[idx].code)
-    }
     setActiveCampusIndex(idx)
   }
 

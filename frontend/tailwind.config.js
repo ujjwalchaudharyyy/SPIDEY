@@ -33,6 +33,8 @@ export default {
         'pulse-glow': 'pulseGlow 2.5s infinite ease-in-out',
         'float': 'float 4s ease-in-out infinite',
         'spider-swing': 'spiderSwing 0.9s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards',
+        'spider-zip': 'spiderZip 0.65s cubic-bezier(0.2, 0.8, 0.2, 1) forwards',
+        'web-blast': 'webBlast 0.5s ease-out forwards',
         'web-left': 'webShootLeft 0.5s ease-out forwards',
         'web-right': 'webShootRight 0.5s ease-out forwards',
         'web-expand': 'webExpand 0.7s ease-out forwards',
@@ -45,6 +47,18 @@ export default {
         float: {
           '0%, 100%': { transform: 'translateY(0px)' },
           '50%': { transform: 'translateY(-6px)' },
+        },
+        spiderZip: {
+          '0%': { transform: 'scale(0.4) translate(140%, 90%) rotate(-25deg)', opacity: '0' },
+          '35%': { transform: 'scale(1.05) translate(0%, 0%) rotate(0deg)', opacity: '1' },
+          '70%': { transform: 'scale(0.95) translate(-30%, -20%) rotate(8deg)', opacity: '1' },
+          '100%': { transform: 'scale(0.5) translate(-140%, -80%) rotate(25deg)', opacity: '0' },
+        },
+        webBlast: {
+          '0%': { strokeDashoffset: '800', opacity: '0' },
+          '30%': { opacity: '1' },
+          '70%': { opacity: '1' },
+          '100%': { strokeDashoffset: '0', opacity: '0' },
         },
         spiderSwing: {
           '0%': { transform: 'scale(0.2) translateY(-200px) rotate(-15deg)', opacity: '0' },
