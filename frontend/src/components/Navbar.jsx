@@ -1,18 +1,26 @@
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import WebShooterTransition from './WebShooterTransition'
+import SignoutVideoModal from './SignoutVideoModal'
 import { useState } from 'react'
 
 export default function Navbar() {
   const { user, logout, isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const [transitionMsg, setTransitionMsg] = useState(null)
+  const [showSignoutVideo, setShowSignoutVideo] = useState(false)
 
   const handleNavClick = (destName) => {
     setTransitionMsg(`WARPING TO ${destName}...`)
   }
 
   const handleLogout = () => {
+    // Show the sign-out video first
+    setShowSignoutVideo(true)
+  }
+
+  const handleSignoutComplete = () => {
+    setShowSignoutVideo(false)
     logout()
     navigate('/login')
   }
@@ -20,6 +28,9 @@ export default function Navbar() {
   return (
     <>
       <WebShooterTransition message={transitionMsg} onDone={() => setTransitionMsg(null)} />
+      {showSignoutVideo && (
+        <SignoutVideoModal onComplete={handleSignoutComplete} />
+      )}
       <nav className="sticky top-0 z-40 bg-[#090D18]/90 backdrop-blur-xl border-b border-red-500/30 shadow-spider-glow">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
@@ -90,7 +101,7 @@ export default function Navbar() {
 
                   <button
                     onClick={handleLogout}
-                    className="btn-spider-ghost text-xs py-1.5 px-3"
+                    className="btn-spider-ghost text-xs py-1.5 px-3 cursor-pointer"
                   >
                     DISCONNECT
                   </button>
