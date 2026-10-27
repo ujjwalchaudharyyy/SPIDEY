@@ -32,11 +32,14 @@ async function start() {
   const eventsRoutes = require('./routes/events');
   const rsvpRoutes = require('./routes/rsvp');
   const registrationRoutes = require('./routes/registrations');
+  const paymentRoutes = require('./routes/payment');
 
   app.use('/api/auth', authRoutes);
   app.use('/api/events', eventsRoutes);
   app.use('/api/rsvp', rsvpRoutes);
   app.use('/api/events', registrationRoutes);
+  app.use('/api/payment', paymentRoutes);
+  app.use('/api', paymentRoutes);
 
   app.get('/api/health', (req, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
 
