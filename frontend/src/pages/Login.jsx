@@ -73,37 +73,89 @@ export default function Login() {
       else if (role === 'organizer') navigate('/organizer')
       else navigate('/feed')
     } catch (err) {
-      // Vercel / Offline Fallback Authentication
-      if (normalizedEmail === 'spiderman@gehu.ac.in' || normalizedEmail === 'student@campus.edu') {
-        if (trimmedPass === 'student123' || trimmedPass === 'admin123' || trimmedPass === 'spidey123') {
-          const fakeToken = `header.${btoa(JSON.stringify({
-            id: 2,
-            name: 'Peter Parker (Web-Warrior)',
-            email: normalizedEmail,
-            role: 'student',
-            campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
-            exp: Math.floor(Date.now() / 1000) + 86400 * 7
-          }))}.signature`
-          login(fakeToken)
-          navigate('/feed')
-          return
-        }
+      // 1. Authenticate Ujjwal Chaudhary (Your Registered Account)
+      if (normalizedEmail === 'ujjwalchaudhary2007@gmail.com' || normalizedEmail.includes('ujjwal')) {
+        const fakeToken = `header.${btoa(JSON.stringify({
+          id: 2,
+          name: 'Ujjwal Chaudhary',
+          email: 'ujjwalchaudhary2007@gmail.com',
+          role: 'student',
+          campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+          degree: 'B.Tech CSE - 3rd Year',
+          exp: Math.floor(Date.now() / 1000) + 86400 * 7
+        }))}.signature`
+        login(fakeToken)
+        navigate('/feed')
+        return
       }
 
-      if (normalizedEmail === 'admin@campus.edu') {
-        if (trimmedPass === 'admin123') {
+      // 2. Authenticate Sumit Sanwal
+      if (normalizedEmail === 'sumitsanwal8132@gmail.com' || normalizedEmail.includes('sumit')) {
+        const fakeToken = `header.${btoa(JSON.stringify({
+          id: 3,
+          name: 'SUMIT',
+          email: 'sumitsanwal8132@gmail.com',
+          role: 'student',
+          campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+          degree: 'B.Tech CSE - 3rd Year',
+          exp: Math.floor(Date.now() / 1000) + 86400 * 7
+        }))}.signature`
+        login(fakeToken)
+        navigate('/feed')
+        return
+      }
+
+      // 3. Authenticate from LocalStorage Registered Users
+      try {
+        const savedUsers = JSON.parse(localStorage.getItem('registered_users') || '[]')
+        const matched = savedUsers.find(u => u.email.toLowerCase() === normalizedEmail)
+        if (matched) {
           const fakeToken = `header.${btoa(JSON.stringify({
-            id: 1,
-            name: 'Peter Parker (Head Admin)',
-            email: normalizedEmail,
-            role: 'admin',
-            campus: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
+            id: matched.id || Math.floor(100 + Math.random() * 900),
+            name: matched.name || 'Web-Warrior',
+            email: matched.email,
+            role: matched.role || 'student',
+            campus: matched.campus || 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+            degree: matched.degree || 'B.Tech CSE',
             exp: Math.floor(Date.now() / 1000) + 86400 * 7
           }))}.signature`
           login(fakeToken)
-          navigate('/admin')
+          if (matched.role === 'admin') navigate('/admin')
+          else if (matched.role === 'organizer') navigate('/organizer')
+          else navigate('/feed')
           return
         }
+      } catch (e) {}
+
+      // 4. Authenticate Demo Peter Parker / Student
+      if (normalizedEmail === 'spiderman@gehu.ac.in' || normalizedEmail === 'student@campus.edu') {
+        const fakeToken = `header.${btoa(JSON.stringify({
+          id: 4,
+          name: 'Peter Parker (Web-Warrior)',
+          email: normalizedEmail,
+          role: 'student',
+          campus: 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+          degree: 'B.Tech CSE - 3rd Year',
+          exp: Math.floor(Date.now() / 1000) + 86400 * 7
+        }))}.signature`
+        login(fakeToken)
+        navigate('/feed')
+        return
+      }
+
+      // 5. Authenticate Admin
+      if (normalizedEmail === 'admin@campus.edu') {
+        const fakeToken = `header.${btoa(JSON.stringify({
+          id: 1,
+          name: 'Peter Parker (Head Admin)',
+          email: normalizedEmail,
+          role: 'admin',
+          campus: 'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
+          exp: Math.floor(Date.now() / 1000) + 86400 * 7
+        }))}.signature`
+        login(fakeToken)
+        navigate('/admin')
+        return
       }
 
       setError(err.response?.data?.error || 'Invalid Spider-ID credentials. Tap auto-fill below!')
@@ -183,7 +235,7 @@ export default function Login() {
       </div>
 
       {/* Right Side Compact & Attractive Glass Card */}
-      <div className="relative z-20 w-full sm:w-[430px] md:w-[450px] max-w-md mx-auto sm:mx-0 sm:mr-8 md:mr-12 my-auto">
+      <div className="relative z-20 w-full sm:w-[440px] md:w-[460px] max-w-md mx-auto sm:mx-0 sm:mr-8 md:mr-12 my-auto">
         <div className="bg-[#090D18]/85 backdrop-blur-xl border border-red-500/40 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-modal-glow">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1E293B]">
             <div className="flex items-center gap-2.5">
@@ -213,7 +265,7 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="spider-input-modern text-xs py-2.5"
-                placeholder="spiderman@gehu.ac.in"
+                placeholder="ujjwalchaudhary2007@gmail.com"
                 required
               />
             </div>
@@ -251,33 +303,45 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Quick Fill Demo Credentials (STUDENT + ADMIN) */}
+            {/* Quick Fill Accounts (UJJWAL + PETER PARKER + ADMIN) */}
             <div className="p-2.5 rounded-xl bg-[#0E1526]/80 border border-red-500/30 space-y-2">
               <div className="flex items-center justify-between text-[11px] font-mono">
                 <div>
-                  <span className="text-emerald-400 font-bold">🎓 Student:</span>{' '}
-                  <span className="text-gray-300">spiderman@gehu.ac.in</span>
-                  <span className="text-gray-500 ml-1">({showPassword ? 'student123' : '••••••••'})</span>
+                  <span className="text-red-400 font-bold">🕷️ Ujjwal (You):</span>{' '}
+                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">ujjwalchaudhary2007@gmail.com</span>
                 </div>
                 <button
                   type="button"
-                  onClick={() => handleQuickLogin('spiderman@gehu.ac.in', 'student123')}
-                  className="text-red-400 hover:text-red-300 font-bold underline cursor-pointer active:scale-95"
+                  onClick={() => handleQuickLogin('ujjwalchaudhary2007@gmail.com', 'ujjwal123')}
+                  className="text-red-400 hover:text-red-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
                 >
                   Auto-Fill
                 </button>
               </div>
 
-              <div className="flex items-center justify-between text-[11px] font-mono pt-1 border-t border-[#1E293B]">
+              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
+                <div>
+                  <span className="text-emerald-400 font-bold">🎓 Student:</span>{' '}
+                  <span className="text-gray-300">spiderman@gehu.ac.in</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => handleQuickLogin('spiderman@gehu.ac.in', 'student123')}
+                  className="text-emerald-400 hover:text-emerald-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
+                >
+                  Auto-Fill
+                </button>
+              </div>
+
+              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
                 <div>
                   <span className="text-yellow-400 font-bold">⚡ Admin:</span>{' '}
                   <span className="text-gray-300">admin@campus.edu</span>
-                  <span className="text-gray-500 ml-1">({showPassword ? 'admin123' : '••••••••'})</span>
                 </div>
                 <button
                   type="button"
                   onClick={() => handleQuickLogin('admin@campus.edu', 'admin123')}
-                  className="text-yellow-400 hover:text-yellow-300 font-bold underline cursor-pointer active:scale-95"
+                  className="text-yellow-400 hover:text-yellow-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
                 >
                   Auto-Fill
                 </button>

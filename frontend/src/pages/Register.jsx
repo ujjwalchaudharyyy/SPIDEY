@@ -79,11 +79,24 @@ export default function Register() {
         role,
         campus
       })
+      // Save to localStorage registered users
+      try {
+        const saved = JSON.parse(localStorage.getItem('registered_users') || '[]')
+        saved.push({ name, email: email.toLowerCase(), phone, degree, password, role, campus })
+        localStorage.setItem('registered_users', JSON.stringify(saved))
+      } catch (e) {}
+
       login(res.data.token)
       if (role === 'organizer') navigate('/organizer')
       else navigate('/feed')
     } catch (err) {
       // Vercel / Offline Mode Fallback
+      try {
+        const saved = JSON.parse(localStorage.getItem('registered_users') || '[]')
+        saved.push({ name, email: email.toLowerCase(), phone, degree, password, role, campus })
+        localStorage.setItem('registered_users', JSON.stringify(saved))
+      } catch (e) {}
+
       const fakeToken = `header.${btoa(JSON.stringify({
         id: Math.floor(100 + Math.random() * 900),
         name: name || 'Peter Parker',
