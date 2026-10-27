@@ -54,7 +54,7 @@ const POKEMON_ROSTER = [
 ]
 
 export default function PokeballOpeningTransition({ onComplete, onClose }) {
-  // Stages: 'wobble' (pokeball shakes) -> 'open' (ball splits & white flash) -> 'reveal' (random pokemon emerges)
+  // Stages: 'wobble' (rapid shake 0-500ms) -> 'open' (burst split 500-900ms) -> 'reveal' (random pokemon 900-2000ms) -> auto-open gallery
   const [stage, setStage] = useState('wobble')
   const [wobbleCount, setWobbleCount] = useState(0)
   const [selectedPokemon, setSelectedPokemon] = useState(null)
@@ -64,29 +64,35 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
     const randomMon = POKEMON_ROSTER[Math.floor(Math.random() * POKEMON_ROSTER.length)]
     setSelectedPokemon(randomMon)
 
-    // Sequence:
-    // 0s - 1.2s: Pokeball shakes/wobbles with red button flashing
+    // Ultra-Fast 2-Second Lightning Sequence:
+    // 0ms - 500ms: Rapid energetic wobble
     const wobbleTimer = setInterval(() => {
       setWobbleCount((c) => c + 1)
-    }, 350)
+    }, 120)
 
-    // At 1.2s: Open pokeball & trigger flash beam
+    // At 500ms: Pokéball splits and white energy beam explodes
     const openTimeout = setTimeout(() => {
       clearInterval(wobbleTimer)
       setStage('open')
-    }, 1200)
+    }, 500)
 
-    // At 1.8s: Pokemon emerges with battle aura & title
+    // At 900ms: Pokémon instantly appears with battle glow
     const revealTimeout = setTimeout(() => {
       setStage('reveal')
-    }, 1800)
+    }, 900)
+
+    // At 2100ms (Total ~2s): Automatically transitions straight to the 4K memories gallery!
+    const autoCompleteTimeout = setTimeout(() => {
+      onComplete()
+    }, 2100)
 
     return () => {
       clearInterval(wobbleTimer)
       clearTimeout(openTimeout)
       clearTimeout(revealTimeout)
+      clearTimeout(autoCompleteTimeout)
     }
-  }, [])
+  }, [onComplete])
 
   return (
     <div className="fixed inset-0 z-50 bg-black/95 backdrop-blur-2xl flex flex-col items-center justify-center p-4 overflow-hidden select-none">
@@ -102,7 +108,7 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
         ✕
       </button>
 
-      {/* STAGE 1 & 2: POKÉBALL WOBBLE & OPEN */}
+      {/* STAGE 1 & 2: POKÉBALL RAPID WOBBLE & BURST OPEN */}
       {(stage === 'wobble' || stage === 'open') && (
         <div className="relative flex flex-col items-center justify-center">
           {/* Holographic Arena Ring */}
@@ -111,29 +117,28 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
 
           {/* Pokeball Graphic */}
           <div
-            className={`relative w-44 h-44 sm:w-52 sm:h-52 transition-transform duration-300 ${
+            className={`relative w-44 h-44 sm:w-52 sm:h-52 transition-transform duration-150 ${
               stage === 'wobble'
                 ? wobbleCount % 2 === 0
-                  ? '-rotate-12 translate-x-1'
-                  : 'rotate-12 -translate-x-1'
-                : 'scale-110'
+                  ? '-rotate-12 translate-x-1.5 scale-105'
+                  : 'rotate-12 -translate-x-1.5 scale-105'
+                : 'scale-125'
             }`}
           >
             {/* Top Half (Red) */}
             <div
-              className={`absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-red-500 to-red-700 rounded-t-full border-4 border-black transition-transform duration-500 origin-bottom ${
-                stage === 'open' ? '-translate-y-8 -rotate-12 opacity-80' : ''
-              } shadow-[0_0_35px_rgba(239,68,68,0.6)]`}
+              className={`absolute top-0 left-0 right-0 h-1/2 bg-gradient-to-b from-red-500 to-red-700 rounded-t-full border-4 border-black transition-transform duration-300 origin-bottom ${
+                stage === 'open' ? '-translate-y-12 -rotate-12 opacity-80' : ''
+              } shadow-[0_0_35px_rgba(239,68,68,0.7)]`}
             >
-              {/* Highlight sheen */}
               <div className="absolute top-2 left-6 w-12 h-6 bg-white/40 rounded-full rotate-[-25deg] blur-[1px]" />
             </div>
 
             {/* Bottom Half (White) */}
             <div
-              className={`absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-gray-200 to-white rounded-b-full border-4 border-black transition-transform duration-500 origin-top ${
-                stage === 'open' ? 'translate-y-8 rotate-12 opacity-80' : ''
-              } shadow-[0_0_35px_rgba(255,255,255,0.4)]`}
+              className={`absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-gray-200 to-white rounded-b-full border-4 border-black transition-transform duration-300 origin-top ${
+                stage === 'open' ? 'translate-y-12 rotate-12 opacity-80' : ''
+              } shadow-[0_0_35px_rgba(255,255,255,0.5)]`}
             />
 
             {/* Middle Dividing Black Belt */}
@@ -144,7 +149,7 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
               <div
                 className={`w-7 h-7 rounded-full border-2 border-black transition-all ${
                   stage === 'open'
-                    ? 'bg-yellow-300 scale-125 shadow-[0_0_30px_#fde047]'
+                    ? 'bg-yellow-300 scale-150 shadow-[0_0_40px_#fde047]'
                     : 'bg-red-500 animate-ping'
                 }`}
               />
@@ -152,38 +157,41 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
 
             {/* Energy Beam Burst on Open */}
             {stage === 'open' && (
-              <div className="absolute inset-0 flex items-center justify-center z-30">
-                <div className="w-4 h-4 rounded-full bg-white animate-ping scale-[12] opacity-90 shadow-[0_0_80px_#ffffff]" />
+              <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
+                <div className="w-6 h-6 rounded-full bg-white animate-ping scale-[18] opacity-90 shadow-[0_0_100px_#ffffff]" />
               </div>
             )}
           </div>
 
-          <div className="mt-8 text-center space-y-1.5">
+          <div className="mt-8 text-center space-y-1">
             <p className="text-xs font-mono text-yellow-400 font-bold uppercase tracking-widest animate-pulse">
-              {stage === 'wobble' ? '⚡ CATCHING POKÉMON DATA...' : '💥 POKÉBALL OPENING!'}
+              {stage === 'wobble' ? '⚡ OPENING POKÉBALL...' : '💥 POKÉMON APPEARING!'}
             </p>
             <p className="text-sm sm:text-base font-chakra italic font-bold text-white">
-              WATCH THE CODE HACKATHON ARENA
+              WATCH THE CODE HACKATHON
             </p>
           </div>
         </div>
       )}
 
-      {/* STAGE 3: POKÉMON REVEAL SCREEN */}
+      {/* STAGE 3: FAST POKÉMON REVEAL (1s flash before auto gallery) */}
       {stage === 'reveal' && selectedPokemon && (
-        <div className="relative flex flex-col items-center justify-center max-w-lg w-full text-center space-y-6 animate-scale-up">
+        <div 
+          onClick={onComplete}
+          className="relative flex flex-col items-center justify-center max-w-lg w-full text-center space-y-4 animate-scale-up cursor-pointer"
+        >
           {/* Holographic Glowing Burst Behind Pokémon */}
           <div
-            className="absolute -inset-10 rounded-full blur-3xl opacity-60 animate-pulse pointer-events-none"
+            className="absolute -inset-10 rounded-full blur-3xl opacity-70 animate-pulse pointer-events-none"
             style={{ backgroundColor: selectedPokemon.glow }}
           />
 
           {/* Pokémon Character Graphic */}
-          <div className="relative w-56 h-56 sm:w-72 sm:h-72 flex items-center justify-center">
+          <div className="relative w-52 h-52 sm:w-64 sm:h-64 flex items-center justify-center">
             <img
               src={selectedPokemon.img}
               alt={selectedPokemon.name}
-              className="w-full h-full object-contain drop-shadow-[0_0_35px_rgba(255,255,255,0.7)] animate-bounce-gentle"
+              className="w-full h-full object-contain drop-shadow-[0_0_40px_rgba(255,255,255,0.8)] animate-bounce-gentle"
             />
             <span
               className="absolute -bottom-2 px-3 py-1 rounded-full text-xs font-chakra italic font-bold text-black border-2 border-black shadow-lg"
@@ -194,34 +202,23 @@ export default function PokeballOpeningTransition({ onComplete, onClose }) {
           </div>
 
           {/* Pokémon Name & Title */}
-          <div className="space-y-2 z-10">
-            <span className="text-[11px] font-mono text-yellow-300 tracking-widest uppercase block">
-              ⚡ WILD POKÉMON APPEARED!
+          <div className="space-y-1.5 z-10">
+            <span className="text-[11px] font-mono text-yellow-300 tracking-widest uppercase block font-bold">
+              ⚡ WILD {selectedPokemon.name.toUpperCase()} APPEARED!
             </span>
             <h2 className="spider-heading text-3xl sm:text-4xl text-white tracking-wider">
               {selectedPokemon.name}
             </h2>
-            <p className="text-xs sm:text-sm font-mono text-gray-300 font-semibold">
-              {selectedPokemon.title}
-            </p>
-            <div className="inline-block px-4 py-1.5 rounded-xl bg-black/60 border border-white/20 text-xs font-mono text-white italic">
+            <div className="inline-block px-4 py-1 rounded-xl bg-black/70 border border-white/20 text-xs font-mono text-white italic">
               "{selectedPokemon.cry}"
             </div>
           </div>
 
-          {/* Proceed to 4K Gallery Button */}
-          <div className="pt-2 z-10 flex flex-col sm:flex-row items-center gap-3">
-            <button
-              onClick={onComplete}
-              className="btn-spider-pill py-3 px-8 text-xs sm:text-sm shadow-[0_0_30px_rgba(234,179,8,0.5)] active:scale-95"
-              style={{
-                background: `linear-gradient(135deg, ${selectedPokemon.color} 0%, #000000 100%)`
-              }}
-            >
-              <span>ENTER 4K MEMORIES GALLERY</span>
-              <span>➔</span>
-            </button>
+          {/* Quick Progress Bar (indicates auto entering gallery) */}
+          <div className="w-56 h-1.5 bg-gray-800 rounded-full overflow-hidden border border-yellow-400/40 z-10">
+            <div className="h-full bg-gradient-to-r from-yellow-400 to-amber-500 animate-[progress_1.1s_linear_forwards]" />
           </div>
+          <span className="text-[10px] font-mono text-gray-400">Opening 4K Gallery...</span>
         </div>
       )}
     </div>
