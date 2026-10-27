@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react'
 import EventRegistrationModal from './EventRegistrationModal'
 import EventGalleryModal from './EventGalleryModal'
+import EventVideoModal from './EventVideoModal'
 
 const categoryStyles = {
   Academic: 'bg-blue-950/60 text-blue-300 border-blue-500/40',
@@ -44,6 +45,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const [showRegisterModal, setShowRegisterModal] = useState(false)
   const [registeredTicket, setRegisteredTicket] = useState(null)
   const [showGalleryModal, setShowGalleryModal] = useState(false)
+  const [showVideoModal, setShowVideoModal] = useState(false)
 
   // Robust gallery extraction from both event.gallery and event.photos
   const gallery = (event.gallery && event.gallery.length > 0)
@@ -143,6 +145,7 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   const isPast = event.event_date < todayStr
   const isPresent = event.event_date === todayStr
   const hasGallery = (event.gallery && event.gallery.length > 0) || (event.photos && event.photos.length > 0)
+  const hasVideo = !!event.video_url
 
   const handleOpenGallery = () => {
     if (hasGallery) {
@@ -271,7 +274,18 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
             </>
           )}
 
-          {/* Winner Callout Banner */}
+                    {/* Video Play Banner */}
+          {hasVideo && isPast && !event.winner_team && (
+            <div
+              className="absolute bottom-2 left-2 right-2 z-10 bg-black/80 border border-indigo-500/40 rounded-xl px-3 py-1.5 text-[11px] font-mono text-indigo-300 flex items-center justify-between shadow-lg backdrop-blur-md cursor-pointer hover:border-indigo-400/70 transition-all"
+              onClick={(e) => { e.stopPropagation(); setShowVideoModal(true) }}
+            >
+              <span className="truncate font-medium flex items-center gap-1.5"><span>▶</span> WATCH VIDEO</span>
+              <span className="text-[10px] bg-indigo-500 text-white px-2 py-0.5 rounded-md font-bold ml-1 flex-shrink-0">PLAY</span>
+            </div>
+          )}
+
+{/* Winner Callout Banner */}
           {event.winner_team && (
             <div className="absolute bottom-2 left-2 right-2 z-10 bg-black/80 border border-yellow-500/40 rounded-xl px-3 py-1.5 text-[11px] font-mono text-yellow-300 flex items-center justify-between shadow-lg backdrop-blur-md">
               <span className="truncate font-medium flex items-center gap-1.5">
@@ -446,9 +460,18 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
                     <span>📸 MEMORIES</span>
                   </button>
                 )}
-                <div className={`py-2.5 text-xs font-mono text-gray-400 bg-[#0E1526]/80 border border-gray-800 rounded-xl text-center ${hasGallery ? 'px-3' : 'w-full'}`}>
+                <div className={`py-2.5 text-xs font-mono text-gray-400 bg-[#0E1526]/80 border border-gray-800 rounded-xl text-center ${(hasGallery || hasVideo) ? 'px-3' : 'w-full'}`}>
                   Concluded
                 </div>
+                {hasVideo && (
+                  <button
+                    type="button"
+                    onClick={() => setShowVideoModal(true)}
+                    className="flex-1 py-2.5 px-3 rounded-xl text-xs font-chakra italic font-bold tracking-wider bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-700 text-white hover:brightness-110 shadow-md flex items-center justify-center gap-1.5 cursor-pointer transition-all active:scale-95"
+                  >
+                    <span>▶ WATCH VIDEO</span>
+                  </button>
+                )}
               </div>
             )}
 
@@ -481,7 +504,16 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
         </div>
       </div>
 
-      {/* Event Registration Modal Popup */}
+            {/* Video Modal */}
+      {showVideoModal && hasVideo && (
+        <EventVideoModal
+          videoUrl={event.video_url}
+          title={event.video_title || event.title}
+          onClose={() => setShowVideoModal(false)}
+        />
+      )}
+
+{/* Event Registration Modal Popup */}
       {showRegisterModal && (
         <EventRegistrationModal
           event={event}

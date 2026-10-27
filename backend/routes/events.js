@@ -5,6 +5,10 @@ const { authenticateToken } = require('./auth');
 const router = express.Router();
 
 const EVENT_ENRICHMENTS = {
+  1: {
+    video_url: "/assets/videos/web_drone.mp4",
+    video_title: "Himalayan Web-Drone Flight Demo & Aerial Surveillance"
+  },
   2: {
     image_url: "/assets/events/graphite_live_3.jpg",
     gallery: [
@@ -12,7 +16,10 @@ const EVENT_ENRICHMENTS = {
       "/assets/events/graphite_live_1.jpg",
       "/assets/events/graphite_live_2.jpg",
       "/assets/events/graphite_live_4.jpg",
-      "/assets/events/graphite_live_5.jpg"
+      "/assets/events/graphite_live_5.jpg",
+      "/assets/events/graphite_live_6.jpg",
+      "/assets/events/graphite_live_7.jpg",
+      "/assets/events/graphite_live_8.jpg"
     ]
   },
   4: {

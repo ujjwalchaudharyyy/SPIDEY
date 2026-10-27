@@ -59,6 +59,8 @@ export const DEFAULT_EVENTS = [
     venue: "Main Oval Ground, GEHU Bhimtal",
     campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
     image_url: "/assets/campuses/bhimtal.png",
+    video_url: "/assets/videos/web_drone.mp4",
+    video_title: "Himalayan Web-Drone Flight Demo & Aerial Surveillance",
     event_date: "2026-10-15",
     event_time: "11:00 AM",
     organizer_name: "Aero-Spidey Club Bhimtal",
@@ -78,7 +80,10 @@ export const DEFAULT_EVENTS = [
       "/assets/events/graphite_live_1.jpg",
       "/assets/events/graphite_live_2.jpg",
       "/assets/events/graphite_live_4.jpg",
-      "/assets/events/graphite_live_5.jpg"
+      "/assets/events/graphite_live_5.jpg",
+      "/assets/events/graphite_live_6.jpg",
+      "/assets/events/graphite_live_7.jpg",
+      "/assets/events/graphite_live_8.jpg"
     ],
     live_status: "🔴 Live Hackathon Underway (27-28 Oct 2026)",
     event_date: "2026-10-27",
@@ -2625,7 +2630,7 @@ export const DEFAULT_REGISTRATIONS = [
     github_link: null,
     details_json: { registrationSource: "Gmail Verified Auto-Fill Portal" },
     created_at: "2026-10-22T09:00:00.000Z"
-  }
+  },
 
   // --- Haldwani Events ---
 
