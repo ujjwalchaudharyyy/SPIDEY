@@ -758,6 +758,7 @@ async function initDB() {
       image_url: "/assets/events/aws_ideathon/aws_ideathon_poster.jpg",
       gallery: JSON.stringify([
         "/assets/events/aws_ideathon/aws_ideathon_poster.jpg",
+        "/assets/events/aws_ideathon/aws_ideathon_bhimtal_team.jpg",
         "/assets/events/aws_ideathon/aws_ideathon_team.jpg",
         "/assets/events/aws_ideathon/aws_ideathon_venue_crowd.jpg",
         "/assets/events/aws_ideathon/aws_ideathon_stall_interaction.jpg",
@@ -768,6 +769,11 @@ async function initDB() {
           url: "/assets/events/aws_ideathon/aws_ideathon_poster.jpg",
           title: "Official INNOVATE 1.0 Event Poster",
           caption: "The official INNOVATE 1.0 event poster featuring Graphic Era Hill University Bhimtal Campus against the Himalayan hills, AWS Cloud Club GEHU BTL, and IEEE Student Branch."
+        },
+        {
+          url: "/assets/events/aws_ideathon/aws_ideathon_bhimtal_team.jpg",
+          title: "Organizing Team Under GEHU Bhimtal Campus Emblem",
+          caption: "AWS Cloud Club and IEEE Student Branch student coordinators gathered under the Graphic Era Hill University emblem with the official AWS branded desk."
         },
         {
           url: "/assets/events/aws_ideathon/aws_ideathon_team.jpg",
