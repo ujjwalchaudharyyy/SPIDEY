@@ -22,24 +22,15 @@ export default function SignoutVideoModal({ onComplete }) {
 
   return (
     <div className="fixed inset-0 z-50 bg-black flex items-center justify-center overflow-hidden select-none">
-      {/* Background Ambient Glow */}
-      <video
-        src="/assets/videos/signout_video.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-40 scale-125 pointer-events-none"
-      />
+      {/* Dynamic Spider Glow Background (Lightweight CSS, Zero Video Lag) */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.18)_0%,_rgba(15,0,0,0.7)_55%,_#000000_100%)] pointer-events-none" />
 
-      {/* Radial overlay */}
-      <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/40 to-black/90 pointer-events-none z-[1]" />
-
-      {/* Main Full HD Video */}
+      {/* Main Ultra-Smooth Full HD Video */}
       <div className="relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-0">
         <video
           ref={videoRef}
           src="/assets/videos/signout_video.mp4"
+          preload="auto"
           autoPlay
           playsInline
           webkit-playsinline="true"
