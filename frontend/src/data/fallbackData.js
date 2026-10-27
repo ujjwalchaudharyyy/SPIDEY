@@ -867,3 +867,63 @@ export const DEFAULT_REGISTRATIONS = [
     created_at: "2026-10-27T17:00:00.000Z"
   }
 ];
+
+
+export const DEFAULT_GOOGLE_SHEETS = {
+  13: {
+    eventId: 13,
+    eventName: "Hack The Winter '27 (Himalayan Edition)",
+    sheetId: "1HTW2027_Himalayan_Winter_Hackathon_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1HTW2027_Himalayan_Winter_Hackathon_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_HTW2027_AutoSync/exec",
+    autoSync: true
+  },
+  14: {
+    eventId: 14,
+    eventName: "AstroVerse Space-Tech & Galactic Exploration",
+    sheetId: "1ASTRO2026_SpaceTech_Stargazing_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1ASTRO2026_SpaceTech_Stargazing_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_ASTRO2026_AutoSync/exec",
+    autoSync: true
+  },
+  15: {
+    eventId: 15,
+    eventName: "Infotsav '26 Flagship Technical Fest",
+    sheetId: "1INFOTSAV2026_Robowars_Coding_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1INFOTSAV2026_Robowars_Coding_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_INFOTSAV_AutoSync/exec",
+    autoSync: true
+  },
+  16: {
+    eventId: 16,
+    eventName: "Spardha '26 Inter-Campus Sports League",
+    sheetId: "1SPARDHA2026_InterCampus_Sports_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1SPARDHA2026_InterCampus_Sports_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_SPARDHA_AutoSync/exec",
+    autoSync: true
+  },
+  17: {
+    eventId: 17,
+    eventName: "Grafest '26 Bhimtal Winter Cultural Fest",
+    sheetId: "1GRAFEST2026_Bhimtal_Concert_VIP_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1GRAFEST2026_Bhimtal_Concert_VIP_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_GRAFEST_AutoSync/exec",
+    autoSync: true
+  },
+  18: {
+    eventId: 18,
+    eventName: "Kalakriti & Goonj Youth Arts & Theatre",
+    sheetId: "1KALAKRITI2026_Youth_Theatre_Arts_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1KALAKRITI2026_Youth_Theatre_Arts_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_KALAKRITI_AutoSync/exec",
+    autoSync: true
+  },
+  19: {
+    eventId: 19,
+    eventName: "AeroTrek Himalayan Eco-Drone Expedition",
+    sheetId: "1AEROTREK2026_Drone_AerialSurvey_Registry",
+    sheetUrl: "https://docs.google.com/spreadsheets/d/1AEROTREK2026_Drone_AerialSurvey_Registry/edit?usp=sharing",
+    webhookUrl: "https://script.google.com/macros/s/AKfycbz_AEROTREK_AutoSync/exec",
+    autoSync: true
+  }
+};

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
+import { syncRegistrationToGoogleSheet } from '../utils/googleSheetsSync'
 
 export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const { user, token } = useAuth()
@@ -134,6 +135,8 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
       try {
         const stored = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
         localStorage.setItem('spider_event_registrations', JSON.stringify([newReg, ...stored]))
+        // Automatically sync new registration to the event's Google Sheet
+        syncRegistrationToGoogleSheet(newReg)
       } catch (e) {}
 
       setTicket(finalTicketCode)
@@ -175,6 +178,8 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
       try {
         const stored = JSON.parse(localStorage.getItem('spider_event_registrations') || '[]')
         localStorage.setItem('spider_event_registrations', JSON.stringify([newReg, ...stored]))
+        // Automatically sync new registration to the event's Google Sheet
+        syncRegistrationToGoogleSheet(newReg)
       } catch (e) {}
 
       setTicket(generatedCode)
