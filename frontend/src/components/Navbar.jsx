@@ -69,6 +69,15 @@ export default function Navbar() {
                     </Link>
                   )}
 
+                  <Link
+                    to="/placements"
+                    onClick={() => handleNavClick('PLACEMENTS CELL')}
+                    className="text-gray-300 hover:text-emerald-400 font-mono text-xs sm:text-sm font-semibold transition tracking-wider flex items-center gap-1.5 px-3 py-1.5 rounded-lg hover:bg-emerald-950/40"
+                  >
+                    <span>💼</span>
+                    <span>PLACEMENTS</span>
+                  </Link>
+
                   {user.role === 'organizer' && (
                     <Link
                       to="/organizer"
@@ -108,6 +117,14 @@ export default function Navbar() {
                 </>
               ) : (
                 <div className="flex items-center space-x-3">
+                  <Link
+                    to="/placements"
+                    onClick={() => handleNavClick('PLACEMENTS CELL')}
+                    className="text-gray-300 hover:text-emerald-400 font-mono text-xs sm:text-sm font-semibold transition tracking-wider flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg hover:bg-emerald-950/40"
+                  >
+                    <span>💼</span>
+                    <span>PLACEMENTS</span>
+                  </Link>
                   <Link
                     to="/login"
                     className="text-gray-300 hover:text-red-400 font-mono text-xs sm:text-sm font-semibold transition"

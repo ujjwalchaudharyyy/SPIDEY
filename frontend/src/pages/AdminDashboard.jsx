@@ -3,7 +3,7 @@ import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
 import Navbar from '../components/Navbar'
 import EventCard from '../components/EventCard'
-import { DEFAULT_EVENTS, DEFAULT_REGISTRATIONS } from '../data/fallbackData'
+import { DEFAULT_EVENTS, DEFAULT_REGISTRATIONS, DEFAULT_PENDING_EVENTS } from '../data/fallbackData'
 import {
   getEventGoogleSheetsConfig,
   updateEventGoogleSheetConfig,
@@ -171,9 +171,13 @@ export default function AdminDashboard() {
     }
 
     const resolvedEvents = fetchedAll.length > 0 ? fetchedAll : DEFAULT_EVENTS
+    const fallbackPending = (DEFAULT_PENDING_EVENTS && DEFAULT_PENDING_EVENTS.length > 0)
+      ? DEFAULT_PENDING_EVENTS
+      : []
+    const fromEventsPending = resolvedEvents.filter(e => e.status === 'pending')
     const resolvedPending = fetchedPending.length > 0
       ? fetchedPending
-      : resolvedEvents.filter(e => e.status === 'pending')
+      : (fromEventsPending.length > 0 ? fromEventsPending : fallbackPending)
 
     const mergedRegistrations = getMergedRegistrations(fetchedRegs)
 

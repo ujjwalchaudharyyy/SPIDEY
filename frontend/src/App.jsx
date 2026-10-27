@@ -6,6 +6,7 @@ import Register from './pages/Register'
 import StudentFeed from './pages/StudentFeed'
 import OrganizerDashboard from './pages/OrganizerDashboard'
 import AdminDashboard from './pages/AdminDashboard'
+import Placement from './pages/Placement'
 import ProtectedRoute from './components/ProtectedRoute'
 import IntroVideoModal from './components/IntroVideoModal'
 
@@ -75,6 +76,7 @@ export default function App() {
           <AdminDashboard />
         </ProtectedRoute>
       } />
+      <Route path="/placements" element={<Placement />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
