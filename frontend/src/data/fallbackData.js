@@ -219,6 +219,66 @@ export const DEFAULT_EVENTS = [
     registration_status: "Workshop Seats Open",
     highlight_tag: "WORKSHOP & ACTIVITY"
   },
+  {
+    id: 33,
+    title: "INNOVATE 1.0 – AWS Ideathon",
+    description: "INNOVATE 1.0 was a technology and innovation-focused ideathon organized at Graphic Era Hill University, Bhimtal Campus. The event brought together students passionate about cloud computing, technology, and innovation. It provided an engaging platform for students to explore ideas, interact with fellow innovators, and showcase their interest in building technology-driven solutions.",
+    overview: "INNOVATE 1.0 was a technology and innovation-focused ideathon organized at Graphic Era Hill University, Bhimtal Campus. The event brought together students passionate about cloud computing, technology, and innovation. It provided an engaging platform for students to explore ideas, interact with fellow innovators, and showcase their interest in building technology-driven solutions.",
+    highlights_title: "IDEATHON & CLOUD HIGHLIGHTS",
+    highlights: [
+      "Hands-on learning and innovation challenge for bright minds passionate about cloud and technology",
+      "Organized jointly by AWS Cloud Club (GEHU BTL) and IEEE Student Branch, GEHU Bhimtal",
+      "Interactive AWS Cloud Club stall with live guidance, registration support, and technology discussions",
+      "Active student participation exploring cloud computing, architecture, and technology-driven ideas",
+      "Collaborative platform connecting aspiring innovators and student developers across campus"
+    ],
+    closing_message: "Empowering bright student minds to innovate, build, and scale transformative technology solutions in the Himalayan hills of Bhimtal.",
+    category: "Technology / Innovation / Ideathon",
+    venue: "Graphic Era Hill University, Bhimtal Campus",
+    campus: "GRAPHIC ERA HILL UNIVERSITY BHIMTAL",
+    theme: "Innovate • Build • Scale",
+    image_url: "/assets/events/aws_ideathon/aws_ideathon_poster.jpg",
+    gallery: [
+      "/assets/events/aws_ideathon/aws_ideathon_poster.jpg",
+      "/assets/events/aws_ideathon/aws_ideathon_team.jpg",
+      "/assets/events/aws_ideathon/aws_ideathon_venue_crowd.jpg",
+      "/assets/events/aws_ideathon/aws_ideathon_stall_interaction.jpg",
+      "/assets/events/aws_ideathon/aws_ideathon_discussions.jpg"
+    ],
+    photos: [
+      {
+        url: "/assets/events/aws_ideathon/aws_ideathon_poster.jpg",
+        title: "Official INNOVATE 1.0 Event Poster",
+        caption: "The official INNOVATE 1.0 event poster featuring Graphic Era Hill University Bhimtal Campus against the Himalayan hills, AWS Cloud Club GEHU BTL, and IEEE Student Branch."
+      },
+      {
+        url: "/assets/events/aws_ideathon/aws_ideathon_team.jpg",
+        title: "Organizing Team & Student Coordinators",
+        caption: "Student coordinators and organizing team from AWS Cloud Club and IEEE Student Branch gathered behind the registration desk with the INNOVATE 1.0 display."
+      },
+      {
+        url: "/assets/events/aws_ideathon/aws_ideathon_venue_crowd.jpg",
+        title: "Campus Venue & Student Gathering",
+        caption: "High-angle view of the bustling campus venue showing enthusiastic students gathered around the AWS Cloud Club information and registration desk."
+      },
+      {
+        url: "/assets/events/aws_ideathon/aws_ideathon_stall_interaction.jpg",
+        title: "Interactive AWS Cloud Club Stall",
+        caption: "Students interacting closely at the AWS Cloud Club stall, exploring ideathon tracks, and scanning registration details on mobile devices."
+      },
+      {
+        url: "/assets/events/aws_ideathon/aws_ideathon_discussions.jpg",
+        title: "Event Discussions & Tech Exchange",
+        caption: "Students and organizers engaged in active discussions about cloud computing ideas and event participation with the scenic campus courtyard in view."
+      }
+    ],
+    event_date: "2026-08-19",
+    display_date: "August 19, 2026",
+    event_time: "10:00 AM",
+    organizer_name: "AWS Cloud Club (GEHU BTL) & IEEE Student Branch, GEHU Bhimtal",
+    rsvp_count: 165,
+    status: "approved"
+  },
 
   // 2. GEHU Haldwani
   {
