@@ -1,8 +1,6 @@
 import { useState, useRef, useMemo } from 'react'
 
 export default function GraphiteCertificateModal({ isOpen, onClose, participants = [], user }) {
-  if (!isOpen) return null
-
   // Ensure only admin or super-admin can access
   const isAdmin = user?.role === 'admin' || user?.adminType === 'super' || user?.email === 'ujjwalchaudhary2007@gmail.com'
 
@@ -43,10 +41,12 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
 
   // Merge default + custom participants
   const allParticipants = useMemo(() => {
-    const combined = [...customParticipants, ...participants]
+    const safeParticipants = Array.isArray(participants) ? participants : []
+    const combined = [...customParticipants, ...safeParticipants]
     const seen = new Set()
     return combined.filter(p => {
-      const key = (p.student_email || p.roll_no || p.student_name).toLowerCase()
+      if (!p) return false
+      const key = String(p.student_email || p.roll_no || p.student_name || p.id || Math.random()).toLowerCase()
       if (seen.has(key)) return false
       seen.add(key)
       return true
@@ -55,7 +55,7 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
 
   // Multi-select / Batch selection state
   const [selectedEmails, setSelectedEmails] = useState(() => {
-    return new Set(allParticipants.slice(0, 5).map(p => p.student_email))
+    return new Set(allParticipants.slice(0, 5).map(p => p?.student_email).filter(Boolean))
   })
 
   // Email Template State
@@ -363,7 +363,7 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
     ctx.stroke()
     ctx.fillStyle = '#334155'
     ctx.font = 'bold 14px "Inter", sans-serif'
-    ctx.fillText(signee1Title.toUpperCase(), 320, footY + 32)
+    ctx.fillText((signee1Title || '').toUpperCase(), 320, footY + 32)
     ctx.fillStyle = '#64748B'
     ctx.font = '12px "Inter", sans-serif'
     ctx.fillText('GEHU Bhimtal Campus', 320, footY + 52)
@@ -405,7 +405,7 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
     ctx.stroke()
     ctx.fillStyle = '#334155'
     ctx.font = 'bold 14px "Inter", sans-serif'
-    ctx.fillText(signee2Title.toUpperCase(), canvas.width - 320, footY + 32)
+    ctx.fillText((signee2Title || '').toUpperCase(), canvas.width - 320, footY + 32)
     ctx.fillStyle = '#64748B'
     ctx.font = '12px "Inter", sans-serif'
     ctx.fillText('Convener, Graphite 2026', canvas.width - 320, footY + 52)

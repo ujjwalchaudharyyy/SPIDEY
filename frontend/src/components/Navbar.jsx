@@ -61,7 +61,7 @@ export default function Navbar() {
             <div className="flex items-center space-x-4">
               {isAuthenticated ? (
                 <>
-                  {(user.role === 'student' || user.role === 'admin' || user.email === 'admin@campus.edu' || user.email === 'ujjwalchaudhary2007@gmail.com') && (
+                  {(user?.role === 'student' || user?.role === 'admin' || user?.email === 'admin@campus.edu' || user?.email === 'ujjwalchaudhary2007@gmail.com') && (
                     <>
                       <Link
                         to="/feed"
@@ -91,7 +91,7 @@ export default function Navbar() {
                     <span>PLACEMENTS</span>
                   </Link>
 
-                  {user.role === 'organizer' && (
+                  {user?.role === 'organizer' && (
                     <Link
                       to="/organizer"
                       onClick={() => handleNavClick('ORGANIZER HQ')}
@@ -102,7 +102,7 @@ export default function Navbar() {
                     </Link>
                   )}
 
-                  {user.role === 'admin' && (
+                  {user?.role === 'admin' && (
                     <Link
                       to="/admin"
                       onClick={() => handleNavClick('SANCTUM ADMIN')}
@@ -116,8 +116,8 @@ export default function Navbar() {
                   {/* User Profile Badge */}
                   <div className="hidden md:flex items-center space-x-2 pl-3 border-l border-red-500/30">
                     <div className="text-right">
-                      <p className="text-xs font-chakra font-bold text-white">{user.name}</p>
-                      <p className="text-[10px] font-mono text-red-400 capitalize">{user.role} • {user.campus?.split(' ')?.[3] || 'HQ'}</p>
+                      <p className="text-xs font-chakra font-bold text-white">{user?.name || 'User'}</p>
+                      <p className="text-[10px] font-mono text-red-400 capitalize">{user?.role || 'Guest'} • {user?.campus?.split(' ')?.[3] || 'HQ'}</p>
                     </div>
                   </div>
 

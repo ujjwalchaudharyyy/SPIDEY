@@ -2077,12 +2077,14 @@ export default function AdminDashboard() {
         )}
 
         {/* 🎓 Graphite Bhimtal Official Certificate Studio & Mailer Modal (Admin Exclusive) */}
-        <GraphiteCertificateModal
-          isOpen={showGraphiteCertModal}
-          onClose={() => setShowGraphiteCertModal(false)}
-          participants={graphiteParticipants}
-          user={user}
-        />
+        {showGraphiteCertModal && (
+          <GraphiteCertificateModal
+            isOpen={showGraphiteCertModal}
+            onClose={() => setShowGraphiteCertModal(false)}
+            participants={graphiteParticipants}
+            user={user}
+          />
+        )}
 
       </div>
     </div>
