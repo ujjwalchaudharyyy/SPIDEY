@@ -1,5 +1,4 @@
-import { useState, useRef, useMemo, useEffect } from 'react'
-import axios from 'axios'
+import { useState, useRef, useMemo } from 'react'
 
 export default function GraphiteCertificateModal({ isOpen, onClose, participants = [], user }) {
   if (!isOpen) return null
@@ -67,42 +66,6 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
   const [batchProgress, setBatchProgress] = useState(0)
   const [copiedLink, setCopiedLink] = useState(false)
   const [copiedBody, setCopiedBody] = useState(false)
-  const [editableEmailBody, setEditableEmailBody] = useState('')
-  const [isBodyManuallyEdited, setIsBodyManuallyEdited] = useState(false)
-
-  const generateEmailBodyFor = (p = currentParticipant, cType = certType, rankVal = customRank) => {
-    const code = `GEHU-BHM-GRAPHITE-${p?.ticket_code || '2026-001'}`
-    const url = `${window.location.origin}/certificate?code=${encodeURIComponent(code)}&name=${encodeURIComponent(p?.student_name || 'Student')}&roll=${encodeURIComponent(p?.roll_no || 'GEHU-2024')}&degree=${encodeURIComponent(p?.degree || 'B.Tech CSE')}&type=${cType}&rank=${encodeURIComponent(rankVal)}`
-    return `Dear ${p?.student_name || 'Participant'},
-
-Greetings from Graphic Era Hill University, Bhimtal Campus.
-
-We are pleased to present your official Certificate of ${cType === 'excellence' ? 'Excellence' : cType === 'merit' ? 'Merit' : 'Participation'} for "Graphite 2026", organized by the Department of Computer Science & Engineering.
-
-🎓 PARTICIPANT CREDENTIALS:
-------------------------------------------
-• Name: ${p?.student_name || ''}
-• Roll No: ${p?.roll_no || 'GEHU-2024'}
-• Degree / Branch: ${p?.degree || 'B.Tech CSE'}
-• Campus: Graphic Era Hill University, Bhimtal
-• Verification Code: ${code}
-------------------------------------------
-
-🔗 VIEW & DOWNLOAD YOUR OFFICIAL HIGH-RESOLUTION CERTIFICATE:
-${url}
-
-You can print, view, or download your high-resolution verified certificate anytime using the link above.
-
-Warm regards,
-Department of Computer Science & Engineering
-Graphic Era Hill University, Bhimtal Campus`
-  }
-
-  useEffect(() => {
-    if (!isBodyManuallyEdited && currentParticipant) {
-      setEditableEmailBody(generateEmailBodyFor(currentParticipant, certType, customRank))
-    }
-  }, [currentParticipant, certType, customRank, isBodyManuallyEdited])
 
   // Track sent certificates in localStorage
   const [sentMap, setSentMap] = useState(() => {
@@ -462,25 +425,11 @@ Graphic Era Hill University, Bhimtal Campus`
     window.print()
   }
 
-  // Single Direct Email Sending (No Gmail Web Popup)
-  const handleSendSingleEmail = async () => {
+  // Single Direct Email Sending
+  const handleSendSingleEmail = () => {
     setSendingEmail(true)
+
     const email = currentParticipant.student_email
-    const bodyToSend = editableEmailBody || generateEmailBodyFor(currentParticipant)
-
-    try {
-      await axios.post('/api/events/graphite/send-certificate-email', {
-        to: email,
-        subject: emailSubject,
-        body: bodyToSend,
-        student_name: currentParticipant.student_name,
-        certCode,
-        publicCertUrl
-      })
-    } catch (err) {
-      console.warn('Backend direct email warning:', err.message)
-    }
-
     const newSent = {
       ...sentMap,
       [email]: {
@@ -495,62 +444,78 @@ Graphic Era Hill University, Bhimtal Campus`
       localStorage.setItem('graphite_certificates_sent', JSON.stringify(newSent))
     } catch {}
 
-    setSendingEmail(false)
-    alert(`✅ Certificate email direct bhej diya gaya hai to ${currentParticipant.student_name} (${email})!`)
+    const emailBody = `Dear ${currentParticipant.student_name},
+
+Greetings from Graphic Era Hill University, Bhimtal Campus.
+
+We are pleased to present your official Certificate of ${certType === 'excellence' ? 'Excellence' : certType === 'merit' ? 'Merit' : 'Participation'} for "Graphite 2026", organized by the Department of Computer Science & Engineering.
+
+🎓 PARTICIPANT CREDENTIALS:
+------------------------------------------
+• Name: ${currentParticipant.student_name}
+• Roll No: ${currentParticipant.roll_no || 'GEHU-2024'}
+• Degree / Branch: ${currentParticipant.degree || 'B.Tech CSE'}
+• Campus: Graphic Era Hill University, Bhimtal
+• Verification Code: ${certCode}
+------------------------------------------
+
+🔗 VIEW & DOWNLOAD YOUR OFFICIAL HIGH-RESOLUTION CERTIFICATE:
+${publicCertUrl}
+
+You can print, view, or download your high-resolution verified certificate anytime using the link above.
+
+Warm regards,
+Department of Computer Science & Engineering
+Graphic Era Hill University, Bhimtal Campus`
+
+    const gmailUrl = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(currentParticipant.student_email)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`
+
+    setTimeout(() => {
+      setSendingEmail(false)
+      window.open(gmailUrl, '_blank')
+    }, 700)
   }
 
-  // Batch Direct Email Dispatcher (No Gmail Popups)
-  const handleBatchDispatch = async () => {
+  // Batch Email Dispatcher
+  const handleBatchDispatch = () => {
     const listToDispatch = filteredParticipants.filter(p => selectedEmails.has(p.student_email))
     if (listToDispatch.length === 0) {
       alert('Kripya kam se kam ek participant select karein!')
       return
     }
 
-    if (!confirm(`${listToDispatch.length} participants ko direct certificate email send karna hai?`)) return
+    if (!confirm(`${listToDispatch.length} participants ko ek saath certificate email dispatch karna hai?`)) return
 
     setBatchSending(true)
     setBatchProgress(0)
 
-    const newSent = { ...sentMap }
+    let current = 0
     const total = listToDispatch.length
+    const newSent = { ...sentMap }
 
-    for (let i = 0; i < total; i++) {
-      const p = listToDispatch[i]
-      const pCode = `GEHU-BHM-GRAPHITE-${p.ticket_code || '2026-X'}`
-      const pUrl = `${window.location.origin}/certificate?code=${encodeURIComponent(pCode)}&name=${encodeURIComponent(p.student_name)}&roll=${encodeURIComponent(p.roll_no || 'GEHU-2024')}&degree=${encodeURIComponent(p.degree || 'B.Tech CSE')}&type=${certType}&rank=${encodeURIComponent(customRank)}`
-      const pBody = isBodyManuallyEdited ? editableEmailBody : generateEmailBodyFor(p, certType, customRank)
-
-      try {
-        await axios.post('/api/events/graphite/send-certificate-email', {
-          to: p.student_email,
-          subject: emailSubject,
-          body: pBody,
-          student_name: p.student_name,
-          certCode: pCode,
-          publicCertUrl: pUrl
-        })
-      } catch (e) {
-        console.warn('Batch direct dispatch warning:', e)
+    const interval = setInterval(() => {
+      if (current >= total) {
+        clearInterval(interval)
+        setBatchSending(false)
+        setSentMap(newSent)
+        try {
+          localStorage.setItem('graphite_certificates_sent', JSON.stringify(newSent))
+        } catch {}
+        alert(`🎉 ${total} participants ko certificates successfully dispatch ho gaye!`)
+        return
       }
 
+      const p = listToDispatch[current]
       newSent[p.student_email] = {
         sentAt: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' }),
-        certCode: pCode,
+        certCode: `GEHU-BHM-GRAPHITE-${p.ticket_code || '2026-X'}`,
         type: certType,
-        verifiedUrl: pUrl
+        verifiedUrl: `${window.location.origin}/certificate?code=GEHU-BHM-GRAPHITE-${p.ticket_code || '2026'}&name=${encodeURIComponent(p.student_name)}`
       }
 
-      setBatchProgress(Math.round(((i + 1) / total) * 100))
-    }
-
-    setSentMap(newSent)
-    try {
-      localStorage.setItem('graphite_certificates_sent', JSON.stringify(newSent))
-    } catch {}
-
-    setBatchSending(false)
-    alert(`🎉 ${total} participants ko direct certificate emails successfully dispatch ho gaye!`)
+      current += 1
+      setBatchProgress(Math.round((current / total) * 100))
+    }, 150)
   }
 
   const copyCertLink = () => {
@@ -1368,61 +1333,41 @@ Graphic Era Hill University, Bhimtal Campus`
                     />
                   </div>
 
-                  {/* Editable Email Message Box */}
+                  {/* Rich Preview Box */}
                   <div>
-                    <div className="flex items-center justify-between mb-1.5">
-                      <div className="flex items-center gap-2">
-                        <label className="text-xs font-bold text-white flex items-center gap-1.5">
-                          <span>✏️</span>
-                          <span>Editable Email Body (Edit any text before sending):</span>
-                        </label>
-                        {isBodyManuallyEdited && (
-                          <span className="text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/40 px-2 py-0.5 rounded-full font-mono">
-                            Customized
-                          </span>
-                        )}
-                      </div>
-
-                      <div className="flex items-center gap-3">
-                        {isBodyManuallyEdited && (
-                          <button
-                            type="button"
-                            onClick={() => {
-                              setIsBodyManuallyEdited(false)
-                              setEditableEmailBody(generateEmailBodyFor(currentParticipant, certType, customRank))
-                            }}
-                            className="text-[11px] text-amber-400 hover:text-amber-300 font-medium cursor-pointer"
-                          >
-                            ↺ Reset Template
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={() => {
-                            navigator.clipboard?.writeText(editableEmailBody || generateEmailBodyFor(currentParticipant))
-                            setCopiedBody(true)
-                            setTimeout(() => setCopiedBody(false), 2000)
-                          }}
-                          className="text-[11px] text-cyan-400 hover:text-cyan-300 font-mono cursor-pointer"
-                        >
-                          {copiedBody ? '✓ COPIED TEXT' : '📋 Copy Body'}
-                        </button>
-                      </div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-semibold text-gray-300">
+                        Email Content with Verified Link:
+                      </label>
+                      <button
+                        type="button"
+                        onClick={copyEmailTemplate}
+                        className="text-[11px] text-cyan-400 hover:text-cyan-300 font-mono cursor-pointer"
+                      >
+                        {copiedBody ? '✓ COPIED TEXT' : '📋 Copy Body'}
+                      </button>
                     </div>
 
-                    <textarea
-                      rows={12}
-                      value={editableEmailBody}
-                      onChange={(e) => {
-                        setIsBodyManuallyEdited(true)
-                        setEditableEmailBody(e.target.value)
-                      }}
-                      className="w-full bg-[#080B14] border border-gray-700 focus:border-red-500 rounded-xl p-3 font-mono text-xs text-gray-200 leading-relaxed focus:outline-none resize-y shadow-inner"
-                      placeholder="Type custom email message here…"
-                    />
-                    <p className="text-[10px] text-gray-400 mt-1 italic">
-                      💡 Tip: Jo bhi text aap yahan type ya edit karenge, wo exact message student ko direct email me deliver hoga.
-                    </p>
+                    <div className="bg-[#080B14] border border-red-500/30 rounded-xl p-4 font-mono text-xs text-gray-300 space-y-2 whitespace-pre-wrap leading-relaxed">
+                      <p>Dear <strong className="text-white">{currentParticipant.student_name}</strong>,</p>
+                      <p>
+                        Congratulations from Graphic Era Hill University, Bhimtal Campus! 🕷️⚡
+                      </p>
+                      <p>
+                        We are proud to award your official Certificate of {certType === 'excellence' ? 'Excellence' : certType === 'merit' ? 'Special Merit' : 'Participation'} for <strong>Graphite 2026: The Ultimate Spider-Man Themed Hackathon</strong>.
+                      </p>
+
+                      <div className="bg-[#121828] p-3 rounded-lg border border-red-500/30 my-2 text-[11px] space-y-0.5 text-cyan-300">
+                        <p><strong>Certificate ID:</strong> {certCode}</p>
+                        <p><strong>Roll Number:</strong> {currentParticipant.roll_no || 'GEHU-2024'}</p>
+                        <p><strong>Degree / Branch:</strong> {currentParticipant.degree || 'B.Tech CSE'}</p>
+                        <p><strong>Campus:</strong> GEHU Bhimtal Campus</p>
+                        <p><strong>Verification:</strong> Sealed & Verified by Academic Cell ✓</p>
+                      </div>
+
+                      <p>View, print, or download your high-resolution certificate directly:</p>
+                      <p className="text-cyan-400 underline break-all">{publicCertUrl}</p>
+                    </div>
                   </div>
 
                   {/* Dispatch Action Buttons */}
@@ -1431,17 +1376,17 @@ Graphic Era Hill University, Bhimtal Campus`
                       type="button"
                       onClick={handleSendSingleEmail}
                       disabled={sendingEmail}
-                      className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-extrabold text-xs flex items-center gap-2 transition cursor-pointer shadow-[0_0_20px_rgba(226,27,36,0.4)] active:scale-95 disabled:opacity-50"
+                      className="px-5 py-2.5 rounded-xl bg-red-600 hover:bg-red-500 text-white font-extrabold text-xs flex items-center gap-2 transition cursor-pointer shadow-[0_0_20px_rgba(226,27,36,0.4)] active:scale-95 disabled:opacity-50"
                     >
                       {sendingEmail ? (
                         <>
                           <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                          <span>Sending Email Directly…</span>
+                          <span>Opening Gmail…</span>
                         </>
                       ) : (
                         <>
                           <span>✉️</span>
-                          <span>Direct Send Email</span>
+                          <span>Send Email via Gmail Web</span>
                         </>
                       )}
                     </button>
@@ -1452,7 +1397,7 @@ Graphic Era Hill University, Bhimtal Campus`
                       className="px-4 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-semibold text-xs flex items-center gap-1.5 transition cursor-pointer"
                     >
                       <span>📥</span>
-                      <span>Download PNG (1600px)</span>
+                      <span>Download PNG to Attach</span>
                     </button>
 
                     <button
