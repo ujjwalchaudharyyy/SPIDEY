@@ -396,9 +396,9 @@ export default function Login() {
           style={{
             willChange: 'transform',
             transform: 'translate3d(0, 0, 0)',
-            imageRendering: '-webkit-optimize-contrast',
+            imageRendering: 'auto',
             backfaceVisibility: 'hidden',
-            filter: 'contrast(1.03) brightness(1.02)'
+            filter: 'contrast(1.10) saturate(1.12) brightness(1.03)'
           }}
         />
       ) : (

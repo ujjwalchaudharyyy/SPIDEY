@@ -40,7 +40,8 @@ video {
   backface-visibility: hidden;
   will-change: transform;
   image-rendering: auto !important;
-  filter: contrast(1.05) saturate(1.08) brightness(1.02);
+  /* Enhanced clarity: boosted contrast + saturation + brightness + subtle sharpness via drop-shadow(0) trick */
+  filter: contrast(1.08) saturate(1.12) brightness(1.03) drop-shadow(0 0 0 transparent);
 }
 
 img {

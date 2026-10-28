@@ -53,10 +53,10 @@ export default function SignoutVideoModal({ onComplete }) {
           controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
           onEnded={onComplete}
           style={{
-            imageRendering: '-webkit-optimize-contrast',
+            imageRendering: 'auto',
             transform: 'translate3d(0, 0, 0)',
             backfaceVisibility: 'hidden',
-            filter: 'contrast(1.03) brightness(1.02)'
+            filter: 'contrast(1.12) saturate(1.15) brightness(1.04)'
           }}
           className="w-full max-h-[88vh] sm:max-h-full sm:h-full object-contain sm:object-cover rounded-2xl sm:rounded-none border border-red-500/40 sm:border-0 shadow-[0_0_40px_rgba(226,27,36,0.5)] sm:shadow-none"
         />
