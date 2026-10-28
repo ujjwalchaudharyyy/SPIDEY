@@ -571,9 +571,6 @@ export default function Login() {
                   <option value="spiderman@gehu.ac.in|student123" className="bg-[#090D18] text-emerald-300">
                     🎓 Student: spiderman@gehu.ac.in
                   </option>
-                  <option value="admin@campus.edu|admin123" className="bg-[#090D18] text-yellow-300">
-                    ⚡ General Admin: admin@campus.edu
-                  </option>
                 </select>
               </div>
             </div>
