@@ -2,8 +2,6 @@ import { useState, useRef, useMemo, useEffect } from 'react'
 import axios from 'axios'
 
 export default function GraphiteCertificateModal({ isOpen, onClose, participants = [], user }) {
-  if (!isOpen) return null
-
   // Ensure only admin or super-admin can access
   const isAdmin = user?.role === 'admin' || user?.adminType === 'super' || user?.email === 'ujjwalchaudhary2007@gmail.com'
 
@@ -597,6 +595,9 @@ Graphic Era Hill University, Bhimtal Campus`
       </div>
     )
   }
+
+  // Guard: render nothing when modal is closed (placed after all hooks to satisfy Rules of Hooks)
+  if (!isOpen) return null
 
   return (
     <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-2 sm:p-4 overflow-y-auto">
