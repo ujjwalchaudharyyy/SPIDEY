@@ -61,6 +61,8 @@ export default function OrganizerDashboard() {
     e.preventDefault()
     setSubmitting(true)
 
+    const safeEventDate = (form.event_date || '').replace(/^(202[0-5])/, '2026')
+
     const newEvent = {
       id: Date.now(),
       title: form.title.trim(),
@@ -68,12 +70,14 @@ export default function OrganizerDashboard() {
       category: form.category || 'Technical',
       venue: form.venue.trim(),
       campus: form.campus || campuses[0],
-      event_date: form.event_date,
+      event_date: safeEventDate || form.event_date,
       event_time: form.event_time,
       image_url: '/assets/events/upcoming/hackathon_promo.jpg',
       organizer_id: user?.id || 1,
       organizer_name: user?.name || 'Organizer',
       status: 'approved',
+      is_custom: true,
+      is_upcoming: true,
       created_at: new Date().toISOString()
     }
 

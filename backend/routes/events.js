@@ -214,10 +214,12 @@ router.post('/submit', authenticateToken, (req, res) => {
   const organizerName = req.user.name || 'Organizer';
   const initialStatus = req.user.role === 'admin' ? 'approved' : 'pending';
 
+  const normalizedDate = (event_date || '').replace(/^(202[0-5])/, '2026');
+
   const result = queryRun(`
     INSERT INTO events (title, description, category, venue, campus, image_url, event_date, event_time, organizer_id, organizer_name, status)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-  `, [title, description, category, venue, selectedCampus, image_url || '', event_date, event_time, organizerId, organizerName, initialStatus]);
+  `, [title, description, category, venue, selectedCampus, image_url || '', normalizedDate || event_date, event_time, organizerId, organizerName, initialStatus]);
 
   const event = queryGet('SELECT * FROM events WHERE id = ?', [result.lastInsertRowid]);
   res.status(201).json(event);
@@ -239,12 +241,14 @@ router.post('/admin-create', authenticateToken, (req, res) => {
   const organizerId = req.user.id || 1;
   const organizerName = req.user.name || 'Admin';
 
+  const normalizedDate = (event_date || '').replace(/^(202[0-5])/, '2026');
+
   const result = queryRun(`
     INSERT INTO events (title, description, category, venue, campus, image_url, event_date, event_time, organizer_id, organizer_name, status)
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'approved')
   `, [
     title, description, category, venue, selectedCampus,
-    image_url || '', event_date, event_time,
+    image_url || '', normalizedDate || event_date, event_time,
     organizerId, organizerName
   ]);
 

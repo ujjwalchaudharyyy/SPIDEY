@@ -154,6 +154,9 @@ export default function AdminDashboard() {
 
     const chosenCampus = (!isSuperAdmin && user?.campus && user.campus !== 'ALL') ? user.campus : createForm.campus
 
+    // If user's device entered a year earlier than 2026 (e.g. 2024 or 2025), normalize it to 2026 to align with campus timeline
+    const safeEventDate = (createForm.event_date || '').replace(/^(202[0-5])/, '2026')
+
     const newEvent = {
       id: Date.now(),
       title: createForm.title.trim(),
@@ -161,12 +164,15 @@ export default function AdminDashboard() {
       category: createForm.category || 'Technical',
       venue: createForm.venue.trim(),
       campus: chosenCampus,
-      event_date: createForm.event_date,
+      event_date: safeEventDate || createForm.event_date,
       event_time: createForm.event_time,
       image_url: createForm.image_url?.trim() || '/assets/events/upcoming/hackathon_promo.jpg',
       organizer_id: user?.id || 1,
       organizer_name: user?.name || 'Admin',
       status: 'approved',
+      is_custom: true,
+      created_by_admin: true,
+      is_upcoming: true,
       created_at: new Date().toISOString()
     }
 

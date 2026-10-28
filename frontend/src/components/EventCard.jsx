@@ -157,22 +157,29 @@ export default function EventCard({ event, onRsvp, isStudent, isRsvped, showStat
   }
 
   const todayStr = '2026-10-27'
-  const isPast = event.event_date < todayStr
-  const isPresent = event.event_date === todayStr
+  const realToday = new Date().toISOString().split('T')[0]
+
+  const isCustomOrNew = event.is_custom || event.created_by_admin || (event.id && Number(event.id) > 1000000000000) || event.organizer_name === 'Admin'
+
+  const isPast = !isCustomOrNew && (
+    (event.status === 'completed' || event.status === 'concluded') ||
+    (event.event_date < todayStr && event.event_date < realToday) ||
+    (Number(event.id) <= 100 && event.event_date < todayStr)
+  )
+  const isPresent = event.event_date === todayStr || event.event_date === realToday
 
   // Calculate days until event
   const getDaysUntil = () => {
     if (!event.event_date) return 999
-    const today = new Date('2026-10-27T00:00:00')
+    const baseDate = new Date(`${todayStr}T00:00:00`)
     const evDate = new Date(`${event.event_date}T00:00:00`)
-    const diff = evDate.getTime() - today.getTime()
+    const diff = evDate.getTime() - baseDate.getTime()
     return Math.ceil(diff / (1000 * 60 * 60 * 24))
   }
   const daysUntil = getDaysUntil()
 
-  // Strict deadline: Registration closes 5-6 days before the event date
-  // For ongoing event today (like Graphite on 2026-10-27), daysUntil is 0 -> registration closed!
-  const isRegistrationClosed = isPast || isPresent || (daysUntil >= 0 && daysUntil <= 5)
+  // For newly created or custom events, registration is ALWAYS open for students!
+  const isRegistrationClosed = !isCustomOrNew && (isPast || (daysUntil >= 0 && daysUntil <= 5 && Number(event.id) <= 100))
   const isRegistrationOpen = !isPast && !isRegistrationClosed
   const hasGallery = (event.gallery && event.gallery.length > 0) || (event.photos && event.photos.length > 0)
   const hasVideo = !!event.video_url

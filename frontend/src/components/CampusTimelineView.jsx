@@ -35,10 +35,38 @@ const THEME_ACCENTS = {
 export default function CampusTimelineView({ campus, events, rsvpedIds, onRsvp, onDelete }) {
   const [showPhotoModal, setShowPhotoModal] = useState(false)
   const todayStr = '2026-10-27'
+  const realToday = new Date().toISOString().split('T')[0]
 
-  const pastEvents = [...events.filter(e => e.event_date < todayStr)].sort((a, b) => b.event_date.localeCompare(a.event_date))
-  const presentEvents = events.filter(e => e.event_date === todayStr)
-  const futureEvents = [...events.filter(e => e.event_date > todayStr)].sort((a, b) => a.event_date.localeCompare(b.event_date))
+  // Intelligent event timeline classifier:
+  // Custom or newly created events by Admin/Organizer are active events, NEVER concluded archives!
+  const isPastEvent = (e) => {
+    if (!e) return false
+    if (e.status === 'completed' || e.status === 'concluded') return true
+
+    const isNewlyCreated = e.is_custom || e.created_by_admin || (e.id && Number(e.id) > 1000000000000) || e.organizer_name === 'Admin'
+    if (isNewlyCreated) {
+      // Newly created events should NEVER go to past archives
+      return false
+    }
+
+    const date = e.event_date || ''
+    // Historical seed events from seed data (ID <= 100 with memories/winner)
+    if (Number(e.id) <= 100 && (e.gallery?.length > 0 || e.winner_team)) {
+      return date < todayStr
+    }
+
+    return date < todayStr && date < realToday
+  }
+
+  const isPresentEvent = (e) => {
+    if (!e) return false
+    const date = e.event_date || ''
+    return date === todayStr || date === realToday
+  }
+
+  const pastEvents = [...events.filter(e => isPastEvent(e))].sort((a, b) => (b.event_date || '').localeCompare(a.event_date || ''))
+  const presentEvents = events.filter(e => !isPastEvent(e) && isPresentEvent(e))
+  const futureEvents = [...events.filter(e => !isPastEvent(e) && !isPresentEvent(e))].sort((a, b) => (a.event_date || '').localeCompare(b.event_date || ''))
 
   const theme = THEME_ACCENTS[campus.id] || THEME_ACCENTS.bhimtal
 
