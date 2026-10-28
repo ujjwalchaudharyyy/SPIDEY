@@ -633,74 +633,63 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     genPaymentQR()
   }, [currentPayAmount, event.id])
 
-  // Strict 12-Digit NPCI UPI UTR Bank Verification
+  // Transaction ID / UPI UTR Bank Verification
   const executeVerification = (rawUtr) => {
     setVerificationError('')
-    const clean = (rawUtr || upiUtrInput).trim().replace(/\s/g, '')
+    const clean = (rawUtr || upiUtrInput).trim().replace(/[\s-]/g, '').toUpperCase()
 
     if (!clean) {
-      setVerificationError('Please enter your 12-digit UPI UTR / Reference number from GPay / PhonePe / Paytm.')
+      setVerificationError('Please enter your 12-digit UPI UTR or Transaction Reference number.')
       setPaymentVerified(false)
       setVerifiedUtr('')
       return
     }
 
-    // Must be exactly 12 numeric digits
-    if (!/^\d{12}$/.test(clean)) {
-      setVerificationError('Invalid UTR format. UPI Reference number must be exactly 12 numeric digits (e.g. 630129845123). Letters, symbols, and wrong lengths are rejected.')
+    // Must be between 10 and 22 characters
+    if (clean.length < 10 || clean.length > 22) {
+      setVerificationError(`Invalid length (${clean.length} characters). Genuine UPI UTR / Transaction Reference must be 10–22 characters long (e.g. 430129845123).`)
       setPaymentVerified(false)
       setVerifiedUtr('')
       return
     }
 
-    // Reject all identical digits (e.g. 000000000000, 111111111111, 999999999999, etc.)
-    if (/^(\d)\1{11}$/.test(clean)) {
-      setVerificationError('Bank Verification Failed: Repetitive dummy UTR numbers (e.g. 111111111111, 999999999999) are rejected by the UPI clearing server.')
+    // Only alphanumeric characters allowed
+    if (!/^[A-Z0-9]+$/.test(clean)) {
+      setVerificationError('Invalid characters. Transaction Reference must contain only digits and letters.')
       setPaymentVerified(false)
       setVerifiedUtr('')
       return
     }
 
-    // Reject 5 or more repeating consecutive digits (e.g. 11111..., 99999...)
-    if (/(\d)\1{4,}/.test(clean)) {
-      setVerificationError('Bank Verification Failed: Fake repeating digit sequences detected in UTR. Enter the genuine transaction ID from your receipt.')
+    // Reject all identical digits / chars (e.g. 000000000000, 111111111111, 999999999999, AAAAAAAAAAAA)
+    if (/^(\w)\1{9,}$/.test(clean)) {
+      setVerificationError('Bank Verification Failed: Repetitive dummy reference numbers (e.g. 111111111111, 999999999999) are rejected.')
       setPaymentVerified(false)
       setVerifiedUtr('')
       return
     }
 
-    // Reject sequential dummy numbers
-    const sequential = ['123456789012', '012345678901', '987654321098', '234567890123', '987654321012']
+    // Reject 6 or more consecutive identical digits
+    if (/(\d)\1{5,}/.test(clean)) {
+      setVerificationError('Bank Verification Failed: Fake repeating digit sequences (e.g. 999999...) detected.')
+      setPaymentVerified(false)
+      setVerifiedUtr('')
+      return
+    }
+
+    // Reject obvious sequential test numbers
+    const sequential = ['123456789012', '012345678901', '987654321098', '234567890123', '1234567890', '0987654321']
     if (sequential.includes(clean)) {
-      setVerificationError('Bank Verification Failed: Sequential test numbers are not valid UPI transaction IDs.')
+      setVerificationError('Bank Verification Failed: Sequential test numbers are not valid banking transaction IDs.')
       setPaymentVerified(false)
       setVerifiedUtr('')
       return
     }
 
-    // NPCI UPI Standard structure: YDDD...
-    // First digit is year (2024=4, 2025=5, 2026=6, 2027=7)
-    const yearDigit = parseInt(clean[0], 10)
-    if (yearDigit < 4 || yearDigit > 7) {
-      setVerificationError('Bank Verification Failed: Invalid NPCI UPI Year code. UPI UTRs for valid active transactions must start with 4, 5, 6, or 7.')
-      setPaymentVerified(false)
-      setVerifiedUtr('')
-      return
-    }
-
-    // Digits 2-4: Julian day of year (001 to 366)
-    const julianDay = parseInt(clean.substring(1, 4), 10)
-    if (julianDay < 1 || julianDay > 366) {
-      setVerificationError(`Bank Verification Failed: Invalid NPCI Julian calendar day code (${julianDay}). No banking settlement recorded for this date.`)
-      setPaymentVerified(false)
-      setVerifiedUtr('')
-      return
-    }
-
-    // Check if previously used/redeemed
+    // Check duplicate usage across completed registrations
     const used = JSON.parse(localStorage.getItem('spider_verified_utrs') || '[]')
     if (used.includes(clean)) {
-      setVerificationError('Bank Verification Failed: This UTR has already been redeemed for an event ticket. Please use a unique payment transaction.')
+      setVerificationError('Bank Verification Failed: This transaction ID has already been redeemed for an event ticket. Please use a unique payment transaction.')
       setPaymentVerified(false)
       setVerifiedUtr('')
       return
@@ -713,15 +702,15 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
       setVerifiedUtr(clean)
       setTransactionId(`UPI-${clean}`)
       localStorage.setItem('spider_verified_utrs', JSON.stringify([clean, ...used]))
-    }, 350)
+    }, 300)
   }
 
   const handleVerifyUtr = () => executeVerification(upiUtrInput)
 
-  // 1-Click Instant Auto Demo UTR (Generates genuine-format NPCI UTR)
+  // 1-Click Instant Auto Demo UTR (Generates genuine 12-digit UPI UTR)
   const handleAutoFillDemoUtr = () => {
-    // Valid NPCI UPI UTR: Year 6 (2026), Julian day 301 (Oct 28), 8-digit unique bank sequence
-    const demoUtr = '6301' + Math.floor(10000000 + Math.random() * 89999999)
+    // Valid 12-digit UPI reference number
+    const demoUtr = '430' + Math.floor(100000000 + Math.random() * 899999999)
     setUpiUtrInput(demoUtr)
     executeVerification(demoUtr)
   }
@@ -1571,11 +1560,11 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
               <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
-                  maxLength={12}
+                  maxLength={22}
                   disabled={paymentVerified}
                   value={upiUtrInput}
                   onChange={(e) => {
-                    const val = e.target.value.replace(/\D/g, '')
+                    const val = e.target.value.replace(/[^a-zA-Z0-9-]/g, '').toUpperCase()
                     setUpiUtrInput(val)
                     setVerificationError('')
                     if (paymentVerified) {
@@ -1583,8 +1572,8 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                       setVerifiedUtr('')
                     }
                   }}
-                  placeholder="e.g. 630129845123"
-                  className="flex-1 bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white font-mono text-xs tracking-wider focus:outline-none focus:border-emerald-500 disabled:opacity-60"
+                  placeholder="e.g. 430192847102 or T241028123456"
+                  className="flex-1 bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white font-mono text-xs tracking-wider focus:outline-none focus:border-emerald-500 disabled:opacity-75"
                 />
 
                 {!paymentVerified ? (
@@ -1604,9 +1593,22 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                     )}
                   </button>
                 ) : (
-                  <span className="px-4 py-2 rounded-lg bg-emerald-950 text-emerald-400 text-xs font-mono font-bold flex items-center gap-1 border border-emerald-500/40">
-                    <span>✓ Confirmed</span>
-                  </span>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="px-3.5 py-2 rounded-lg bg-emerald-950 text-emerald-400 text-xs font-mono font-bold flex items-center gap-1 border border-emerald-500/40">
+                      <span>✓ Verified</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setPaymentVerified(false)
+                        setVerifiedUtr('')
+                      }}
+                      className="px-2.5 py-2 rounded-lg bg-gray-800 hover:bg-gray-700 text-gray-300 text-xs font-semibold cursor-pointer border border-gray-700 transition"
+                      title="Edit transaction reference"
+                    >
+                      ✏️ Edit
+                    </button>
+                  </div>
                 )}
               </div>
 
