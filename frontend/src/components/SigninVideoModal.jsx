@@ -5,6 +5,17 @@ export default function SigninVideoModal({ onComplete }) {
   const [hasSound, setHasSound] = useState(true)
 
   useEffect(() => {
+    // Keyboard shortcut to skip signin transition instantly
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+        onComplete?.()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onComplete])
+
+  useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
@@ -74,8 +85,10 @@ export default function SigninVideoModal({ onComplete }) {
           style={{
             willChange: 'transform',
             transform: 'translate3d(0, 0, 0)',
+            imageRendering: '-webkit-optimize-contrast',
             backfaceVisibility: 'hidden',
-            WebkitBackfaceVisibility: 'hidden'
+            WebkitBackfaceVisibility: 'hidden',
+            filter: 'contrast(1.05) saturate(1.06)'
           }}
         />
       </div>
@@ -93,8 +106,23 @@ export default function SigninVideoModal({ onComplete }) {
         </div>
       </div>
 
-      {/* Top Controls: Audio Toggle */}
+      {/* Top Controls: Skip & Audio Toggle */}
       <div className="absolute top-4 right-4 sm:top-6 sm:right-8 z-30 flex items-center gap-2">
+        {/* Quick Skip Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            onComplete?.()
+          }}
+          className="px-3 py-1.5 sm:px-4 sm:py-2 rounded-full bg-red-950/90 hover:bg-red-900 border border-red-500/80 text-white font-mono text-[10px] sm:text-xs flex items-center gap-1.5 backdrop-blur-md shadow-spider-glow cursor-pointer transition-all active:scale-95"
+          title="Skip to Dashboard"
+        >
+          <span>⏭️</span>
+          <span className="font-bold">SKIP</span>
+          <span className="text-[10px] text-red-300">➔</span>
+        </button>
+
         {/* Audio Toggle */}
         <button
           type="button"

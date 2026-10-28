@@ -15,10 +15,23 @@ export default function Register() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [isVideoMuted, setIsVideoMuted] = useState(false)
+  const [isVideoHidden, setIsVideoHidden] = useState(false)
   const videoRef = useRef(null)
 
   const { login } = useAuth()
   const navigate = useNavigate()
+
+  const toggleSkipVideo = () => {
+    setIsVideoHidden(prev => {
+      const next = !prev
+      if (next && videoRef.current) {
+        try { videoRef.current.pause() } catch (e) {}
+      } else if (!next && videoRef.current) {
+        try { videoRef.current.play() } catch (e) {}
+      }
+      return next
+    })
+  }
 
   useEffect(() => {
     if (videoRef.current) {
@@ -142,34 +155,58 @@ export default function Register() {
   return (
     <div className="relative min-h-screen w-full overflow-hidden flex items-center justify-center p-4 bg-black">
       {/* 4K Video Background with sign.mp4 & fallback */}
-      <video
-        ref={videoRef}
-        src="/assets/videos/sign.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        webkit-playsinline="true"
-        x5-playsinline="true"
-        disablePictureInPicture
-        controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
-        onError={(e) => {
-          if (!e.target.dataset.fallback) {
-            e.target.dataset.fallback = '1'
-            e.target.src = '/assets/videos/login_bg.mp4'
-            e.target.play().catch(() => {})
-          }
-        }}
-        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
-        style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)', imageRendering: '-webkit-optimize-contrast', filter: 'contrast(1.04) saturate(1.05)' }}
-      />
+      {!isVideoHidden ? (
+        <video
+          ref={videoRef}
+          src="/assets/videos/sign.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          disablePictureInPicture
+          controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
+          onError={(e) => {
+            if (!e.target.dataset.fallback) {
+              e.target.dataset.fallback = '1'
+              e.target.src = '/assets/videos/login_bg.mp4'
+              e.target.play().catch(() => {})
+            }
+          }}
+          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
+          style={{
+            willChange: 'transform',
+            transform: 'translate3d(0, 0, 0)',
+            imageRendering: '-webkit-optimize-contrast',
+            backfaceVisibility: 'hidden',
+            filter: 'contrast(1.05) saturate(1.06)'
+          }}
+        />
+      ) : (
+        <div className="absolute inset-0 z-0 bg-[#060810] bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.18)_0%,_rgba(10,13,24,0.9)_65%,_#030509_100%)] pointer-events-none" />
+      )}
 
       {/* Cyber Overlay Gradients */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/85 via-black/40 to-black/85 pointer-events-none" />
 
-      {/* Top Floating Controls: Sound Toggle */}
+      {/* Top Floating Controls: Skip Video & Sound Toggle */}
       <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-30 flex items-center gap-2">
+        {/* Skip Video / Play Video Toggle */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleSkipVideo()
+          }}
+          className="bg-red-950/90 hover:bg-red-900 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full sm:rounded-xl border border-red-500/70 text-[10px] sm:text-xs font-mono flex items-center gap-1.5 sm:gap-2 backdrop-blur-md transition-all shadow-spider-glow cursor-pointer active:scale-95"
+          title={isVideoHidden ? 'Play background video' : 'Skip background video'}
+        >
+          <span className="text-xs sm:text-sm">{isVideoHidden ? '▶️' : '⏭️'}</span>
+          <span className="font-semibold">{isVideoHidden ? 'PLAY VIDEO' : 'SKIP VIDEO'}</span>
+        </button>
+
         {/* Sound Toggle */}
         <button
           type="button"

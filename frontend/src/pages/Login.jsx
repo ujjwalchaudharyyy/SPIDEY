@@ -11,6 +11,7 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [isAudioActive, setIsAudioActive] = useState(false)
+  const [isVideoHidden, setIsVideoHidden] = useState(false)
   const [showSigninVideo, setShowSigninVideo] = useState(false)
   const [pendingDestination, setPendingDestination] = useState('')
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -21,6 +22,18 @@ export default function Login() {
 
   const { login, isAuthenticated, user } = useAuth()
   const navigate = useNavigate()
+
+  const toggleSkipVideo = () => {
+    setIsVideoHidden(prev => {
+      const next = !prev
+      if (next && videoRef.current) {
+        try { videoRef.current.pause() } catch (e) {}
+      } else if (!next && videoRef.current) {
+        try { videoRef.current.play() } catch (e) {}
+      }
+      return next
+    })
+  }
 
   useEffect(() => {
     const video = videoRef.current
@@ -361,37 +374,61 @@ export default function Login() {
 
     <div
       onClick={ensureSoundOnInteraction}
-      className="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex items-center justify-center p-4 sm:p-6 bg-black"
+      className="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex items-center justify-center p-3 sm:p-6 bg-black"
     >
       {/* 4K Background Video */}
-      <video
-        ref={videoRef}
-        src="/assets/videos/login_bg.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        webkit-playsinline="true"
-        x5-playsinline="true"
-        disablePictureInPicture
-        controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
-        onError={(e) => {
-          if (!e.target.dataset.fallback) {
-            e.target.dataset.fallback = '1'
-            e.target.src = '/assets/videos/login_bg.mp4'
-            e.target.play().catch(() => {})
-          }
-        }}
-        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
-        style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)', imageRendering: '-webkit-optimize-contrast', filter: 'contrast(1.04) saturate(1.05)' }}
-      />
+      {!isVideoHidden ? (
+        <video
+          ref={videoRef}
+          src="/assets/videos/login_bg.mp4"
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          webkit-playsinline="true"
+          x5-playsinline="true"
+          disablePictureInPicture
+          controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
+          onError={(e) => {
+            if (!e.target.dataset.fallback) {
+              e.target.dataset.fallback = '1'
+              e.target.src = '/assets/videos/login_bg.mp4'
+              e.target.play().catch(() => {})
+            }
+          }}
+          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
+          style={{
+            willChange: 'transform',
+            transform: 'translate3d(0, 0, 0)',
+            imageRendering: '-webkit-optimize-contrast',
+            backfaceVisibility: 'hidden',
+            filter: 'contrast(1.05) saturate(1.06)'
+          }}
+        />
+      ) : (
+        <div className="absolute inset-0 z-0 bg-[#060810] bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.18)_0%,_rgba(10,13,24,0.9)_65%,_#030509_100%)] pointer-events-none" />
+      )}
 
       {/* Cyber Gradient Overlays: responsive so phone video shines through */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/85 via-black/40 to-black/85 pointer-events-none" />
 
-      {/* Top Floating Controls: Sound Toggle */}
+      {/* Top Floating Controls: Skip Video & Sound Toggle */}
       <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-30 flex items-center gap-2">
+        {/* Skip Video / Play Video Toggle */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            toggleSkipVideo()
+          }}
+          className="bg-red-950/90 hover:bg-red-900 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full sm:rounded-xl border border-red-500/70 text-[10px] sm:text-xs font-mono flex items-center gap-1.5 sm:gap-2 backdrop-blur-md transition-all shadow-spider-glow cursor-pointer active:scale-95"
+          title={isVideoHidden ? 'Play background video' : 'Skip background video'}
+        >
+          <span className="text-xs sm:text-sm">{isVideoHidden ? '▶️' : '⏭️'}</span>
+          <span className="font-semibold">{isVideoHidden ? 'PLAY VIDEO' : 'SKIP VIDEO'}</span>
+        </button>
+
         {/* Sound Toggle */}
         <button
           type="button"
@@ -423,39 +460,39 @@ export default function Login() {
         </div>
       </div>
 
-      {/* Centered Glassmorphic Login Card (Same Transparency & Style) */}
-      <div className="relative z-20 w-full sm:w-[440px] md:w-[460px] max-w-md mx-auto my-auto">
-        <div className="bg-[#090D18]/85 backdrop-blur-xl border border-red-500/40 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-modal-glow">
-          <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1E293B]">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 rounded-xl bg-black border border-red-500/60 p-0.5 shadow-spider-glow flex items-center justify-center shrink-0">
+      {/* Centered Glassmorphic Login Card (Same Transparency & Style, Compact Sizing) */}
+      <div className="relative z-20 w-full max-w-[365px] mx-auto my-auto">
+        <div className="bg-[#090D18]/85 backdrop-blur-xl border border-red-500/40 rounded-2xl p-4 sm:p-5 shadow-modal-glow">
+          <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#1E293B]">
+            <div className="flex items-center gap-2.5">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-black border border-red-500/60 p-0.5 shadow-spider-glow flex items-center justify-center shrink-0">
                 <img src="/logo.png?v=2" alt="Logo" className="w-full h-full object-contain" />
               </div>
               <div>
-                <h2 className="spider-heading text-base sm:text-lg text-white">SPIDER-ID LOGIN</h2>
-                <p className="text-[10px] sm:text-[11px] font-mono text-red-400">GRAPHIC ERA CAMPUS GRID</p>
+                <h2 className="spider-heading text-sm sm:text-base text-white">SPIDER-ID LOGIN</h2>
+                <p className="text-[9px] font-mono text-red-400">GRAPHIC ERA CAMPUS GRID</p>
               </div>
             </div>
             <span className="w-2 h-2 rounded-full bg-green-500 animate-ping" title="Radar Live"></span>
           </div>
 
           {error && (
-            <div className="bg-red-950/80 border border-red-500 text-red-200 px-3 py-2 rounded-xl mb-3 text-xs font-mono flex items-center gap-2">
+            <div className="bg-red-950/80 border border-red-500 text-red-200 px-3 py-1.5 rounded-xl mb-2.5 text-[11px] font-mono flex items-center gap-2">
               <span>⚠️</span>
               <span className="truncate">{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-3.5">
+          <form onSubmit={handleSubmit} className="space-y-2.5">
             <div>
-              <label className="spider-label-modern text-[11px]">
+              <label className="spider-label-modern text-[10px]">
                 <span>✉️</span> University Email
               </label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="spider-input-modern text-xs py-2.5"
+                className="spider-input-modern text-xs py-2 px-3"
                 placeholder="ujjwalchaudhary2007@gmail.com"
                 required
               />
@@ -463,15 +500,15 @@ export default function Login() {
 
             <div>
               <div className="flex items-center justify-between">
-                <label className="spider-label-modern text-[11px]">
+                <label className="spider-label-modern text-[10px]">
                   <span>🔒</span> Passcode
                 </label>
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-[11px] font-mono text-gray-400 hover:text-red-400 cursor-pointer flex items-center gap-1 mb-1"
+                  className="text-[10px] font-mono text-gray-400 hover:text-red-400 cursor-pointer flex items-center gap-1 mb-0.5"
                 >
-                  <span>{showPassword ? '🙈 HIDE' : '👁️ SHOW PASS'}</span>
+                  <span>{showPassword ? '🙈 HIDE' : '👁️ SHOW'}</span>
                 </button>
               </div>
               <div className="relative">
@@ -479,14 +516,14 @@ export default function Login() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="spider-input-modern text-xs py-2.5 pr-10"
+                  className="spider-input-modern text-xs py-2 px-3 pr-9"
                   placeholder="••••••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-sm cursor-pointer"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-white text-xs cursor-pointer"
                   title={showPassword ? 'Hide passcode' : 'Show passcode'}
                 >
                   {showPassword ? '👁️' : '🔒'}
@@ -494,14 +531,14 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Demo Gmails Dropdown Box */}
-            <div className="space-y-1.5 p-3 rounded-xl bg-[#0E1526]/80 border border-red-500/30">
+            {/* Demo Gmails Dropdown Box (Compact) */}
+            <div className="space-y-1 p-2 rounded-xl bg-[#0E1526]/80 border border-red-500/30">
               <label className="block text-[10px] font-bold text-red-400 uppercase tracking-wider flex items-center justify-between">
-                <span className="flex items-center gap-1.5">
+                <span className="flex items-center gap-1">
                   <span>⚡</span>
-                  <span>Demo Accounts (Auto-Fill)</span>
+                  <span>Demo Accounts</span>
                 </span>
-                <span className="text-[9px] font-mono text-gray-400 font-normal">Select to fill</span>
+                <span className="text-[9px] font-mono text-gray-400 font-normal">Auto-Fill</span>
               </label>
               <div className="relative">
                 <select
@@ -512,7 +549,7 @@ export default function Login() {
                     const [em, pw] = val.split('|')
                     handleQuickLogin(em, pw)
                   }}
-                  className="w-full bg-[#090D18] border border-gray-700 hover:border-red-500/60 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-red-500 cursor-pointer transition-all shadow-inner"
+                  className="w-full bg-[#090D18] border border-gray-700 hover:border-red-500/60 rounded-lg px-2.5 py-1.5 text-[11px] font-mono text-white focus:outline-none focus:border-red-500 cursor-pointer transition-all shadow-inner"
                 >
                   <option value="" disabled className="bg-[#090D18] text-gray-400">
                     -- Choose Demo Gmail / Role --
@@ -545,7 +582,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading}
-              className="btn-spider-pill w-full py-2.5 text-xs justify-center mt-1 active:scale-95 shadow-[0_0_20px_rgba(239,68,68,0.4)]"
+              className="btn-spider-pill w-full py-2 text-xs justify-center mt-1 active:scale-95 shadow-[0_0_20px_rgba(239,68,68,0.4)]"
             >
               <span>{loading ? 'AUTHENTICATING...' : 'ACCESS PORTAL'}</span>
               <span>➔</span>
@@ -553,9 +590,9 @@ export default function Login() {
           </form>
 
           {/* Spider-Verse Cyber Divider */}
-          <div className="relative my-3.5 flex items-center justify-center">
+          <div className="relative my-2.5 flex items-center justify-center">
             <div className="border-t border-[#1E293B] w-full" />
-            <span className="bg-[#090D18] px-2.5 text-[10px] font-mono text-gray-500 uppercase tracking-widest shrink-0">
+            <span className="bg-[#090D18] px-2 text-[9px] font-mono text-gray-500 uppercase tracking-widest shrink-0">
               OR
             </span>
             <div className="border-t border-[#1E293B] w-full" />
@@ -563,21 +600,21 @@ export default function Login() {
 
           {/* Google Sign-In Integration */}
           <div className="flex flex-col items-center justify-center w-full gap-2">
-            {/* GIS Rendered Button Target (Active when VITE_GOOGLE_CLIENT_ID is configured) */}
+            {/* GIS Rendered Button Target */}
             <div
               ref={googleBtnRef}
               className={`w-full flex justify-center [&>div]:!w-full [&_iframe]:!mx-auto ${hasGisButton ? 'block' : 'hidden'}`}
             />
 
-            {/* Spider-Verse Styled Google Button (Visible when GIS is loading or client id is pending) */}
+            {/* Spider-Verse Styled Google Button */}
             {!hasGisButton && (
               <button
                 type="button"
                 onClick={handleCustomGoogleClick}
                 disabled={loading || isGoogleLoading}
-                className="w-full py-2.5 px-4 rounded-xl bg-[#0E1526]/90 hover:bg-[#131D33] border border-[#1E293B] hover:border-red-500/60 text-white font-chakra italic font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2.5 active:scale-95 shadow-sm cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-[#0E1526]/90 hover:bg-[#131D33] border border-[#1E293B] hover:border-red-500/60 text-white font-chakra italic font-bold text-[11px] sm:text-xs tracking-wider transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm cursor-pointer"
               >
-                <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
+                <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
                   <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
                   <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z" />
@@ -589,12 +626,12 @@ export default function Login() {
           </div>
 
           {/* Footer Recruitment Link */}
-          <div className="mt-4 pt-3 border-t border-[#1E293B] text-center">
-            <p className="text-xs font-rajdhani text-gray-400">
+          <div className="mt-2.5 pt-2 border-t border-[#1E293B] text-center">
+            <p className="text-[11px] font-rajdhani text-gray-400">
               New Recruit?{' '}
               <Link
                 to="/register"
-                className="font-chakra italic font-bold text-xs text-red-400 hover:text-red-300 underline underline-offset-4 ml-1 active:scale-95 inline-block"
+                className="font-chakra italic font-bold text-[11px] text-red-400 hover:text-red-300 underline underline-offset-4 ml-1 active:scale-95 inline-block"
               >
                 CREATE SPIDER-ID ➔
               </Link>

@@ -6,10 +6,19 @@ export default function IntroVideoModal({ onComplete }) {
   const [mobileFitMode, setMobileFitMode] = useState('fit') // 'fit' (cinematic) or 'fill' (zoom)
 
   useEffect(() => {
+    // Keyboard shortcut to skip intro instantly
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape' || e.key === ' ' || e.key === 'Enter') {
+        onComplete?.()
+      }
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [onComplete])
+
+  useEffect(() => {
     const video = videoRef.current
     if (!video) return
-
-    // Critical for 0-second instant play from start:
     video.currentTime = 0
     video.muted = true
     video.defaultMuted = true
@@ -134,8 +143,23 @@ export default function IntroVideoModal({ onComplete }) {
         </div>
       </div>
 
-      {/* Top Controls: Sound Toggle & Aspect Ratio Switcher */}
+      {/* Top Controls: Skip Video, Sound Toggle & Aspect Ratio Switcher */}
       <div className="absolute top-4 right-4 sm:top-6 sm:right-8 z-30 flex items-center gap-2">
+        {/* Quick Skip Intro Button */}
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation()
+            onComplete?.()
+          }}
+          className="px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full bg-red-950/90 hover:bg-red-900 border border-red-500/80 text-white font-mono text-[10px] sm:text-xs flex items-center gap-1.5 backdrop-blur-md shadow-spider-glow cursor-pointer transition-all active:scale-95"
+          title="Skip intro video"
+        >
+          <span>⏭️</span>
+          <span className="font-bold">SKIP INTRO</span>
+          <span className="text-[10px] text-red-300">➔</span>
+        </button>
+
         {/* Mobile View Toggle (Fit vs Full) */}
         <button
           type="button"
