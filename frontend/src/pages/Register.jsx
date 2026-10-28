@@ -60,12 +60,35 @@ export default function Register() {
     })
   }
 
+  // Phone validation helper
+  const isValidIndianPhone = (val) => {
+    if (!val || typeof val !== 'string') return false
+    if (/[a-zA-Z]/.test(val)) return false
+    let raw = val.trim().replace(/[\s\-\(\)]/g, '')
+    if (raw.startsWith('+91')) raw = raw.slice(3)
+    else if (raw.startsWith('+')) raw = raw.slice(1)
+    if (!/^\d+$/.test(raw)) return false
+    if (raw.length === 11 && raw.startsWith('0')) raw = raw.slice(1)
+    else if (raw.length === 12 && raw.startsWith('91')) raw = raw.slice(2)
+    if (raw.length !== 10) return false
+    if (!/^[6-9]/.test(raw)) return false
+    if (/^(\d)\1{9}$/.test(raw)) return false
+    if (/(\d)\1{4,}/.test(raw)) return false
+    const dummy = ['1234567890', '0123456789', '9876543210', '0987654321', '9876598765', '9123456789', '9898989898']
+    if (dummy.includes(raw)) return false
+    return true
+  }
+
   const handleNextStep = (e) => {
     e.preventDefault()
     setError('')
     if (step === 1) {
       if (!name || !email || !phone) {
         setError('Please enter your full name, student email, and phone number.')
+        return
+      }
+      if (!isValidIndianPhone(phone)) {
+        setError('Please enter a valid 10-digit Indian phone number starting with 6, 7, 8, or 9. Numbers like 9999999999 or 1111111111 are not allowed.')
         return
       }
       setStep(2)
@@ -291,11 +314,20 @@ export default function Register() {
                     <input
                       type="tel"
                       value={phone}
-                      onChange={(e) => setPhone(e.target.value)}
-                      placeholder="+91 98765 43210"
-                      className="spider-input-modern"
+                      onChange={(e) => {
+                        const cleaned = e.target.value.replace(/[^0-9+ ]/g, '').slice(0, 15)
+                        setPhone(cleaned)
+                      }}
+                      placeholder="+91 98371 42890"
+                      maxLength={15}
+                      className={`spider-input-modern ${phone && !isValidIndianPhone(phone) ? 'border-red-500' : ''}`}
                       required
                     />
+                    {phone && !isValidIndianPhone(phone) && (
+                      <p className="text-[11px] text-red-400 mt-1">
+                        Must be a valid 10-digit Indian phone (starts with 6-9). Fake numbers like 9999999999 or 1111111111 are rejected.
+                      </p>
+                    )}
                   </div>
 
                   <div>

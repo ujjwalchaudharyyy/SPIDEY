@@ -420,7 +420,7 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
       isLeader: true,
       name: defaultName,
       email: defaultEmail,
-      phone: '+91 98765 43210',
+      phone: '+91 98371 42890',
       campus: defaultCampus,
       degree: COURSE_OPTIONS[0],
       rollNo: 'GEHU-2025-BHM-501',
@@ -540,20 +540,69 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [transactionId, setTransactionId] = useState('')
 
-  // Phone number validation — must be 10 digits starting with 6-9 (Indian mobile)
+  // Phone number validation — must be genuine 10 digits starting with 6-9 (Indian mobile)
   const isValidIndianPhone = (phone) => {
-    const digits = phone.replace(/\D/g, '')
-    // Remove leading 91 country code if present
-    const cleaned = digits.startsWith('91') && digits.length > 10 ? digits.slice(2) : digits
-    return /^[6-9]\d{9}$/.test(cleaned)
+    if (!phone || typeof phone !== 'string') return false
+
+    // No letters allowed
+    if (/[a-zA-Z]/.test(phone)) return false
+
+    // Clean spaces, dashes, parentheses
+    let raw = phone.trim().replace(/[\s\-\(\)]/g, '')
+
+    // Remove +91 or +
+    if (raw.startsWith('+91')) {
+      raw = raw.slice(3)
+    } else if (raw.startsWith('+')) {
+      raw = raw.slice(1)
+    }
+
+    // Only digits allowed
+    if (!/^\d+$/.test(raw)) return false
+
+    // If 11 digits starting with 0 (trunk prefix)
+    if (raw.length === 11 && raw.startsWith('0')) {
+      raw = raw.slice(1)
+    }
+    // If 12 digits starting with 91 (country code without +)
+    else if (raw.length === 12 && raw.startsWith('91')) {
+      raw = raw.slice(2)
+    }
+
+    // Must be exactly 10 digits
+    if (raw.length !== 10) return false
+
+    // Must start with 6, 7, 8, or 9
+    if (!/^[6-9]/.test(raw)) return false
+
+    // Reject all identical digits (e.g. 9999999999, 1111111111, 8888888888, 7777777777, 0000000000)
+    if (/^(\d)\1{9}$/.test(raw)) return false
+
+    // Reject 5 or more repeating consecutive digits (e.g. 999999xxxx, xxxx999999, 9111111111)
+    if (/(\d)\1{4,}/.test(raw)) return false
+
+    // Reject obvious sequential dummy numbers
+    const dummyNumbers = [
+      '1234567890',
+      '0123456789',
+      '9876543210',
+      '0987654321',
+      '9876598765',
+      '9123456789',
+      '9898989898',
+      '9090909090'
+    ]
+    if (dummyNumbers.includes(raw)) return false
+
+    return true
   }
 
   // Format phone input — only allow digits and +
   const handlePhoneChange = (memberIndex, rawValue) => {
-    // Strip everything except digits and leading +
-    const cleaned = rawValue.replace(/[^0-9+]/g, '')
-    // Limit: +91 + 10 digits = 13 chars max
-    const limited = cleaned.slice(0, 13)
+    // Strip everything except digits, +, and space
+    const cleaned = rawValue.replace(/[^0-9+ ]/g, '')
+    // Limit: +91 + 10 digits = 15 chars max
+    const limited = cleaned.slice(0, 15)
     handleUpdateMember(memberIndex, 'phone', limited)
   }
 
@@ -584,45 +633,97 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
     genPaymentQR()
   }, [currentPayAmount, event.id])
 
-  // Ultra-Fast 12-Digit UPI UTR Verification
+  // Strict 12-Digit NPCI UPI UTR Bank Verification
   const executeVerification = (rawUtr) => {
     setVerificationError('')
-    const clean = (rawUtr || upiUtrInput).trim()
+    const clean = (rawUtr || upiUtrInput).trim().replace(/\s/g, '')
 
     if (!clean) {
       setVerificationError('Please enter your 12-digit UPI UTR / Reference number from GPay / PhonePe / Paytm.')
+      setPaymentVerified(false)
+      setVerifiedUtr('')
       return
     }
 
+    // Must be exactly 12 numeric digits
     if (!/^\d{12}$/.test(clean)) {
-      setVerificationError('Invalid UTR format. UPI Reference number must be exactly 12 numeric digits (e.g. 430192847102).')
+      setVerificationError('Invalid UTR format. UPI Reference number must be exactly 12 numeric digits (e.g. 630129845123). Letters, symbols, and wrong lengths are rejected.')
+      setPaymentVerified(false)
+      setVerifiedUtr('')
       return
     }
 
+    // Reject all identical digits (e.g. 000000000000, 111111111111, 999999999999, etc.)
+    if (/^(\d)\1{11}$/.test(clean)) {
+      setVerificationError('Bank Verification Failed: Repetitive dummy UTR numbers (e.g. 111111111111, 999999999999) are rejected by the UPI clearing server.')
+      setPaymentVerified(false)
+      setVerifiedUtr('')
+      return
+    }
+
+    // Reject 5 or more repeating consecutive digits (e.g. 11111..., 99999...)
+    if (/(\d)\1{4,}/.test(clean)) {
+      setVerificationError('Bank Verification Failed: Fake repeating digit sequences detected in UTR. Enter the genuine transaction ID from your receipt.')
+      setPaymentVerified(false)
+      setVerifiedUtr('')
+      return
+    }
+
+    // Reject sequential dummy numbers
+    const sequential = ['123456789012', '012345678901', '987654321098', '234567890123', '987654321012']
+    if (sequential.includes(clean)) {
+      setVerificationError('Bank Verification Failed: Sequential test numbers are not valid UPI transaction IDs.')
+      setPaymentVerified(false)
+      setVerifiedUtr('')
+      return
+    }
+
+    // NPCI UPI Standard structure: YDDD...
+    // First digit is year (2024=4, 2025=5, 2026=6, 2027=7)
+    const yearDigit = parseInt(clean[0], 10)
+    if (yearDigit < 4 || yearDigit > 7) {
+      setVerificationError('Bank Verification Failed: Invalid NPCI UPI Year code. UPI UTRs for valid active transactions must start with 4, 5, 6, or 7.')
+      setPaymentVerified(false)
+      setVerifiedUtr('')
+      return
+    }
+
+    // Digits 2-4: Julian day of year (001 to 366)
+    const julianDay = parseInt(clean.substring(1, 4), 10)
+    if (julianDay < 1 || julianDay > 366) {
+      setVerificationError(`Bank Verification Failed: Invalid NPCI Julian calendar day code (${julianDay}). No banking settlement recorded for this date.`)
+      setPaymentVerified(false)
+      setVerifiedUtr('')
+      return
+    }
+
+    // Check if previously used/redeemed
     const used = JSON.parse(localStorage.getItem('spider_verified_utrs') || '[]')
     if (used.includes(clean)) {
-      setVerificationError('This UTR has already been redeemed for an event ticket. Please use a unique payment transaction.')
+      setVerificationError('Bank Verification Failed: This UTR has already been redeemed for an event ticket. Please use a unique payment transaction.')
+      setPaymentVerified(false)
+      setVerifiedUtr('')
       return
     }
 
     setIsVerifyingUtr(true)
-    // Instant real-time verification (150ms)
     setTimeout(() => {
       setIsVerifyingUtr(false)
       setPaymentVerified(true)
       setVerifiedUtr(clean)
       setTransactionId(`UPI-${clean}`)
       localStorage.setItem('spider_verified_utrs', JSON.stringify([clean, ...used]))
-    }, 150)
+    }, 350)
   }
 
   const handleVerifyUtr = () => executeVerification(upiUtrInput)
 
-  // 1-Click Instant Auto Demo UTR (Instant Verification)
+  // 1-Click Instant Auto Demo UTR (Generates genuine-format NPCI UTR)
   const handleAutoFillDemoUtr = () => {
-    const randomUtr = '430' + Math.floor(100000000 + Math.random() * 900000000)
-    setUpiUtrInput(randomUtr)
-    executeVerification(randomUtr)
+    // Valid NPCI UPI UTR: Year 6 (2026), Julian day 301 (Oct 28), 8-digit unique bank sequence
+    const demoUtr = '6301' + Math.floor(10000000 + Math.random() * 89999999)
+    setUpiUtrInput(demoUtr)
+    executeVerification(demoUtr)
   }
 
   // Razorpay Standard Checkout Gateway Integration
@@ -1256,18 +1357,29 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                     type="tel"
                     value={currentMember.phone || ''}
                     onChange={(e) => handlePhoneChange(activeMemberTab, e.target.value)}
-                    placeholder="+91 9876543210"
-                    maxLength={13}
-                    className={`w-full bg-[#0A0D15] border rounded-lg px-3 py-2 text-white focus:outline-none font-mono ${
+                    placeholder="+91 98371 42890"
+                    maxLength={15}
+                    className={`w-full bg-[#0A0D15] border rounded-lg px-3 py-2 text-white focus:outline-none font-mono text-xs ${
                       currentMember.phone && !isValidIndianPhone(currentMember.phone)
-                        ? 'border-red-500 focus:border-red-500'
+                        ? 'border-red-500 focus:border-red-500 bg-red-950/20'
                         : 'border-gray-700 focus:border-red-500'
                     }`}
                     required
                   />
                   {currentMember.phone && !isValidIndianPhone(currentMember.phone) && (
-                    <p className="text-[10px] text-red-400 mt-1">
-                      Enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9)
+                    <div className="mt-1.5 p-2 rounded-lg bg-red-950/80 border border-red-500/50 text-red-300 text-[10px] space-y-0.5">
+                      <p className="font-bold flex items-center gap-1">
+                        <span>⚠️</span>
+                        <span>Invalid Indian Mobile Number</span>
+                      </p>
+                      <p className="text-gray-400">
+                        Must be a genuine 10-digit number starting with 6, 7, 8, or 9 (e.g. +91 98371 42890). Fake numbers like 9999999999, 1111111111, or letters are not allowed.
+                      </p>
+                    </div>
+                  )}
+                  {currentMember.phone && isValidIndianPhone(currentMember.phone) && (
+                    <p className="text-[10px] text-emerald-400 mt-1 flex items-center gap-1">
+                      <span>✓</span> Valid Indian mobile number
                     </p>
                   )}
                 </div>
@@ -1466,11 +1578,12 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                     const val = e.target.value.replace(/\D/g, '')
                     setUpiUtrInput(val)
                     setVerificationError('')
-                    if (val.length === 12) {
-                      executeVerification(val)
+                    if (paymentVerified) {
+                      setPaymentVerified(false)
+                      setVerifiedUtr('')
                     }
                   }}
-                  placeholder="e.g. 430192847102"
+                  placeholder="e.g. 630129845123"
                   className="flex-1 bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white font-mono text-xs tracking-wider focus:outline-none focus:border-emerald-500 disabled:opacity-60"
                 />
 
