@@ -13,10 +13,10 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
   const [customRank, setCustomRank] = useState('Champion (1st Place)')
 
   // ── Template Customization & Import State ──
-  const [templateTheme, setTemplateTheme] = useState('spider') // 'spider' | 'royal_gold' | 'stark_cyan' | 'academic_ivory'
+  const [templateTheme, setTemplateTheme] = useState('academic_ivory')
   const [customBgImage, setCustomBgImage] = useState(null)
   const [customHeader, setCustomHeader] = useState('GRAPHIC ERA HILL UNIVERSITY')
-  const [customSubHeader, setCustomSubHeader] = useState('BHIMTAL CAMPUS • SPIDER-TECH HEADQUARTERS')
+  const [customSubHeader, setCustomSubHeader] = useState('BHIMTAL CAMPUS')
   const [signee1Name, setSignee1Name] = useState('Dr. M.C. Lohani')
   const [signee1Title, setSignee1Title] = useState('Campus Director')
   const [signee2Name, setSignee2Name] = useState('Dr. D.S. Rawat')
@@ -59,7 +59,7 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
   })
 
   // Email Template State
-  const [emailSubject, setEmailSubject] = useState('🕷️ Your Official Spider-Man Hackathon Certificate — Graphite 2026 (GEHU Bhimtal)')
+  const [emailSubject, setEmailSubject] = useState('Official Certificate — Graphite 2026 (Graphic Era Hill University, Bhimtal)')
   const [emailSender, setEmailSender] = useState('certificates.gehubhimtal@gehu.ac.in')
   const [sendingEmail, setSendingEmail] = useState(false)
   const [batchSending, setBatchSending] = useState(false)
@@ -243,31 +243,24 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
       return
     }
 
-    // Default Spider-Verse Dark Cyber Background
-    const bgGrad = ctx.createRadialGradient(
-      canvas.width / 2, canvas.height / 2, 80,
-      canvas.width / 2, canvas.height / 2, 900
-    )
-    bgGrad.addColorStop(0, '#10172A')
-    bgGrad.addColorStop(0.6, '#080B14')
-    bgGrad.addColorStop(1, '#020307')
-    ctx.fillStyle = bgGrad
+    // Default Clean Authentic University Diploma Background
+    ctx.fillStyle = '#FCFBF7' // Warm ivory parchment
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Outer Crimson Border
-    ctx.lineWidth = 14
-    ctx.strokeStyle = '#E21B24'
-    ctx.strokeRect(16, 16, canvas.width - 32, canvas.height - 32)
+    // Outer University Maroon Border
+    ctx.lineWidth = 10
+    ctx.strokeStyle = '#7B1113'
+    ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48)
 
-    // Cyber-Blue Inner Border
-    ctx.lineWidth = 4
-    ctx.strokeStyle = '#00F0FF'
-    ctx.strokeRect(34, 34, canvas.width - 68, canvas.height - 68)
+    // Inner Elegant Gold Border
+    ctx.lineWidth = 2.5
+    ctx.strokeStyle = '#C5A059'
+    ctx.strokeRect(36, 36, canvas.width - 72, canvas.height - 72)
 
-    // Gold Inner Inset
-    ctx.lineWidth = 1.5
-    ctx.strokeStyle = '#F59E0B'
-    ctx.strokeRect(44, 44, canvas.width - 88, canvas.height - 88)
+    // Thin Inset Gold Hairline
+    ctx.lineWidth = 1
+    ctx.strokeStyle = 'rgba(197, 160, 89, 0.45)'
+    ctx.strokeRect(42, 42, canvas.width - 84, canvas.height - 84)
 
     renderCanvasText(ctx, canvas, targetParticipant)
     triggerDownload(canvas, targetParticipant)
@@ -275,131 +268,154 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
 
   const renderCanvasText = (ctx, canvas, targetParticipant) => {
     ctx.textAlign = 'center'
-    ctx.fillStyle = '#FFFFFF'
-    ctx.font = '900 40px "Cinzel", "Arial Black", serif'
-    ctx.fillText(customHeader, canvas.width / 2, 120)
 
-    ctx.fillStyle = '#00F0FF'
-    ctx.font = 'bold 20px "Courier New", monospace'
-    ctx.fillText(customSubHeader, canvas.width / 2, 155)
+    // Header - University Name
+    ctx.fillStyle = '#7B1113'
+    ctx.font = 'bold 36px "Cinzel", "Georgia", "Times New Roman", serif'
+    ctx.fillText(customHeader, canvas.width / 2, 125)
 
-    ctx.fillStyle = '#9CA3AF'
-    ctx.font = 'bold 15px "Inter", sans-serif'
-    ctx.fillText('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING • SPIDEY MULTIVERSE NETWORK', canvas.width / 2, 185)
+    // Subheader - Campus
+    ctx.fillStyle = '#475569'
+    ctx.font = '600 18px "Inter", "Arial", sans-serif'
+    ctx.fillText(customSubHeader, canvas.width / 2, 160)
 
-    // Cyber Red Divider
-    const gradLine = ctx.createLinearGradient(300, 205, canvas.width - 300, 205)
-    gradLine.addColorStop(0, 'rgba(226, 27, 36, 0)')
-    gradLine.addColorStop(0.5, '#E21B24')
-    gradLine.addColorStop(1, 'rgba(226, 27, 36, 0)')
-    ctx.strokeStyle = gradLine
-    ctx.lineWidth = 3
+    // Department
+    ctx.fillStyle = '#64748B'
+    ctx.font = '500 14px "Inter", "Arial", sans-serif'
+    ctx.fillText('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING', canvas.width / 2, 185)
+
+    // Elegant Maroon & Gold Divider Line
+    ctx.strokeStyle = '#C5A059'
+    ctx.lineWidth = 1.5
     ctx.beginPath()
-    ctx.moveTo(300, 205)
-    ctx.lineTo(canvas.width - 300, 205)
+    ctx.moveTo(canvas.width / 2 - 200, 205)
+    ctx.lineTo(canvas.width / 2 + 200, 205)
     ctx.stroke()
 
-    ctx.fillStyle = '#F59E0B'
-    ctx.font = 'bold 18px "Courier New", monospace'
-    ctx.fillText('🕷️ SPIDER-VERSE OFFICIAL CITATION 🕷️', canvas.width / 2, 255)
+    // Title: CERTIFICATE OF PARTICIPATION / EXCELLENCE
+    let certHeaderTitle = 'CERTIFICATE OF PARTICIPATION'
+    if (certType === 'excellence') certHeaderTitle = 'CERTIFICATE OF EXCELLENCE'
+    else if (certType === 'merit') certHeaderTitle = 'CERTIFICATE OF MERIT'
 
-    ctx.fillStyle = '#9CA3AF'
-    ctx.font = 'italic 20px "Times New Roman", serif'
-    ctx.fillText('This citation of honor is officially bestowed upon', canvas.width / 2, 290)
+    ctx.fillStyle = '#7B1113'
+    ctx.font = 'bold 30px "Cinzel", "Georgia", serif'
+    ctx.fillText(certHeaderTitle, canvas.width / 2, 260)
+
+    ctx.fillStyle = '#64748B'
+    ctx.font = 'italic 18px "Georgia", "Times New Roman", serif'
+    ctx.fillText('This is to certify that', canvas.width / 2, 305)
 
     // Recipient Name
-    ctx.fillStyle = '#FFFFFF'
-    ctx.font = '900 62px "Cinzel", "Arial Black", serif'
-    ctx.fillText(targetParticipant.student_name || 'Web Warrior', canvas.width / 2, 375)
+    ctx.fillStyle = '#0F172A'
+    ctx.font = 'bold 48px "Cinzel", "Georgia", "Times New Roman", serif'
+    ctx.fillText(targetParticipant.student_name || 'Student Name', canvas.width / 2, 375)
 
-    ctx.fillStyle = '#E21B24'
-    ctx.fillRect(canvas.width / 2 - 250, 395, 500, 4)
+    // Decorative underline under name
+    ctx.strokeStyle = '#C5A059'
+    ctx.lineWidth = 1.5
+    ctx.beginPath()
+    ctx.moveTo(canvas.width / 2 - 180, 395)
+    ctx.lineTo(canvas.width / 2 + 180, 395)
+    ctx.stroke()
 
-    ctx.fillStyle = '#E2E8F0'
-    ctx.font = '22px "Inter", sans-serif'
-    ctx.fillText(`of ${targetParticipant.degree || 'B.Tech CSE'}, Roll No: ${targetParticipant.roll_no || 'GEHU-2024'}`, canvas.width / 2, 450)
+    // Degree & Roll No
+    ctx.fillStyle = '#334155'
+    ctx.font = '19px "Inter", "Arial", sans-serif'
+    ctx.fillText(`of ${targetParticipant.degree || 'B.Tech CSE'}, Roll No: ${targetParticipant.roll_no || 'GEHU-2024'}`, canvas.width / 2, 440)
 
-    let achievement = 'for outstanding participation and web-slinging algorithmic excellence in'
+    // Achievement text
+    let achievement = 'has successfully participated in the annual technical hackathon'
     if (certType === 'excellence') {
-      achievement = `for conquering ${customRank} and demonstrating elite engineering mastery in`
+      achievement = `has demonstrated outstanding excellence and secured ${customRank} in`
     } else if (certType === 'merit') {
-      achievement = 'for architectural brilliance, speed, and supreme innovation in'
+      achievement = 'has demonstrated remarkable technical merit and innovation in'
     }
-    ctx.fillStyle = '#38BDF8'
-    ctx.font = 'bold 22px "Inter", sans-serif'
-    ctx.fillText(achievement, canvas.width / 2, 490)
+    ctx.fillStyle = '#475569'
+    ctx.font = '19px "Inter", "Arial", sans-serif'
+    ctx.fillText(achievement, canvas.width / 2, 480)
 
-    ctx.fillStyle = '#E21B24'
-    ctx.font = '900 36px "Cinzel", "Arial Black", sans-serif'
-    ctx.fillText('GRAPHITE 2026: THE ULTIMATE SPIDER-MAN HACKATHON 🕸️⚡', canvas.width / 2, 550)
+    // Event Name
+    ctx.fillStyle = '#7B1113'
+    ctx.font = 'bold 32px "Cinzel", "Georgia", serif'
+    ctx.fillText('GRAPHITE 2026', canvas.width / 2, 535)
 
-    ctx.fillStyle = '#94A3B8'
-    ctx.font = '16px "Inter", sans-serif'
-    ctx.fillText('Organized at Graphic Era Hill University, Bhimtal Campus • Concluded on October 27, 2026', canvas.width / 2, 590)
+    // Event Subtitle
+    ctx.fillStyle = '#64748B'
+    ctx.font = '15px "Inter", "Arial", sans-serif'
+    ctx.fillText('Organized by Graphic Era Hill University, Bhimtal Campus • October 27, 2026', canvas.width / 2, 575)
 
-    ctx.fillStyle = '#F59E0B'
-    ctx.font = 'bold 15px "Courier New", monospace'
-    ctx.fillText(`OFFICIAL VERIFICATION CODE: ${certCode}`, canvas.width / 2, 630)
+    // Verification ID
+    ctx.fillStyle = '#854D0E'
+    ctx.font = '600 13px "Courier New", monospace'
+    ctx.fillText(`Certificate ID: ${certCode}`, canvas.width / 2, 615)
 
-    const footY = 920
+    const footY = 930
 
-    // Signee 1
-    ctx.fillStyle = '#FFFFFF'
-    ctx.font = 'bold italic 26px "Times New Roman", serif'
+    // Signee 1 (Director)
+    ctx.fillStyle = '#0F172A'
+    ctx.font = 'bold italic 22px "Georgia", "Times New Roman", serif'
     ctx.fillText(signee1Name, 320, footY)
     ctx.beginPath()
-    ctx.moveTo(180, footY + 12)
-    ctx.lineTo(460, footY + 12)
-    ctx.strokeStyle = '#475569'
-    ctx.lineWidth = 2
+    ctx.moveTo(200, footY + 10)
+    ctx.lineTo(440, footY + 10)
+    ctx.strokeStyle = '#94A3B8'
+    ctx.lineWidth = 1.5
     ctx.stroke()
-    ctx.fillStyle = '#E2E8F0'
-    ctx.font = 'bold 15px "Inter", sans-serif'
-    ctx.fillText(signee1Title.toUpperCase(), 320, footY + 36)
-    ctx.fillStyle = '#94A3B8'
-    ctx.font = '13px "Inter", sans-serif'
-    ctx.fillText('GEHU Bhimtal Campus', 320, footY + 56)
+    ctx.fillStyle = '#334155'
+    ctx.font = 'bold 14px "Inter", sans-serif'
+    ctx.fillText(signee1Title.toUpperCase(), 320, footY + 32)
+    ctx.fillStyle = '#64748B'
+    ctx.font = '12px "Inter", sans-serif'
+    ctx.fillText('GEHU Bhimtal Campus', 320, footY + 52)
 
-    // Center Hologram Seal
+    // Center Official Embossed University Seal
     ctx.beginPath()
-    ctx.arc(canvas.width / 2, footY + 10, 65, 0, Math.PI * 2)
-    ctx.fillStyle = '#7F1D1D'
+    ctx.arc(canvas.width / 2, footY + 5, 58, 0, Math.PI * 2)
+    ctx.fillStyle = '#FAF5EB'
     ctx.fill()
-    ctx.lineWidth = 4
-    ctx.strokeStyle = '#F59E0B'
+    ctx.lineWidth = 3
+    ctx.strokeStyle = '#C5A059'
     ctx.stroke()
 
-    ctx.fillStyle = '#F59E0B'
-    ctx.font = 'bold 12px "Courier New", monospace'
-    ctx.fillText('SPIDER-TECH', canvas.width / 2, footY - 8)
-    ctx.font = '28px "Inter", sans-serif'
-    ctx.fillText('🕷️', canvas.width / 2, footY + 20)
-    ctx.font = 'bold 10px "Courier New", monospace'
-    ctx.fillText('VERIFIED 2026', canvas.width / 2, footY + 42)
+    ctx.beginPath()
+    ctx.arc(canvas.width / 2, footY + 5, 52, 0, Math.PI * 2)
+    ctx.lineWidth = 1
+    ctx.strokeStyle = '#7B1113'
+    ctx.stroke()
 
-    // Signee 2
-    ctx.fillStyle = '#FFFFFF'
-    ctx.font = 'bold italic 26px "Times New Roman", serif'
+    ctx.fillStyle = '#7B1113'
+    ctx.font = 'bold 9px "Inter", sans-serif'
+    ctx.fillText('GRAPHIC ERA HILL UNIVERSITY', canvas.width / 2, footY - 14)
+    ctx.fillStyle = '#C5A059'
+    ctx.font = 'bold 16px "Georgia", serif'
+    ctx.fillText('★ 2026 ★', canvas.width / 2, footY + 8)
+    ctx.fillStyle = '#7B1113'
+    ctx.font = 'bold 9px "Inter", sans-serif'
+    ctx.fillText('BHIMTAL CAMPUS', canvas.width / 2, footY + 28)
+
+    // Signee 2 (Dean / Convener)
+    ctx.fillStyle = '#0F172A'
+    ctx.font = 'bold italic 22px "Georgia", "Times New Roman", serif'
     ctx.fillText(signee2Name, canvas.width - 320, footY)
     ctx.beginPath()
-    ctx.moveTo(canvas.width - 460, footY + 12)
-    ctx.lineTo(canvas.width - 180, footY + 12)
-    ctx.strokeStyle = '#475569'
-    ctx.lineWidth = 2
+    ctx.moveTo(canvas.width - 440, footY + 10)
+    ctx.lineTo(canvas.width - 200, footY + 10)
+    ctx.strokeStyle = '#94A3B8'
+    ctx.lineWidth = 1.5
     ctx.stroke()
-    ctx.fillStyle = '#E2E8F0'
-    ctx.font = 'bold 15px "Inter", sans-serif'
-    ctx.fillText(signee2Title.toUpperCase(), canvas.width - 320, footY + 36)
-    ctx.fillStyle = '#94A3B8'
-    ctx.font = '13px "Inter", sans-serif'
-    ctx.fillText('Convener, Graphite 2026', canvas.width - 320, footY + 56)
+    ctx.fillStyle = '#334155'
+    ctx.font = 'bold 14px "Inter", sans-serif'
+    ctx.fillText(signee2Title.toUpperCase(), canvas.width - 320, footY + 32)
+    ctx.fillStyle = '#64748B'
+    ctx.font = '12px "Inter", sans-serif'
+    ctx.fillText('Convener, Graphite 2026', canvas.width - 320, footY + 52)
   }
 
   const triggerDownload = (canvas, targetParticipant) => {
     const dataUrl = canvas.toDataURL('image/png')
     const a = document.createElement('a')
     a.href = dataUrl
-    a.download = `SpiderMan_Certificate_${(targetParticipant.student_name || 'student').replace(/\s+/g, '_')}_Graphite2026.png`
+    a.download = `Certificate_${(targetParticipant.student_name || 'student').replace(/\s+/g, '_')}_Graphite2026.png`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -430,30 +446,25 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
 
     const emailBody = `Dear ${currentParticipant.student_name},
 
-Congratulations from Graphic Era Hill University, Bhimtal Campus! 🕷️⚡
+Greetings from Graphic Era Hill University, Bhimtal Campus.
 
-We are proud to present your official Certificate of ${certType === 'excellence' ? 'Excellence' : certType === 'merit' ? 'Special Merit' : 'Participation'} for "Graphite 2026: The Ultimate Spider-Man Themed Hackathon".
-
-Your Spider-Man Themed Certificate has been verified and registered on the SPIDEY Multiverse Registry.
+We are pleased to present your official Certificate of ${certType === 'excellence' ? 'Excellence' : certType === 'merit' ? 'Merit' : 'Participation'} for "Graphite 2026", organized by the Department of Computer Science & Engineering.
 
 🎓 PARTICIPANT CREDENTIALS:
 ------------------------------------------
 • Name: ${currentParticipant.student_name}
 • Roll No: ${currentParticipant.roll_no || 'GEHU-2024'}
 • Degree / Branch: ${currentParticipant.degree || 'B.Tech CSE'}
-• Campus: GEHU Bhimtal Campus
+• Campus: Graphic Era Hill University, Bhimtal
 • Verification Code: ${certCode}
 ------------------------------------------
 
-🔗 VIEW & DOWNLOAD YOUR OFFICIAL HIGH-RES CERTIFICATE:
+🔗 VIEW & DOWNLOAD YOUR OFFICIAL HIGH-RESOLUTION CERTIFICATE:
 ${publicCertUrl}
 
-You can print, share, or download your high-resolution verified certificate anytime using the link above.
+You can print, view, or download your high-resolution verified certificate anytime using the link above.
 
-With great power comes great responsibility! 🕸️
-
-Best regards,
-Office of Student Affairs & Technology Innovation
+Warm regards,
 Department of Computer Science & Engineering
 Graphic Era Hill University, Bhimtal Campus`
 
@@ -516,14 +527,17 @@ Graphic Era Hill University, Bhimtal Campus`
   const copyEmailTemplate = () => {
     const emailBody = `Dear ${currentParticipant.student_name},
 
-Congratulations! Attached/Linked is your official Spider-Man Themed Certificate for Graphite 2026 Hackathon at GEHU Bhimtal.
+Congratulations! Linked below is your official verified Certificate of ${certType === 'excellence' ? 'Excellence' : certType === 'merit' ? 'Merit' : 'Participation'} for Graphite 2026 at Graphic Era Hill University, Bhimtal.
 
+Participant: ${currentParticipant.student_name}
+Roll Number: ${currentParticipant.roll_no || 'GEHU-2024'}
+Degree / Branch: ${currentParticipant.degree || 'B.Tech CSE'}
 Certificate Code: ${certCode}
-Roll No: ${currentParticipant.roll_no}
-Direct Verification Link: ${publicCertUrl}
+Direct Verification & Download Link: ${publicCertUrl}
 
 Best regards,
-GEHU Bhimtal Academic Council`
+Department of Computer Science & Engineering
+Graphic Era Hill University, Bhimtal Campus`
     navigator.clipboard?.writeText(emailBody)
     setCopiedBody(true)
     setTimeout(() => setCopiedBody(false), 2000)
@@ -851,136 +865,114 @@ GEHU Bhimtal Academic Council`
                   </div>
                 </div>
 
-                {/* ── SPIDER-MAN THEMED CERTIFICATE CONTAINER ── */}
+                {/* ── CLEAN AUTHENTIC UNIVERSITY CERTIFICATE CONTAINER ── */}
                 <div
                   ref={certificateRef}
                   id="spider-certificate-box"
-                  className="w-full max-w-3xl aspect-[1.414/1] bg-gradient-to-br from-[#0B0F1E] via-[#070912] to-[#04050A] text-white p-6 sm:p-8 rounded-3xl relative border-[8px] sm:border-[12px] border-[#E21B24] flex flex-col justify-between overflow-hidden shadow-[0_0_80px_rgba(226,27,36,0.4)] select-none"
+                  className="w-full max-w-3xl aspect-[1.414/1] bg-[#FCFBF7] text-[#1E293B] p-6 sm:p-10 rounded-2xl relative border-[8px] sm:border-[10px] border-[#7B1113] flex flex-col justify-between overflow-hidden shadow-2xl select-none"
                   style={customBgImage ? { backgroundImage: `url(${customBgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
                 >
-                  {/* Neon Cyber-Cyan Inner Double Border */}
-                  <div className="absolute inset-2 sm:inset-3 border-2 border-[#00F0FF]/60 rounded-2xl pointer-events-none shadow-[0_0_15px_rgba(0,240,255,0.2)]" />
-                  <div className="absolute inset-3 sm:inset-4 border border-[#F59E0B]/30 rounded-xl pointer-events-none" />
+                  {/* Elegant Double Inset Gold Border */}
+                  <div className="absolute inset-2 sm:inset-3 border-2 border-[#C5A059] rounded-xl pointer-events-none" />
+                  <div className="absolute inset-3 sm:inset-4 border border-[#C5A059]/40 rounded-lg pointer-events-none" />
 
-                  {/* Spider-Web Corner Decals */}
-                  <div className="absolute top-0 left-0 w-28 h-28 pointer-events-none opacity-40">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                      <path d="M0,0 L100,0 M0,0 L0,100 M0,0 L80,80 M0,0 L40,90 M0,0 L90,40" stroke="#E21B24" strokeWidth="1" fill="none" />
-                      <circle cx="0" cy="0" r="30" stroke="#00F0FF" strokeWidth="0.8" fill="none" />
-                      <circle cx="0" cy="0" r="60" stroke="#E21B24" strokeWidth="0.8" fill="none" />
-                    </svg>
-                  </div>
-                  <div className="absolute top-0 right-0 w-28 h-28 pointer-events-none opacity-40 rotate-90">
-                    <svg viewBox="0 0 100 100" width="100%" height="100%">
-                      <path d="M0,0 L100,0 M0,0 L0,100 M0,0 L80,80 M0,0 L40,90 M0,0 L90,40" stroke="#E21B24" strokeWidth="1" fill="none" />
-                      <circle cx="0" cy="0" r="40" stroke="#00F0FF" strokeWidth="0.8" fill="none" />
-                    </svg>
-                  </div>
-
-                  {/* Giant Central Spider Watermark */}
+                  {/* Subtle Graphic Era Watermark */}
                   {!customBgImage && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.06]">
-                      <img src="/logo.png?v=2" alt="Spider Watermark" className="w-[380px] h-[380px] object-contain" />
+                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04]">
+                      <img src="/logo.png?v=2" alt="Watermark" className="w-[340px] h-[340px] object-contain grayscale" />
                     </div>
                   )}
 
-                  {/* Header */}
-                  <div className="text-center relative z-10 space-y-1">
+                  {/* University Header */}
+                  <div className="text-center relative z-10 space-y-0.5">
                     <div className="flex items-center justify-center gap-3 mb-1">
-                      <img src="/logo.png?v=2" alt="GEHU Logo" className="w-12 h-12 object-contain drop-shadow-[0_0_10px_rgba(226,27,36,0.8)]" />
+                      <img src="/logo.png?v=2" alt="GEHU Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
                       <div>
-                        <h1 className="text-xl sm:text-2xl font-serif font-black tracking-widest text-white uppercase drop-shadow">
+                        <h1 className="text-lg sm:text-2xl font-serif font-black tracking-wider text-[#7B1113] uppercase">
                           {customHeader}
                         </h1>
-                        <p className="text-[10px] sm:text-xs font-mono font-bold text-[#00F0FF] tracking-widest uppercase">
+                        <p className="text-[10px] sm:text-xs font-sans font-bold text-[#64748B] tracking-widest uppercase">
                           {customSubHeader}
                         </p>
                       </div>
                     </div>
-                    <p className="text-[9px] sm:text-[10px] font-sans text-gray-400 tracking-wider uppercase font-semibold">
-                      Department of Computer Science & Engineering • SPIDEY Multiverse Innovation Grid
+                    <p className="text-[9px] sm:text-[10px] font-sans text-gray-500 tracking-wider uppercase font-semibold">
+                      Department of Computer Science & Engineering
                     </p>
                   </div>
 
-                  {/* Spider-Verse Citation Banner */}
+                  {/* Certificate Title */}
                   <div className="text-center relative z-10 my-1">
                     <div className="inline-block relative">
-                      <span className="text-[11px] sm:text-xs font-mono text-[#F59E0B] tracking-widest uppercase block mb-0.5 font-bold">
-                        🕷️ SPIDER-VERSE OFFICIAL CITATION 🕷️
-                      </span>
-                      <span className="text-[10px] sm:text-xs font-serif italic text-gray-400 block mb-1">
-                        This citation of honor is officially bestowed upon
-                      </span>
-                      <h2 className="text-2xl sm:text-4xl font-serif font-black text-white tracking-wide border-b-2 border-[#E21B24] pb-1 px-8 drop-shadow-[0_0_15px_rgba(226,27,36,0.6)]">
-                        {currentParticipant.student_name}
+                      <h2 className="text-xs sm:text-base font-serif font-bold text-[#7B1113] tracking-[0.2em] uppercase border-b border-[#C5A059] pb-1 px-4">
+                        {certType === 'excellence' ? 'Certificate of Excellence' : certType === 'merit' ? 'Certificate of Merit' : 'Certificate of Participation'}
                       </h2>
+                      <p className="text-[10px] sm:text-xs font-serif italic text-gray-500 mt-2">
+                        This is to certify that
+                      </p>
+                      <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#0F172A] tracking-wide mt-1">
+                        {currentParticipant.student_name}
+                      </h3>
+                      <div className="w-48 mx-auto h-[1.5px] bg-[#C5A059] mt-1" />
                     </div>
                   </div>
 
                   {/* Citation Body Text */}
-                  <div className="text-center relative z-10 max-w-xl mx-auto px-2 space-y-1.5 text-xs sm:text-sm text-gray-200 leading-relaxed font-sans">
+                  <div className="text-center relative z-10 max-w-xl mx-auto px-2 space-y-1 text-xs sm:text-sm text-gray-700 leading-relaxed font-sans">
                     <p>
-                      of <strong className="text-white">{currentParticipant.degree || 'B.Tech CSE'}</strong>, Roll Number{' '}
-                      <span className="font-mono font-bold text-[#00F0FF]">{currentParticipant.roll_no || 'GEHU-2024'}</span>, for{' '}
+                      of <strong className="text-gray-900">{currentParticipant.degree || 'B.Tech CSE'}</strong>, Roll Number{' '}
+                      <strong className="text-gray-900 font-mono">{currentParticipant.roll_no || 'GEHU-2024'}</strong>,{' '}
                       {certType === 'excellence' ? (
-                        <>
-                          conquering <strong className="text-[#F59E0B]">{customRank}</strong> and demonstrating supreme technical brilliance in
-                        </>
+                        <>has demonstrated outstanding performance and secured <strong className="text-[#7B1113]">{customRank}</strong> in</>
                       ) : certType === 'merit' ? (
-                        <>
-                          exemplary algorithmic mastery and architectural innovation in
-                        </>
+                        <>has demonstrated exemplary technical innovation and brilliance in</>
                       ) : (
-                        <>
-                          outstanding participation and web-slinging engineering dedication in
-                        </>
+                        <>has successfully participated in the annual technical hackathon</>
                       )}
                     </p>
-                    <p className="font-extrabold text-[#E21B24] text-sm sm:text-base tracking-wide drop-shadow-[0_0_10px_rgba(226,27,36,0.7)]">
-                      &quot;Graphite 2026: The Ultimate Spider-Man Themed Hackathon 🕸️⚡&quot;
+                    <p className="font-serif font-bold text-[#7B1113] text-sm sm:text-base tracking-wide">
+                      &quot;GRAPHITE 2026&quot;
                     </p>
-                    <p className="text-[11px] text-gray-400 italic font-serif">
-                      Organized at Graphic Era Hill University, Bhimtal Campus • Concluded on October 27, 2026.
+                    <p className="text-[10px] sm:text-[11px] text-gray-500 font-sans">
+                      Organized by Graphic Era Hill University, Bhimtal Campus • Concluded on October 27, 2026
                     </p>
                   </div>
 
-                  {/* Certificate Footer: Signatures & Hologram Seal */}
-                  <div className="relative z-10 pt-3 flex items-end justify-between border-t border-gray-800 px-2 sm:px-6">
-                    
+                  {/* Certificate Footer: Signatures & University Seal */}
+                  <div className="relative z-10 pt-2 flex items-end justify-between border-t border-gray-300 px-2 sm:px-6">
                     {/* Signee 1 */}
                     <div className="text-center">
-                      <div className="font-serif italic text-sm sm:text-base text-white font-bold">
+                      <div className="font-serif italic text-xs sm:text-sm text-gray-900 font-bold">
                         {signee1Name}
                       </div>
-                      <div className="w-28 sm:w-32 border-t border-gray-700 mt-1 pt-0.5">
-                        <p className="text-[9px] font-sans font-bold text-gray-300 uppercase">{signee1Title}</p>
+                      <div className="w-24 sm:w-32 border-t border-gray-400 mt-1 pt-0.5">
+                        <p className="text-[9px] font-sans font-bold text-gray-700 uppercase">{signee1Title}</p>
                         <p className="text-[8px] font-sans text-gray-500">GEHU Bhimtal</p>
                       </div>
                     </div>
 
-                    {/* Official Spider Hologram Seal */}
+                    {/* Center Official Seal */}
                     <div className="flex flex-col items-center">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#F59E0B] bg-gradient-to-tr from-[#7F1D1D] to-[#1E1B4B] flex items-center justify-center shadow-[0_0_20px_rgba(245,158,11,0.4)] p-1 text-center">
-                        <div className="w-full h-full rounded-full border border-dashed border-[#E21B24] flex flex-col items-center justify-center">
-                          <span className="text-[7px] font-mono text-[#00F0FF] font-bold">SPIDER</span>
-                          <span className="text-[12px] sm:text-sm">🕷️</span>
-                          <span className="text-[6px] font-mono text-[#F59E0B] font-bold">VERIFIED</span>
+                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#C5A059] bg-[#FAF5EB] flex items-center justify-center p-1 text-center shadow-inner">
+                        <div className="w-full h-full rounded-full border border-dashed border-[#7B1113] flex flex-col items-center justify-center">
+                          <span className="text-[6px] font-sans text-[#7B1113] font-bold tracking-tight">GEHU</span>
+                          <span className="text-[9px] text-[#C5A059] font-serif font-bold">★ 2026 ★</span>
+                          <span className="text-[6px] font-sans text-[#7B1113] font-bold">BHIMTAL</span>
                         </div>
                       </div>
-                      <span className="text-[8px] font-mono text-cyan-400 mt-1">{certCode}</span>
+                      <span className="text-[8px] font-mono text-gray-500 mt-1">{certCode}</span>
                     </div>
 
                     {/* Signee 2 */}
                     <div className="text-center">
-                      <div className="font-serif italic text-sm sm:text-base text-white font-bold">
+                      <div className="font-serif italic text-xs sm:text-sm text-gray-900 font-bold">
                         {signee2Name}
                       </div>
-                      <div className="w-28 sm:w-32 border-t border-gray-700 mt-1 pt-0.5">
-                        <p className="text-[9px] font-sans font-bold text-gray-300 uppercase">{signee2Title}</p>
+                      <div className="w-24 sm:w-32 border-t border-gray-400 mt-1 pt-0.5">
+                        <p className="text-[9px] font-sans font-bold text-gray-700 uppercase">{signee2Title}</p>
                         <p className="text-[8px] font-sans text-gray-500">Convener, Graphite 2026</p>
                       </div>
                     </div>
-
                   </div>
                 </div>
 
