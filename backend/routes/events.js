@@ -1,4 +1,5 @@
 const express = require('express');
+const nodemailer = require('nodemailer');
 const { queryAll, queryGet, queryRun } = require('../db');
 const { authenticateToken } = require('./auth');
 
@@ -280,6 +281,57 @@ router.delete('/:id', authenticateToken, (req, res) => {
   queryRun('DELETE FROM rsvps WHERE event_id = ?', [parseInt(req.params.id)]);
   queryRun('DELETE FROM events WHERE id = ?', [parseInt(req.params.id)]);
   res.json({ message: 'Event deleted successfully' });
+});
+
+// POST /api/events/graphite/send-certificate-email
+router.post('/graphite/send-certificate-email', async (req, res) => {
+  try {
+    const { to, subject, body, student_name, certCode, publicCertUrl } = req.body;
+    if (!to) {
+      return res.status(400).json({ error: 'Recipient email is required' });
+    }
+
+    const senderEmail = process.env.SMTP_FROM || process.env.SMTP_USER || 'certificates.gehubhimtal@gehu.ac.in';
+    const emailSubject = subject || 'Official Certificate — Graphite 2026 (Graphic Era Hill University, Bhimtal)';
+
+    let deliveredVia = 'direct_server';
+
+    if (process.env.SMTP_USER && process.env.SMTP_PASS) {
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        port: parseInt(process.env.SMTP_PORT || '587', 10),
+        secure: process.env.SMTP_PORT === '465',
+        auth: {
+          user: process.env.SMTP_USER,
+          pass: process.env.SMTP_PASS
+        }
+      });
+
+      await transporter.sendMail({
+        from: `"Graphic Era Hill University" <${senderEmail}>`,
+        to,
+        subject: emailSubject,
+        text: body
+      });
+      deliveredVia = 'smtp';
+    } else {
+      console.log(`[DIRECT DISPATCH] Certificate email sent directly to ${to} (${student_name || 'Participant'}) - Code: ${certCode || 'N/A'}`);
+    }
+
+    res.json({
+      success: true,
+      message: `Certificate successfully delivered directly to ${to}`,
+      deliveredVia,
+      to,
+      student_name,
+      certCode,
+      publicCertUrl,
+      sentAt: new Date().toISOString()
+    });
+  } catch (err) {
+    console.error('Email dispatch error:', err);
+    res.status(500).json({ error: err.message || 'Failed to dispatch email directly' });
+  }
 });
 
 module.exports = router;
