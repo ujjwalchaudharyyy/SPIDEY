@@ -61,16 +61,6 @@ export default function SignoutVideoModal({ onComplete }) {
         </div>
       </div>
 
-      {/* Skip Button Top/Bottom Right */}
-      <div className="absolute bottom-5 right-5 sm:bottom-6 sm:right-8 z-30">
-        <button
-          onClick={onComplete}
-          className="btn-spider-pill py-2 px-5 sm:py-2.5 sm:px-6 text-xs shadow-[0_0_20px_rgba(239,68,68,0.5)] active:scale-95 cursor-pointer"
-        >
-          <span>PROCEED TO LOGIN</span>
-          <span>➔</span>
-        </button>
-      </div>
     </div>
   )
 }

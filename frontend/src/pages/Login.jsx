@@ -11,7 +11,6 @@ export default function Login() {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [isAudioActive, setIsAudioActive] = useState(false)
-  const [isVideoHidden, setIsVideoHidden] = useState(false)
   const [showSigninVideo, setShowSigninVideo] = useState(false)
   const [pendingDestination, setPendingDestination] = useState('')
   const [isGoogleLoading, setIsGoogleLoading] = useState(false)
@@ -48,20 +47,6 @@ export default function Login() {
       videoRef.current.volume = 1.0
       setIsAudioActive(!videoRef.current.muted)
     }
-  }
-
-  const toggleSkipVideo = () => {
-    setIsVideoHidden(prev => {
-      const next = !prev
-      if (videoRef.current) {
-        if (next) {
-          videoRef.current.pause()
-        } else {
-          videoRef.current.play().catch(() => {})
-        }
-      }
-      return next
-    })
   }
 
   const ensureSoundOnInteraction = () => {
@@ -376,55 +361,37 @@ export default function Login() {
 
     <div
       onClick={ensureSoundOnInteraction}
-      className="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex flex-col sm:flex-row items-center justify-end p-4 sm:p-6 bg-black"
+      className="relative min-h-[100dvh] w-full overflow-x-hidden overflow-y-auto flex items-center justify-center p-4 sm:p-6 bg-black"
     >
-      {/* 4K Background Video restored to login_bg.mp4 */}
-      {!isVideoHidden ? (
-        <video
-          ref={videoRef}
-          src="/assets/videos/login_bg.mp4"
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          webkit-playsinline="true"
-          x5-playsinline="true"
-          disablePictureInPicture
-          controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
-          onError={(e) => {
-            if (!e.target.dataset.fallback) {
-              e.target.dataset.fallback = '1'
-              e.target.src = '/assets/videos/login_bg.mp4'
-              e.target.play().catch(() => {})
-            }
-          }}
-          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
-          style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)', imageRendering: '-webkit-optimize-contrast', filter: 'contrast(1.04) saturate(1.05)' }}
-        />
-      ) : (
-        <div className="absolute inset-0 z-0 bg-gradient-to-br from-[#0B1021] via-black to-[#130713]" />
-      )}
+      {/* 4K Background Video */}
+      <video
+        ref={videoRef}
+        src="/assets/videos/login_bg.mp4"
+        autoPlay
+        loop
+        muted
+        playsInline
+        preload="auto"
+        webkit-playsinline="true"
+        x5-playsinline="true"
+        disablePictureInPicture
+        controlsList="nodownload noplaybackrate nofullscreen noremoteplayback"
+        onError={(e) => {
+          if (!e.target.dataset.fallback) {
+            e.target.dataset.fallback = '1'
+            e.target.src = '/assets/videos/login_bg.mp4'
+            e.target.play().catch(() => {})
+          }
+        }}
+        className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
+        style={{ willChange: 'transform', transform: 'translate3d(0, 0, 0)', imageRendering: '-webkit-optimize-contrast', filter: 'contrast(1.04) saturate(1.05)' }}
+      />
 
       {/* Cyber Gradient Overlays: responsive so phone video shines through */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/85 via-black/40 to-black/85 pointer-events-none" />
 
-      {/* Top Floating Controls: Skip Video & Sound Toggle */}
+      {/* Top Floating Controls: Sound Toggle */}
       <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-30 flex items-center gap-2">
-        {/* Skip / Hide Video Button */}
-        <button
-          type="button"
-          onClick={(e) => {
-            e.stopPropagation()
-            toggleSkipVideo()
-          }}
-          className="bg-black/80 hover:bg-red-950/80 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-full sm:rounded-xl border border-red-500/60 text-[10px] sm:text-xs font-mono flex items-center gap-1.5 backdrop-blur-md transition-all shadow-spider-glow cursor-pointer active:scale-95"
-          title="Skip or pause background video"
-        >
-          <span>{isVideoHidden ? '▶️' : '⏭️'}</span>
-          <span className="font-semibold">{isVideoHidden ? 'PLAY VIDEO' : 'SKIP VIDEO'}</span>
-        </button>
-
         {/* Sound Toggle */}
         <button
           type="button"
@@ -439,35 +406,25 @@ export default function Login() {
         </button>
       </div>
 
-      {/* Left Branding (Desktop) */}
-      <div className="absolute top-8 left-10 z-20 hidden lg:block">
-        <div className="flex items-center space-x-4 mb-2">
-          <div className="w-20 h-20 rounded-2xl bg-black/90 border-2 border-red-500/70 flex items-center justify-center shadow-[0_0_30px_rgba(226,27,36,0.6)] overflow-hidden p-1 hover:scale-105 transition-transform shrink-0">
+      {/* Top Left Branding (Desktop) */}
+      <div className="absolute top-6 left-6 sm:top-8 sm:left-10 z-20 hidden lg:block pointer-events-none">
+        <div className="flex items-center space-x-3.5 mb-2">
+          <div className="w-16 h-16 rounded-2xl bg-black/90 border-2 border-red-500/70 flex items-center justify-center shadow-[0_0_30px_rgba(226,27,36,0.6)] overflow-hidden p-1 shrink-0">
             <img src="/logo.png?v=2" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
           </div>
           <div>
-            <h1 className="spider-heading text-2xl tracking-wide">
+            <h1 className="spider-heading text-xl tracking-wide">
               GRAPHIC ERA <span className="text-red-500">EVENT HUB</span>
             </h1>
-            <p className="text-xs font-mono text-red-300">
+            <p className="text-[11px] font-mono text-red-300">
               Bhimtal • Haldwani • Dehradun • Deemed University
             </p>
           </div>
         </div>
       </div>
 
-      {/* Mobile Top Header (Visible on phone to anchor the video look) */}
-      <div className="sm:hidden relative z-20 w-full max-w-sm mt-8 mb-4 text-center">
-        <div className="inline-flex items-center space-x-2.5 bg-black/80 backdrop-blur-md px-4 py-2 rounded-full border border-red-500/50 shadow-spider-glow">
-          <img src="/logo.png?v=2" alt="Logo" className="w-8 h-8 object-contain rounded-full" />
-          <span className="font-chakra italic font-bold text-sm text-white">
-            GRAPHIC ERA <span className="text-red-500 not-italic font-mono text-xs">EVENT HUB</span>
-          </span>
-        </div>
-      </div>
-
-      {/* Right Side Compact & Attractive Glass Card */}
-      <div className="relative z-20 w-full sm:w-[440px] md:w-[460px] max-w-md mx-auto sm:mx-0 sm:mr-8 md:mr-12 my-auto">
+      {/* Centered Glassmorphic Login Card (Same Transparency & Style) */}
+      <div className="relative z-20 w-full sm:w-[440px] md:w-[460px] max-w-md mx-auto my-auto">
         <div className="bg-[#090D18]/85 backdrop-blur-xl border border-red-500/40 rounded-2xl sm:rounded-3xl p-5 sm:p-7 shadow-modal-glow">
           <div className="flex items-center justify-between pb-3 mb-4 border-b border-[#1E293B]">
             <div className="flex items-center gap-3">
@@ -537,108 +494,51 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Quick Fill Accounts */}
-            <div className="p-2.5 rounded-xl bg-[#0E1526]/80 border border-red-500/30 space-y-2 max-h-64 overflow-y-auto">
-              <div className="text-[10px] font-bold text-red-400 uppercase tracking-wider pb-1 border-b border-red-500/20 flex items-center justify-between">
-                <span>🏛️ Campus Admins & Accounts</span>
-                <span className="text-[9px] font-mono text-gray-400">Tap Auto-Fill</span>
-              </div>
-              <div className="flex items-center justify-between text-[11px] font-mono">
-                <div>
-                  <span className="text-red-400 font-bold">🕷️ Ujjwal (Super Admin):</span>{' '}
-                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">ujjwalchaudhary2007@gmail.com</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('ujjwalchaudhary2007@gmail.com', 'ujjwal123')}
-                  className="text-red-400 hover:text-red-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
+            {/* Demo Gmails Dropdown Box */}
+            <div className="space-y-1.5 p-3 rounded-xl bg-[#0E1526]/80 border border-red-500/30">
+              <label className="block text-[10px] font-bold text-red-400 uppercase tracking-wider flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <span>⚡</span>
+                  <span>Demo Accounts (Auto-Fill)</span>
+                </span>
+                <span className="text-[9px] font-mono text-gray-400 font-normal">Select to fill</span>
+              </label>
+              <div className="relative">
+                <select
+                  defaultValue=""
+                  onChange={(e) => {
+                    const val = e.target.value
+                    if (!val) return
+                    const [em, pw] = val.split('|')
+                    handleQuickLogin(em, pw)
+                  }}
+                  className="w-full bg-[#090D18] border border-gray-700 hover:border-red-500/60 rounded-lg px-3 py-2 text-xs font-mono text-white focus:outline-none focus:border-red-500 cursor-pointer transition-all shadow-inner"
                 >
-                  Auto-Fill
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
-                <div>
-                  <span className="text-blue-400 font-bold">🏔️ Bhimtal Admin:</span>{' '}
-                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">admin.bhimtal@gehu.ac.in</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin.bhimtal@gehu.ac.in', 'bhimtal123')}
-                  className="text-blue-400 hover:text-blue-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
-                >
-                  Auto-Fill
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
-                <div>
-                  <span className="text-cyan-400 font-bold">🌊 Haldwani Admin:</span>{' '}
-                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">admin.haldwani@gehu.ac.in</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin.haldwani@gehu.ac.in', 'haldwani123')}
-                  className="text-cyan-400 hover:text-cyan-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
-                >
-                  Auto-Fill
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
-                <div>
-                  <span className="text-green-400 font-bold">🌲 Dehradun Admin:</span>{' '}
-                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">admin.dehradun@gehu.ac.in</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin.dehradun@gehu.ac.in', 'dehradun123')}
-                  className="text-green-400 hover:text-green-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
-                >
-                  Auto-Fill
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
-                <div>
-                  <span className="text-purple-400 font-bold">🎓 Deemed Admin:</span>{' '}
-                  <span className="text-gray-300 truncate max-w-[170px] inline-block align-bottom">admin.deemed@gehu.ac.in</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin.deemed@gehu.ac.in', 'deemed123')}
-                  className="text-purple-400 hover:text-purple-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
-                >
-                  Auto-Fill
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
-                <div>
-                  <span className="text-emerald-400 font-bold">🎓 Student:</span>{' '}
-                  <span className="text-gray-300">spiderman@gehu.ac.in</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('spiderman@gehu.ac.in', 'student123')}
-                  className="text-emerald-400 hover:text-emerald-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
-                >
-                  Auto-Fill
-                </button>
-              </div>
-
-              <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-[#1E293B]">
-                <div>
-                  <span className="text-yellow-400 font-bold">⚡ Admin:</span>{' '}
-                  <span className="text-gray-300">admin@campus.edu</span>
-                </div>
-                <button
-                  type="button"
-                  onClick={() => handleQuickLogin('admin@campus.edu', 'admin123')}
-                  className="text-yellow-400 hover:text-yellow-300 font-bold underline cursor-pointer active:scale-95 flex-shrink-0 ml-1"
-                >
-                  Auto-Fill
-                </button>
+                  <option value="" disabled className="bg-[#090D18] text-gray-400">
+                    -- Choose Demo Gmail / Role --
+                  </option>
+                  <option value="ujjwalchaudhary2007@gmail.com|ujjwal123" className="bg-[#090D18] text-red-300">
+                    🕷️ Super Admin: ujjwalchaudhary2007@gmail.com
+                  </option>
+                  <option value="admin.bhimtal@gehu.ac.in|bhimtal123" className="bg-[#090D18] text-blue-300">
+                    🏔️ Bhimtal Admin: admin.bhimtal@gehu.ac.in
+                  </option>
+                  <option value="admin.haldwani@gehu.ac.in|haldwani123" className="bg-[#090D18] text-cyan-300">
+                    🌊 Haldwani Admin: admin.haldwani@gehu.ac.in
+                  </option>
+                  <option value="admin.dehradun@gehu.ac.in|dehradun123" className="bg-[#090D18] text-green-300">
+                    🌲 Dehradun Admin: admin.dehradun@gehu.ac.in
+                  </option>
+                  <option value="admin.deemed@gehu.ac.in|deemed123" className="bg-[#090D18] text-purple-300">
+                    🎓 Deemed Admin: admin.deemed@gehu.ac.in
+                  </option>
+                  <option value="spiderman@gehu.ac.in|student123" className="bg-[#090D18] text-emerald-300">
+                    🎓 Student: spiderman@gehu.ac.in
+                  </option>
+                  <option value="admin@campus.edu|admin123" className="bg-[#090D18] text-yellow-300">
+                    ⚡ General Admin: admin@campus.edu
+                  </option>
+                </select>
               </div>
             </div>
 
