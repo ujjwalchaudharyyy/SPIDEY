@@ -443,27 +443,25 @@ export default function Login() {
         </button>
       </div>
 
-      {/* Top Left Branding (Desktop) */}
-      <div className="absolute top-6 left-6 sm:top-8 sm:left-10 z-20 hidden lg:block pointer-events-none">
-        <div className="flex items-center space-x-3.5 mb-2">
-          <div className="w-16 h-16 rounded-2xl bg-black/90 border-2 border-red-500/70 flex items-center justify-center shadow-[0_0_30px_rgba(226,27,36,0.6)] overflow-hidden p-1 shrink-0">
-            <img src="/logo.png?v=2" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
-          </div>
-          <div>
-            <h1 className="spider-heading text-xl tracking-wide">
-              GRAPHIC ERA <span className="text-red-500">EVENT HUB</span>
-            </h1>
-            <p className="text-[11px] font-mono text-red-300">
-              Bhimtal • Haldwani • Dehradun • Deemed University
-            </p>
-          </div>
+      {/* Top Left Branding (Desktop) - Safe spacing so it never clashes with centered login card */}
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 hidden xl:flex items-center space-x-3 pointer-events-none max-w-[240px]">
+        <div className="w-11 h-11 rounded-xl bg-black/85 border border-red-500/60 flex items-center justify-center shadow-spider-glow overflow-hidden p-1 shrink-0 backdrop-blur-md">
+          <img src="/logo.png?v=2" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
+        </div>
+        <div className="min-w-0">
+          <h1 className="spider-heading text-sm tracking-wide text-white leading-tight">
+            GRAPHIC ERA <span className="text-red-500">EVENT HUB</span>
+          </h1>
+          <p className="text-[10px] font-mono text-red-300/80 leading-snug mt-0.5">
+            4 Campus Network
+          </p>
         </div>
       </div>
 
-      {/* Centered Glassmorphic Login Card (Same Transparency & Style, Compact Sizing) */}
+      {/* Centered Glassmorphic Login Card (Enhanced Transparency & Compact Sizing) */}
       <div className="relative z-20 w-full max-w-[365px] mx-auto my-auto">
-        <div className="bg-[#090D18]/85 backdrop-blur-xl border border-red-500/40 rounded-2xl p-4 sm:p-5 shadow-modal-glow">
-          <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#1E293B]">
+        <div className="bg-[#090D18]/60 backdrop-blur-2xl border border-red-500/40 rounded-2xl p-4 sm:p-5 shadow-[0_0_50px_rgba(226,27,36,0.25)]">
+          <div className="flex items-center justify-between pb-2.5 mb-3 border-b border-[#1E293B]/70">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-black border border-red-500/60 p-0.5 shadow-spider-glow flex items-center justify-center shrink-0">
                 <img src="/logo.png?v=2" alt="Logo" className="w-full h-full object-contain" />
@@ -531,8 +529,8 @@ export default function Login() {
               </div>
             </div>
 
-            {/* Demo Gmails Dropdown Box (Compact) */}
-            <div className="space-y-1 p-2 rounded-xl bg-[#0E1526]/80 border border-red-500/30">
+            {/* Demo Gmails Dropdown Box (Compact & Glassmorphic) */}
+            <div className="space-y-1 p-2 rounded-xl bg-[#0E1526]/50 backdrop-blur-md border border-red-500/30">
               <label className="block text-[10px] font-bold text-red-400 uppercase tracking-wider flex items-center justify-between">
                 <span className="flex items-center gap-1">
                   <span>⚡</span>
@@ -549,7 +547,7 @@ export default function Login() {
                     const [em, pw] = val.split('|')
                     handleQuickLogin(em, pw)
                   }}
-                  className="w-full bg-[#090D18] border border-gray-700 hover:border-red-500/60 rounded-lg px-2.5 py-1.5 text-[11px] font-mono text-white focus:outline-none focus:border-red-500 cursor-pointer transition-all shadow-inner"
+                  className="w-full bg-[#090D18]/70 backdrop-blur-md border border-gray-700/70 hover:border-red-500/60 rounded-lg px-2.5 py-1.5 text-[11px] font-mono text-white focus:outline-none focus:border-red-500 cursor-pointer transition-all shadow-inner"
                 >
                   <option value="" disabled className="bg-[#090D18] text-gray-400">
                     -- Choose Demo Gmail / Role --
@@ -591,11 +589,11 @@ export default function Login() {
 
           {/* Spider-Verse Cyber Divider */}
           <div className="relative my-2.5 flex items-center justify-center">
-            <div className="border-t border-[#1E293B] w-full" />
-            <span className="bg-[#090D18] px-2 text-[9px] font-mono text-gray-500 uppercase tracking-widest shrink-0">
+            <div className="border-t border-[#1E293B]/70 w-full" />
+            <span className="bg-[#090D18]/80 px-2 text-[9px] font-mono text-gray-500 uppercase tracking-widest shrink-0">
               OR
             </span>
-            <div className="border-t border-[#1E293B] w-full" />
+            <div className="border-t border-[#1E293B]/70 w-full" />
           </div>
 
           {/* Google Sign-In Integration */}
@@ -612,7 +610,7 @@ export default function Login() {
                 type="button"
                 onClick={handleCustomGoogleClick}
                 disabled={loading || isGoogleLoading}
-                className="w-full py-2 px-3 rounded-xl bg-[#0E1526]/90 hover:bg-[#131D33] border border-[#1E293B] hover:border-red-500/60 text-white font-chakra italic font-bold text-[11px] sm:text-xs tracking-wider transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm cursor-pointer"
+                className="w-full py-2 px-3 rounded-xl bg-[#0E1526]/60 hover:bg-[#131D33]/85 backdrop-blur-md border border-[#1E293B]/80 hover:border-red-500/60 text-white font-chakra italic font-bold text-[11px] sm:text-xs tracking-wider transition-all flex items-center justify-center gap-2 active:scale-95 shadow-sm cursor-pointer"
               >
                 <svg className="w-3.5 h-3.5 shrink-0" viewBox="0 0 24 24">
                   <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
