@@ -447,7 +447,74 @@ export default function AdminDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-[#0A0D14] text-gray-100 pb-20 font-sans">
+    <div className="min-h-screen bg-[#0A0D14] text-gray-100 pb-20 font-sans relative overflow-x-hidden">
+
+      {/* ── Dark Red Spider Web Background ── */}
+      <div className="fixed inset-0 z-0 pointer-events-none select-none overflow-hidden" aria-hidden="true">
+        <svg
+          width="100%" height="100%"
+          viewBox="0 0 800 800"
+          preserveAspectRatio="xMidYMid slice"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ opacity: 0.13 }}
+        >
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg, i) => (
+            <line
+              key={`spoke-${i}`}
+              x1="400" y1="400"
+              x2={400 + 500 * Math.cos((deg * Math.PI) / 180)}
+              y2={400 + 500 * Math.sin((deg * Math.PI) / 180)}
+              stroke="#8B0000" strokeWidth="1.2"
+            />
+          ))}
+          {[60,120,180,240,300,360,420].map((r, i) => (
+            <polygon
+              key={`ring-${i}`}
+              points={[0,30,60,90,120,150,180,210,240,270,300,330].map(deg =>
+                `${400 + r * Math.cos((deg * Math.PI) / 180)},${400 + r * Math.sin((deg * Math.PI) / 180)}`
+              ).join(' ')}
+              fill="none" stroke="#8B0000" strokeWidth="0.9"
+            />
+          ))}
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg, i) => (
+            <line
+              key={`spoke2-${i}`}
+              x1="750" y1="50"
+              x2={750 + 400 * Math.cos((deg * Math.PI) / 180)}
+              y2={50 + 400 * Math.sin((deg * Math.PI) / 180)}
+              stroke="#6B0000" strokeWidth="0.8"
+            />
+          ))}
+          {[40,90,140,190,240].map((r, i) => (
+            <polygon
+              key={`ring2-${i}`}
+              points={[0,30,60,90,120,150,180,210,240,270,300,330].map(deg =>
+                `${750 + r * Math.cos((deg * Math.PI) / 180)},${50 + r * Math.sin((deg * Math.PI) / 180)}`
+              ).join(' ')}
+              fill="none" stroke="#6B0000" strokeWidth="0.7"
+            />
+          ))}
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg, i) => (
+            <line
+              key={`spoke3-${i}`}
+              x1="80" y1="720"
+              x2={80 + 300 * Math.cos((deg * Math.PI) / 180)}
+              y2={720 + 300 * Math.sin((deg * Math.PI) / 180)}
+              stroke="#7A0000" strokeWidth="0.8"
+            />
+          ))}
+          {[35,75,115,155].map((r, i) => (
+            <polygon
+              key={`ring3-${i}`}
+              points={[0,30,60,90,120,150,180,210,240,270,300,330].map(deg =>
+                `${80 + r * Math.cos((deg * Math.PI) / 180)},${720 + r * Math.sin((deg * Math.PI) / 180)}`
+              ).join(' ')}
+              fill="none" stroke="#7A0000" strokeWidth="0.7"
+            />
+          ))}
+        </svg>
+      </div>
+
       <Navbar />
 
       {/* Toast Alert */}

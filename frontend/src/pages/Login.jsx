@@ -407,8 +407,70 @@ export default function Login() {
           }}
         />
       ) : (
-        <div className="absolute inset-0 z-0 bg-[#060810] bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.18)_0%,_rgba(10,13,24,0.9)_65%,_#030509_100%)] pointer-events-none" />
+        /* Static dark bg when video is skipped — includes spider web */
+        <div className="absolute inset-0 z-0 bg-[#060810] bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.18)_0%,_rgba(10,13,24,0.9)_65%,_#030509_100%)] pointer-events-none overflow-hidden">
+          <svg
+            width="100%" height="100%"
+            viewBox="0 0 800 800"
+            preserveAspectRatio="xMidYMid slice"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ opacity: 0.22 }}
+            className="absolute inset-0 w-full h-full pointer-events-none"
+          >
+            {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg, i) => (
+              <line key={`ls-${i}`} x1="400" y1="400"
+                x2={400 + 520 * Math.cos((deg * Math.PI) / 180)}
+                y2={400 + 520 * Math.sin((deg * Math.PI) / 180)}
+                stroke="#8B0000" strokeWidth="1.3" />
+            ))}
+            {[60,120,180,240,300,360,420].map((r, i) => (
+              <polygon key={`rs-${i}`}
+                points={[0,30,60,90,120,150,180,210,240,270,300,330].map(d =>
+                  `${400 + r * Math.cos((d * Math.PI) / 180)},${400 + r * Math.sin((d * Math.PI) / 180)}`
+                ).join(' ')}
+                fill="none" stroke="#8B0000" strokeWidth="1" />
+            ))}
+            {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg, i) => (
+              <line key={`ls2-${i}`} x1="720" y1="80"
+                x2={720 + 320 * Math.cos((deg * Math.PI) / 180)}
+                y2={80 + 320 * Math.sin((deg * Math.PI) / 180)}
+                stroke="#6B0000" strokeWidth="0.9" />
+            ))}
+            {[40,85,130,175].map((r, i) => (
+              <polygon key={`rs2-${i}`}
+                points={[0,30,60,90,120,150,180,210,240,270,300,330].map(d =>
+                  `${720 + r * Math.cos((d * Math.PI) / 180)},${80 + r * Math.sin((d * Math.PI) / 180)}`
+                ).join(' ')}
+                fill="none" stroke="#6B0000" strokeWidth="0.8" />
+            ))}
+          </svg>
+        </div>
       )}
+
+      {/* Spider Web subtle overlay — always present, very dim, sits above video */}
+      <div className="absolute inset-0 z-[5] pointer-events-none select-none overflow-hidden" aria-hidden="true">
+        <svg
+          width="100%" height="100%"
+          viewBox="0 0 800 800"
+          preserveAspectRatio="xMidYMid slice"
+          xmlns="http://www.w3.org/2000/svg"
+          style={{ opacity: 0.07 }}
+        >
+          {[0,30,60,90,120,150,180,210,240,270,300,330].map((deg, i) => (
+            <line key={`lv-${i}`} x1="400" y1="400"
+              x2={400 + 520 * Math.cos((deg * Math.PI) / 180)}
+              y2={400 + 520 * Math.sin((deg * Math.PI) / 180)}
+              stroke="#B80000" strokeWidth="1.2" />
+          ))}
+          {[65,130,195,260,325,390].map((r, i) => (
+            <polygon key={`rv-${i}`}
+              points={[0,30,60,90,120,150,180,210,240,270,300,330].map(d =>
+                `${400 + r * Math.cos((d * Math.PI) / 180)},${400 + r * Math.sin((d * Math.PI) / 180)}`
+              ).join(' ')}
+              fill="none" stroke="#B80000" strokeWidth="0.9" />
+          ))}
+        </svg>
+      </div>
 
       {/* Cyber Gradient Overlays: Subtle vignette so video shines in crystal 4K clarity */}
       <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/40 via-transparent to-black/40 pointer-events-none" />
