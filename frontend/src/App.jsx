@@ -31,25 +31,25 @@ export default function App() {
   const location = useLocation()
   const { isAuthenticated } = useAuth()
 
-  // Show intro video immediately — check sessionStorage synchronously (no delay)
-  const [showIntroVideo, setShowIntroVideo] = useState(() => {
-    try {
-      return !sessionStorage.getItem('spider_intro_seen')
-    } catch {
-      return true
+  // External verify routes (/verify?code=...) are pass verification scans — open directly
+  const isVerifyRoute = location.pathname.startsWith('/verify')
+
+  // Always show intro video on initial page load / refresh
+  const [showIntroVideo, setShowIntroVideo] = useState(!isVerifyRoute)
+
+  // When refreshing the deployed link, always reset to the initial landing route
+  useEffect(() => {
+    if (!isVerifyRoute && location.pathname !== '/' && location.pathname !== '/login') {
+      window.history.replaceState(null, '', '/')
     }
-  })
+  }, [])
 
   const handleVideoComplete = () => {
-    try { sessionStorage.setItem('spider_intro_seen', 'true') } catch {}
     setShowIntroVideo(false)
   }
 
-  // Show intro video IMMEDIATELY on first visit — before any auth check / spinner
-  // Only on public entry routes (/ /login /register)
-  const isPublicRoute = location.pathname === '/' || location.pathname === '/login' || location.pathname === '/register'
-
-  if (showIntroVideo && !isAuthenticated && isPublicRoute) {
+  // Show intro video on initial load / refresh
+  if (showIntroVideo && !isVerifyRoute) {
     return <IntroVideoModal onComplete={handleVideoComplete} />
   }
 

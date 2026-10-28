@@ -267,7 +267,7 @@ export default function CurvedCampusSlider({ campuses, activeCampusIndex, onSele
                     WebkitBackfaceVisibility: 'hidden',
                     transition: 'transform 0.55s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.5s ease-out'
                   }}
-                  className={`absolute w-[92vw] max-w-[800px] h-[390px] sm:h-[450px] md:h-[490px] cursor-pointer rounded-3xl overflow-hidden border backdrop-blur-2xl transition-all group ${
+                  className={`absolute w-[92vw] max-w-[800px] h-[390px] sm:h-[450px] md:h-[490px] cursor-pointer rounded-3xl overflow-hidden border bg-[#0B1021]/95 transition-all group ${
                     isCenter
                       ? `${theme.border} ${theme.glow} ring-2 ${theme.ring} scale-100`
                       : 'border-[#1E293B] hover:border-gray-500 hover:brightness-110 scale-[0.94]'

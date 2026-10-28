@@ -364,10 +364,10 @@ export default function Login() {
         <SigninVideoModal onComplete={handleFinishSigninVideo} />
       )}
 
-      {/* Pre-warm transition video stream in background for zero-latency instant play */}
+      {/* Pre-warm transition video stream in background on-demand */}
       <video
         src="/assets/videos/sign.mp4"
-        preload="auto"
+        preload="none"
         muted
         playsInline
         className="hidden pointer-events-none"

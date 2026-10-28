@@ -50,13 +50,6 @@ export default function WebShooterTransition({ triggerKey, label }) {
             <stop offset="60%" stopColor="#ffffff" stopOpacity="0.95" />
             <stop offset="100%" stopColor="#0F52BA" stopOpacity="0.85" />
           </linearGradient>
-          <filter id="webGlow4K" x="-30%" y="-30%" width="160%" height="160%">
-            <feGaussianBlur stdDeviation="8" result="blur" />
-            <feMerge>
-              <feMergeNode in="blur" />
-              <feMergeNode in="SourceGraphic" />
-            </feMerge>
-          </filter>
         </defs>
 
         {/* Primary 4K Web Cables Fired from Left Wrist */}
@@ -65,7 +58,6 @@ export default function WebShooterTransition({ triggerKey, label }) {
           stroke="url(#webGradWhite4K)"
           strokeWidth="16"
           strokeLinecap="round"
-          filter="url(#webGlow4K)"
           strokeDasharray="2500"
           className="animate-web-blast"
         />
@@ -92,7 +84,6 @@ export default function WebShooterTransition({ triggerKey, label }) {
           stroke="url(#webGradBlue4K)"
           strokeWidth="16"
           strokeLinecap="round"
-          filter="url(#webGlow4K)"
           strokeDasharray="2500"
           className="animate-web-blast"
         />

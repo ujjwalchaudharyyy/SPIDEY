@@ -1,15 +1,15 @@
 import { useState, useRef } from 'react'
 
-// Interactive Spotlight Card with cursor-tracking lighting effect
+// High-Performance Zero-Lag Spotlight Card with GPU cursor lighting
 function SpotlightCard({ children, className = '', glowColor = 'rgba(226, 27, 36, 0.22)' }) {
-  const [mousePos, setMousePos] = useState({ x: 0, y: 0 })
   const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef(null)
 
   const handleMouseMove = (e) => {
     if (!cardRef.current) return
     const rect = cardRef.current.getBoundingClientRect()
-    setMousePos({ x: e.clientX - rect.left, y: e.clientY - rect.top })
+    cardRef.current.style.setProperty('--spot-x', `${e.clientX - rect.left}px`)
+    cardRef.current.style.setProperty('--spot-y', `${e.clientY - rect.top}px`)
   }
 
   return (
@@ -19,12 +19,13 @@ function SpotlightCard({ children, className = '', glowColor = 'rgba(226, 27, 36
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={`relative overflow-hidden transition-all duration-300 ${className}`}
+      style={{ contain: 'content' }}
     >
       <div
         className="pointer-events-none absolute -inset-px transition-opacity duration-300 z-10"
         style={{
           opacity: isHovered ? 1 : 0,
-          background: `radial-gradient(550px circle at ${mousePos.x}px ${mousePos.y}px, ${glowColor}, transparent 65%)`
+          background: `radial-gradient(550px circle at var(--spot-x, -999px) var(--spot-y, -999px), ${glowColor}, transparent 65%)`
         }}
       />
       {children}

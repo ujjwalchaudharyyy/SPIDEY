@@ -47,12 +47,7 @@ video {
   filter: contrast(1.03) saturate(1.05);
 }
 
-img {
-  -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0);
-  -webkit-backface-visibility: hidden;
-  backface-visibility: hidden;
-}
+/* Only promote hardware acceleration on animating or explicit elements */
 
 /* Spider-Verse UI System matching reference design */
 @layer components {

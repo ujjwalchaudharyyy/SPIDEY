@@ -2,7 +2,6 @@ import { useRef, useState, useEffect } from 'react'
 
 export default function IntroVideoModal({ onComplete }) {
   const videoRef = useRef(null)
-  const bgVideoRef = useRef(null)
   const [hasSound, setHasSound] = useState(false)
   const [mobileFitMode, setMobileFitMode] = useState('fit') // 'fit' (cinematic) or 'fill' (zoom)
 
@@ -91,20 +90,8 @@ export default function IntroVideoModal({ onComplete }) {
       onClick={activateAudio}
       className="fixed inset-0 z-50 bg-black flex items-center justify-center overflow-hidden cursor-pointer select-none"
     >
-      {/* Dynamic Ambient Glow Layer for Mobile Portrait */}
-      <video
-        ref={bgVideoRef}
-        src="/assets/videos/before_login.mp4"
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="auto"
-        webkit-playsinline="true"
-        x5-playsinline="true"
-        disablePictureInPicture
-        className="absolute inset-0 w-full h-full object-cover blur-3xl opacity-45 scale-125 pointer-events-none sm:hidden"
-      />
+      {/* Lightweight GPU-accelerated Ambient Spider Glow */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(226,27,36,0.22)_0%,rgba(15,82,186,0.1)_50%,transparent_75%)] pointer-events-none" />
 
       {/* Cyber Grid Ambient Lines */}
       <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/40 to-black/90 pointer-events-none z-[1]" />
