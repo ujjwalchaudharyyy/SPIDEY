@@ -33,18 +33,18 @@ p, .font-rajdhani, article, .text-justify-all {
 }
 
 /* GPU Hardware Acceleration for Ultra-Smooth Zero-Stutter Playback & 4K UHD Clarity Across Website */
-img, video {
-  image-rendering: -webkit-optimize-contrast;
-  image-rendering: crisp-edges;
-}
-
 video {
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   -webkit-backface-visibility: hidden;
   backface-visibility: hidden;
   will-change: transform;
-  filter: contrast(1.03) saturate(1.05);
+  image-rendering: auto !important;
+  filter: contrast(1.05) saturate(1.08) brightness(1.02);
+}
+
+img {
+  image-rendering: auto;
 }
 
 /* Only promote hardware acceleration on animating or explicit elements */
