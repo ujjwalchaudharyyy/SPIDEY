@@ -1,4 +1,4 @@
-﻿import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useRef, useEffect } from 'react'
 import QRCode from 'qrcode'
 import axios from 'axios'
 import { useAuth } from '../context/AuthContext'
@@ -540,6 +540,23 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
   const [isProcessingPayment, setIsProcessingPayment] = useState(false)
   const [transactionId, setTransactionId] = useState('')
 
+  // Phone number validation — must be 10 digits starting with 6-9 (Indian mobile)
+  const isValidIndianPhone = (phone) => {
+    const digits = phone.replace(/\D/g, '')
+    // Remove leading 91 country code if present
+    const cleaned = digits.startsWith('91') && digits.length > 10 ? digits.slice(2) : digits
+    return /^[6-9]\d{9}$/.test(cleaned)
+  }
+
+  // Format phone input — only allow digits and +
+  const handlePhoneChange = (memberIndex, rawValue) => {
+    // Strip everything except digits and leading +
+    const cleaned = rawValue.replace(/[^0-9+]/g, '')
+    // Limit: +91 + 10 digits = 13 chars max
+    const limited = cleaned.slice(0, 13)
+    handleUpdateMember(memberIndex, 'phone', limited)
+  }
+
   // 12-Digit UTR Bank Verification State
   const [upiUtrInput, setUpiUtrInput] = useState('')
   const [isVerifyingUtr, setIsVerifyingUtr] = useState(false)
@@ -744,6 +761,16 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
       }
       if (!m.rollNo || !m.rollNo.trim()) {
         setError(`Please enter the University Roll Number for ${memberLabel}.`)
+        setActiveMemberTab(i)
+        return
+      }
+      if (!m.phone || !m.phone.trim()) {
+        setError(`Please enter the phone number for ${memberLabel}.`)
+        setActiveMemberTab(i)
+        return
+      }
+      if (!isValidIndianPhone(m.phone)) {
+        setError(`Invalid phone number for ${memberLabel}. Please enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9).`)
         setActiveMemberTab(i)
         return
       }
@@ -1228,11 +1255,21 @@ export default function EventRegistrationModal({ event, onClose, onSuccess }) {
                   <input
                     type="tel"
                     value={currentMember.phone || ''}
-                    onChange={(e) => handleUpdateMember(activeMemberTab, 'phone', e.target.value)}
-                    placeholder="+91 98765 43210"
-                    className="w-full bg-[#0A0D15] border border-gray-700 rounded-lg px-3 py-2 text-white focus:outline-none focus:border-red-500 font-mono"
+                    onChange={(e) => handlePhoneChange(activeMemberTab, e.target.value)}
+                    placeholder="+91 9876543210"
+                    maxLength={13}
+                    className={`w-full bg-[#0A0D15] border rounded-lg px-3 py-2 text-white focus:outline-none font-mono ${
+                      currentMember.phone && !isValidIndianPhone(currentMember.phone)
+                        ? 'border-red-500 focus:border-red-500'
+                        : 'border-gray-700 focus:border-red-500'
+                    }`}
                     required
                   />
+                  {currentMember.phone && !isValidIndianPhone(currentMember.phone) && (
+                    <p className="text-[10px] text-red-400 mt-1">
+                      Enter a valid 10-digit Indian mobile number (starting with 6, 7, 8, or 9)
+                    </p>
+                  )}
                 </div>
 
                 <div>
