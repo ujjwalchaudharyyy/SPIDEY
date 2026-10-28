@@ -56,7 +56,7 @@ export default function SignoutVideoModal({ onComplete }) {
             imageRendering: '-webkit-optimize-contrast',
             transform: 'translate3d(0, 0, 0)',
             backfaceVisibility: 'hidden',
-            filter: 'contrast(1.05) saturate(1.06)'
+            filter: 'contrast(1.03) brightness(1.02)'
           }}
           className="w-full max-h-[88vh] sm:max-h-full sm:h-full object-contain sm:object-cover rounded-2xl sm:rounded-none border border-red-500/40 sm:border-0 shadow-[0_0_40px_rgba(226,27,36,0.5)] sm:shadow-none"
         />

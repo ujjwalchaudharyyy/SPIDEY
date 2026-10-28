@@ -88,7 +88,7 @@ export default function SigninVideoModal({ onComplete }) {
             imageRendering: '-webkit-optimize-contrast',
             backfaceVisibility: 'hidden',
             WebkitBackfaceVisibility: 'hidden',
-            filter: 'contrast(1.05) saturate(1.06)'
+            filter: 'contrast(1.03) brightness(1.02)'
           }}
         />
       </div>

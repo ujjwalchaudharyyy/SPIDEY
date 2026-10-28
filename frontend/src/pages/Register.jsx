@@ -175,21 +175,21 @@ export default function Register() {
               e.target.play().catch(() => {})
             }
           }}
-          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
+          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none transition-opacity duration-500"
           style={{
             willChange: 'transform',
             transform: 'translate3d(0, 0, 0)',
             imageRendering: '-webkit-optimize-contrast',
             backfaceVisibility: 'hidden',
-            filter: 'contrast(1.05) saturate(1.06)'
+            filter: 'contrast(1.03) brightness(1.02)'
           }}
         />
       ) : (
         <div className="absolute inset-0 z-0 bg-[#060810] bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.18)_0%,_rgba(10,13,24,0.9)_65%,_#030509_100%)] pointer-events-none" />
       )}
 
-      {/* Cyber Overlay Gradients */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/85 via-black/40 to-black/85 pointer-events-none" />
+      {/* Cyber Overlay Gradients - subtle so video is crystal clear */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/40 via-transparent to-black/40 pointer-events-none" />
 
       {/* Top Floating Controls: Skip Video & Sound Toggle */}
       <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-30 flex items-center gap-2">

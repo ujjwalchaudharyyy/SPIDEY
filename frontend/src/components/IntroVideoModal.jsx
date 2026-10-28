@@ -91,8 +91,8 @@ export default function IntroVideoModal({ onComplete }) {
       {/* Lightweight GPU-accelerated Ambient Spider Glow */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(226,27,36,0.22)_0%,rgba(15,82,186,0.1)_50%,transparent_75%)] pointer-events-none" />
 
-      {/* Cyber Grid Ambient Lines */}
-      <div className="absolute inset-0 bg-radial-gradient from-transparent via-black/40 to-black/90 pointer-events-none z-[1]" />
+      {/* Cyber Grid Ambient Lines - Subtle edge vignette for crystal clarity */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_55%,rgba(0,0,0,0.5)_100%)] pointer-events-none z-[1]" />
 
       {/* Main 4K Video Element */}
       <div className={`relative z-10 w-full h-full flex items-center justify-center ${
@@ -115,11 +115,11 @@ export default function IntroVideoModal({ onComplete }) {
             imageRendering: '-webkit-optimize-contrast',
             transform: 'translate3d(0, 0, 0)',
             backfaceVisibility: 'hidden',
-            filter: 'contrast(1.04) saturate(1.06)'
+            filter: 'contrast(1.02) brightness(1.02)'
           }}
-          className={`pointer-events-none transition-all duration-500 ${
+          className={`pointer-events-none transition-all duration-300 ${
             mobileFitMode === 'fit'
-              ? 'w-full max-h-[82vh] sm:max-h-full sm:h-full object-contain sm:object-cover rounded-2xl sm:rounded-none border border-red-500/30 sm:border-0 shadow-[0_0_35px_rgba(239,68,68,0.35)] sm:shadow-none'
+              ? 'w-full max-h-[85vh] sm:max-h-full sm:h-full object-contain sm:object-cover rounded-2xl sm:rounded-none border border-red-500/30 sm:border-0 shadow-[0_0_35px_rgba(239,68,68,0.35)] sm:shadow-none'
               : 'w-full h-full object-cover'
           }`}
         />

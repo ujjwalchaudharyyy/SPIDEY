@@ -397,21 +397,21 @@ export default function Login() {
               e.target.play().catch(() => {})
             }
           }}
-          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none scale-105 transition-opacity duration-700"
+          className="absolute inset-0 w-full h-full object-cover z-0 pointer-events-none transition-opacity duration-500"
           style={{
             willChange: 'transform',
             transform: 'translate3d(0, 0, 0)',
             imageRendering: '-webkit-optimize-contrast',
             backfaceVisibility: 'hidden',
-            filter: 'contrast(1.05) saturate(1.06)'
+            filter: 'contrast(1.03) brightness(1.02)'
           }}
         />
       ) : (
         <div className="absolute inset-0 z-0 bg-[#060810] bg-[radial-gradient(ellipse_at_center,_rgba(226,27,36,0.18)_0%,_rgba(10,13,24,0.9)_65%,_#030509_100%)] pointer-events-none" />
       )}
 
-      {/* Cyber Gradient Overlays: responsive so phone video shines through */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/85 via-black/40 to-black/85 pointer-events-none" />
+      {/* Cyber Gradient Overlays: Subtle vignette so video shines in crystal 4K clarity */}
+      <div className="absolute inset-0 z-10 bg-gradient-to-b sm:bg-gradient-to-r from-black/40 via-transparent to-black/40 pointer-events-none" />
 
       {/* Top Floating Controls: Skip Video & Sound Toggle */}
       <div className="absolute top-3 right-3 sm:top-6 sm:right-6 z-30 flex items-center gap-2">
@@ -443,18 +443,19 @@ export default function Login() {
         </button>
       </div>
 
-      {/* Top Left Branding (Desktop) - Safe spacing so it never clashes with centered login card */}
-      <div className="absolute top-4 left-4 sm:top-6 sm:left-6 z-20 hidden xl:flex items-center space-x-3 pointer-events-none max-w-[240px]">
-        <div className="w-11 h-11 rounded-xl bg-black/85 border border-red-500/60 flex items-center justify-center shadow-spider-glow overflow-hidden p-1 shrink-0 backdrop-blur-md">
+      {/* Top Left Branding - Safe spacing so it never clashes with centered login card */}
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-7 z-20 hidden md:flex items-center space-x-3 pointer-events-none max-w-[270px]">
+        <div className="w-12 h-12 rounded-2xl bg-black/85 border border-red-500/70 flex items-center justify-center shadow-[0_0_25px_rgba(226,27,36,0.6)] overflow-hidden p-1 shrink-0 backdrop-blur-md">
           <img src="/logo.png?v=2" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
         </div>
         <div className="min-w-0">
-          <h1 className="spider-heading text-sm tracking-wide text-white leading-tight">
+          <h1 className="spider-heading text-sm sm:text-base tracking-wide text-white leading-tight">
             GRAPHIC ERA <span className="text-red-500">EVENT HUB</span>
           </h1>
-          <p className="text-[10px] font-mono text-red-300/80 leading-snug mt-0.5">
-            4 Campus Network
-          </p>
+          <div className="text-[10px] font-mono leading-tight mt-1 space-y-0.5">
+            <p className="text-red-300">Bhimtal • Haldwani</p>
+            <p className="text-red-400 font-semibold">Dehradun • Deemed University</p>
+          </div>
         </div>
       </div>
 
@@ -468,7 +469,7 @@ export default function Login() {
               </div>
               <div>
                 <h2 className="spider-heading text-sm sm:text-base text-white">SPIDER-ID LOGIN</h2>
-                <p className="text-[9px] font-mono text-red-400">GRAPHIC ERA CAMPUS GRID</p>
+                <p className="text-[9px] font-mono text-red-400">BHIMTAL • HALDWANI • DEHRADUN • DEEMED</p>
               </div>
             </div>
             <span className="w-2 h-2 rounded-full bg-green-500 animate-ping" title="Radar Live"></span>

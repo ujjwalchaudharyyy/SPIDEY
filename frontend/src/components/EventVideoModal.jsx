@@ -157,7 +157,7 @@ export default function EventVideoModal({ event, videoUrl, title, onClose, defau
               style={{
                 imageRendering: '-webkit-optimize-contrast',
                 transform: 'translateZ(0)',
-                filter: 'contrast(1.04) saturate(1.05)'
+                filter: 'contrast(1.03) brightness(1.02)'
               }}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
