@@ -200,7 +200,9 @@ router.get('/all', authenticateToken, (req, res) => {
 });
 
 router.post('/submit', authenticateToken, (req, res) => {
-  if (req.user.role !== 'organizer') return res.status(403).json({ error: 'Organizer access required' });
+  if (req.user.role !== 'organizer' && req.user.role !== 'admin') {
+    return res.status(403).json({ error: 'Organizer or Admin access required' });
+  }
 
   const { title, description, category, venue, campus, image_url, event_date, event_time } = req.body;
   if (!title || !description || !category || !venue || !event_date || !event_time) {
@@ -208,11 +210,14 @@ router.post('/submit', authenticateToken, (req, res) => {
   }
 
   const selectedCampus = campus || req.user.campus || 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL';
+  const organizerId = req.user.id || 1;
+  const organizerName = req.user.name || 'Organizer';
+  const initialStatus = req.user.role === 'admin' ? 'approved' : 'pending';
 
   const result = queryRun(`
     INSERT INTO events (title, description, category, venue, campus, image_url, event_date, event_time, organizer_id, organizer_name, status)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')
-  `, [title, description, category, venue, selectedCampus, image_url || '', event_date, event_time, req.user.id, req.user.name]);
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+  `, [title, description, category, venue, selectedCampus, image_url || '', event_date, event_time, organizerId, organizerName, initialStatus]);
 
   const event = queryGet('SELECT * FROM events WHERE id = ?', [result.lastInsertRowid]);
   res.status(201).json(event);
@@ -220,16 +225,19 @@ router.post('/submit', authenticateToken, (req, res) => {
 
 // POST /api/events/admin-create — Admin directly creates an APPROVED event (no pending queue)
 router.post('/admin-create', authenticateToken, (req, res) => {
-  if (req.user.role !== 'admin') return res.status(403).json({ error: 'Admin access required' });
+  if (req.user.role !== 'admin' && req.user.role !== 'organizer') {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
 
-  const { title, description, category, venue, campus, image_url, event_date, event_time, registration_fee } = req.body;
+  const { title, description, category, venue, campus, image_url, event_date, event_time } = req.body;
   if (!title || !description || !category || !venue || !event_date || !event_time) {
     return res.status(400).json({ error: 'All required fields must be filled: title, description, category, venue, event_date, event_time' });
   }
 
-  // Super admin can pick any campus; campus admin defaults to their own campus
   const isSuperAdmin = req.user.email === 'ujjwalchaudhary2007@gmail.com' || req.user.campus === 'ALL';
   const selectedCampus = (isSuperAdmin && campus) ? campus : (req.user.campus || campus || 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL');
+  const organizerId = req.user.id || 1;
+  const organizerName = req.user.name || 'Admin';
 
   const result = queryRun(`
     INSERT INTO events (title, description, category, venue, campus, image_url, event_date, event_time, organizer_id, organizer_name, status)
@@ -237,7 +245,7 @@ router.post('/admin-create', authenticateToken, (req, res) => {
   `, [
     title, description, category, venue, selectedCampus,
     image_url || '', event_date, event_time,
-    req.user.id, req.user.name || 'Admin'
+    organizerId, organizerName
   ]);
 
   const event = queryGet('SELECT * FROM events WHERE id = ?', [result.lastInsertRowid]);
