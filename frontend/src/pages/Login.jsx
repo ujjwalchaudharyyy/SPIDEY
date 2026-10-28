@@ -444,15 +444,15 @@ export default function Login() {
       </div>
 
       {/* Top Left Branding - Safe spacing so it never clashes with centered login card */}
-      <div className="absolute top-4 left-4 sm:top-6 sm:left-7 z-20 hidden md:flex items-center space-x-3 pointer-events-none max-w-[270px]">
-        <div className="w-12 h-12 rounded-2xl bg-black/85 border border-red-500/70 flex items-center justify-center shadow-[0_0_25px_rgba(226,27,36,0.6)] overflow-hidden p-1 shrink-0 backdrop-blur-md">
+      <div className="absolute top-4 left-4 sm:top-6 sm:left-8 z-20 hidden md:flex items-center space-x-3.5 pointer-events-none max-w-[320px]">
+        <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-black/85 border border-red-500/70 flex items-center justify-center shadow-[0_0_30px_rgba(226,27,36,0.6)] overflow-hidden p-1 shrink-0 backdrop-blur-md">
           <img src="/logo.png?v=2" alt="Graphic Era Event Hub Logo" className="w-full h-full object-contain" />
         </div>
         <div className="min-w-0">
-          <h1 className="spider-heading text-sm sm:text-base tracking-wide text-white leading-tight">
+          <h1 className="spider-heading text-lg sm:text-2xl tracking-wide text-white leading-tight">
             GRAPHIC ERA <span className="text-red-500">EVENT HUB</span>
           </h1>
-          <div className="text-[10px] font-mono leading-tight mt-1 space-y-0.5">
+          <div className="text-[11px] sm:text-xs font-mono leading-tight mt-1 space-y-0.5">
             <p className="text-red-300">Bhimtal • Haldwani</p>
             <p className="text-red-400 font-semibold">Dehradun • Deemed University</p>
           </div>
