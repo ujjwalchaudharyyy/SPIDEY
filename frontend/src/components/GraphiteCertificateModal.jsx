@@ -1,4 +1,5 @@
 import { useState, useRef, useMemo } from 'react'
+import { getTheme, CERTIFICATE_THEMES } from '../utils/certificateThemes'
 
 export default function GraphiteCertificateModal({ isOpen, onClose, participants = [], user }) {
   // Ensure only admin or super-admin can access
@@ -12,6 +13,7 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
 
   // ── Template Customization & Import State ──
   const [templateTheme, setTemplateTheme] = useState('academic_ivory')
+  const currentTheme = getTheme(templateTheme)
   const [customBgImage, setCustomBgImage] = useState(null)
   const [customHeader, setCustomHeader] = useState('GRAPHIC ERA HILL UNIVERSITY')
   const [customSubHeader, setCustomSubHeader] = useState('BHIMTAL CAMPUS')
@@ -103,7 +105,7 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
 
   const certCode = `GEHU-BHM-GRAPHITE-${currentParticipant.ticket_code || '2026-001'}`
 
-  const publicCertUrl = `${window.location.origin}/certificate?code=${encodeURIComponent(certCode)}&name=${encodeURIComponent(currentParticipant.student_name)}&roll=${encodeURIComponent(currentParticipant.roll_no || 'GEHU-2024')}&degree=${encodeURIComponent(currentParticipant.degree || 'B.Tech CSE')}&type=${certType}&rank=${encodeURIComponent(customRank)}`
+  const publicCertUrl = `${window.location.origin}/certificate?code=${encodeURIComponent(certCode)}&name=${encodeURIComponent(currentParticipant.student_name)}&roll=${encodeURIComponent(currentParticipant.roll_no || 'GEHU-2024')}&degree=${encodeURIComponent(currentParticipant.degree || 'B.Tech CSE')}&type=${certType}&rank=${encodeURIComponent(customRank)}&theme=${encodeURIComponent(templateTheme)}`
 
   // Batch Selection helpers
   const handleToggleSelect = (email) => {
@@ -243,23 +245,23 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
       return
     }
 
-    // Default Clean Authentic University Diploma Background
-    ctx.fillStyle = '#FCFBF7' // Warm ivory parchment
+    // Authentic University Diploma Background from active theme
+    ctx.fillStyle = currentTheme.bg
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Outer University Maroon Border
+    // Outer University Border
     ctx.lineWidth = 10
-    ctx.strokeStyle = '#7B1113'
+    ctx.strokeStyle = currentTheme.outerBorder
     ctx.strokeRect(24, 24, canvas.width - 48, canvas.height - 48)
 
-    // Inner Elegant Gold Border
+    // Inner Elegant Border
     ctx.lineWidth = 2.5
-    ctx.strokeStyle = '#C5A059'
+    ctx.strokeStyle = currentTheme.innerBorder
     ctx.strokeRect(36, 36, canvas.width - 72, canvas.height - 72)
 
-    // Thin Inset Gold Hairline
+    // Thin Inset Hairline
     ctx.lineWidth = 1
-    ctx.strokeStyle = 'rgba(197, 160, 89, 0.45)'
+    ctx.strokeStyle = currentTheme.innerBorder
     ctx.strokeRect(42, 42, canvas.width - 84, canvas.height - 84)
 
     renderCanvasText(ctx, canvas, targetParticipant)
@@ -270,22 +272,22 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
     ctx.textAlign = 'center'
 
     // Header - University Name
-    ctx.fillStyle = '#7B1113'
+    ctx.fillStyle = currentTheme.primaryColor
     ctx.font = 'bold 36px "Cinzel", "Georgia", "Times New Roman", serif'
     ctx.fillText(customHeader, canvas.width / 2, 125)
 
     // Subheader - Campus
-    ctx.fillStyle = '#475569'
+    ctx.fillStyle = currentTheme.secondaryColor
     ctx.font = '600 18px "Inter", "Arial", sans-serif'
     ctx.fillText(customSubHeader, canvas.width / 2, 160)
 
     // Department
-    ctx.fillStyle = '#64748B'
+    ctx.fillStyle = currentTheme.subduedColor
     ctx.font = '500 14px "Inter", "Arial", sans-serif'
     ctx.fillText('DEPARTMENT OF COMPUTER SCIENCE & ENGINEERING', canvas.width / 2, 185)
 
-    // Elegant Maroon & Gold Divider Line
-    ctx.strokeStyle = '#C5A059'
+    // Elegant Divider Line
+    ctx.strokeStyle = currentTheme.accentLine
     ctx.lineWidth = 1.5
     ctx.beginPath()
     ctx.moveTo(canvas.width / 2 - 200, 205)
@@ -297,21 +299,21 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
     if (certType === 'excellence') certHeaderTitle = 'CERTIFICATE OF EXCELLENCE'
     else if (certType === 'merit') certHeaderTitle = 'CERTIFICATE OF MERIT'
 
-    ctx.fillStyle = '#7B1113'
+    ctx.fillStyle = currentTheme.primaryColor
     ctx.font = 'bold 30px "Cinzel", "Georgia", serif'
     ctx.fillText(certHeaderTitle, canvas.width / 2, 260)
 
-    ctx.fillStyle = '#64748B'
+    ctx.fillStyle = currentTheme.subduedColor
     ctx.font = 'italic 18px "Georgia", "Times New Roman", serif'
     ctx.fillText('This is to certify that', canvas.width / 2, 305)
 
     // Recipient Name
-    ctx.fillStyle = '#0F172A'
+    ctx.fillStyle = currentTheme.textColor
     ctx.font = 'bold 48px "Cinzel", "Georgia", "Times New Roman", serif'
     ctx.fillText(targetParticipant.student_name || 'Student Name', canvas.width / 2, 375)
 
     // Decorative underline under name
-    ctx.strokeStyle = '#C5A059'
+    ctx.strokeStyle = currentTheme.accentLine
     ctx.lineWidth = 1.5
     ctx.beginPath()
     ctx.moveTo(canvas.width / 2 - 180, 395)
@@ -319,7 +321,7 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
     ctx.stroke()
 
     // Degree & Roll No
-    ctx.fillStyle = '#334155'
+    ctx.fillStyle = currentTheme.secondaryColor
     ctx.font = '19px "Inter", "Arial", sans-serif'
     ctx.fillText(`of ${targetParticipant.degree || 'B.Tech CSE'}, Roll No: ${targetParticipant.roll_no || 'GEHU-2024'}`, canvas.width / 2, 440)
 
@@ -330,83 +332,83 @@ export default function GraphiteCertificateModal({ isOpen, onClose, participants
     } else if (certType === 'merit') {
       achievement = 'has demonstrated remarkable technical merit and innovation in'
     }
-    ctx.fillStyle = '#475569'
+    ctx.fillStyle = currentTheme.secondaryColor
     ctx.font = '19px "Inter", "Arial", sans-serif'
     ctx.fillText(achievement, canvas.width / 2, 480)
 
     // Event Name
-    ctx.fillStyle = '#7B1113'
+    ctx.fillStyle = currentTheme.primaryColor
     ctx.font = 'bold 32px "Cinzel", "Georgia", serif'
     ctx.fillText('GRAPHITE 2026', canvas.width / 2, 535)
 
     // Event Subtitle
-    ctx.fillStyle = '#64748B'
+    ctx.fillStyle = currentTheme.subduedColor
     ctx.font = '15px "Inter", "Arial", sans-serif'
     ctx.fillText('Organized by Graphic Era Hill University, Bhimtal Campus • October 27, 2026', canvas.width / 2, 575)
 
     // Verification ID
-    ctx.fillStyle = '#854D0E'
+    ctx.fillStyle = currentTheme.primaryColor
     ctx.font = '600 13px "Courier New", monospace'
     ctx.fillText(`Certificate ID: ${certCode}`, canvas.width / 2, 615)
 
     const footY = 930
 
     // Signee 1 (Director)
-    ctx.fillStyle = '#0F172A'
+    ctx.fillStyle = currentTheme.textColor
     ctx.font = 'bold italic 22px "Georgia", "Times New Roman", serif'
     ctx.fillText(signee1Name, 320, footY)
     ctx.beginPath()
     ctx.moveTo(200, footY + 10)
     ctx.lineTo(440, footY + 10)
-    ctx.strokeStyle = '#94A3B8'
+    ctx.strokeStyle = currentTheme.subduedColor
     ctx.lineWidth = 1.5
     ctx.stroke()
-    ctx.fillStyle = '#334155'
+    ctx.fillStyle = currentTheme.secondaryColor
     ctx.font = 'bold 14px "Inter", sans-serif'
     ctx.fillText((signee1Title || '').toUpperCase(), 320, footY + 32)
-    ctx.fillStyle = '#64748B'
+    ctx.fillStyle = currentTheme.subduedColor
     ctx.font = '12px "Inter", sans-serif'
     ctx.fillText('GEHU Bhimtal Campus', 320, footY + 52)
 
     // Center Official Embossed University Seal
     ctx.beginPath()
     ctx.arc(canvas.width / 2, footY + 5, 58, 0, Math.PI * 2)
-    ctx.fillStyle = '#FAF5EB'
+    ctx.fillStyle = currentTheme.sealBg
     ctx.fill()
     ctx.lineWidth = 3
-    ctx.strokeStyle = '#C5A059'
+    ctx.strokeStyle = currentTheme.sealBorder
     ctx.stroke()
 
     ctx.beginPath()
     ctx.arc(canvas.width / 2, footY + 5, 52, 0, Math.PI * 2)
     ctx.lineWidth = 1
-    ctx.strokeStyle = '#7B1113'
+    ctx.strokeStyle = currentTheme.sealInner
     ctx.stroke()
 
-    ctx.fillStyle = '#7B1113'
+    ctx.fillStyle = currentTheme.sealInner
     ctx.font = 'bold 9px "Inter", sans-serif'
     ctx.fillText('GRAPHIC ERA HILL UNIVERSITY', canvas.width / 2, footY - 14)
-    ctx.fillStyle = '#C5A059'
+    ctx.fillStyle = currentTheme.sealBorder
     ctx.font = 'bold 16px "Georgia", serif'
     ctx.fillText('★ 2026 ★', canvas.width / 2, footY + 8)
-    ctx.fillStyle = '#7B1113'
+    ctx.fillStyle = currentTheme.sealInner
     ctx.font = 'bold 9px "Inter", sans-serif'
     ctx.fillText('BHIMTAL CAMPUS', canvas.width / 2, footY + 28)
 
     // Signee 2 (Dean / Convener)
-    ctx.fillStyle = '#0F172A'
+    ctx.fillStyle = currentTheme.textColor
     ctx.font = 'bold italic 22px "Georgia", "Times New Roman", serif'
     ctx.fillText(signee2Name, canvas.width - 320, footY)
     ctx.beginPath()
     ctx.moveTo(canvas.width - 440, footY + 10)
     ctx.lineTo(canvas.width - 200, footY + 10)
-    ctx.strokeStyle = '#94A3B8'
+    ctx.strokeStyle = currentTheme.subduedColor
     ctx.lineWidth = 1.5
     ctx.stroke()
-    ctx.fillStyle = '#334155'
+    ctx.fillStyle = currentTheme.secondaryColor
     ctx.font = 'bold 14px "Inter", sans-serif'
     ctx.fillText((signee2Title || '').toUpperCase(), canvas.width - 320, footY + 32)
-    ctx.fillStyle = '#64748B'
+    ctx.fillStyle = currentTheme.subduedColor
     ctx.font = '12px "Inter", sans-serif'
     ctx.fillText('Convener, Graphite 2026', canvas.width - 320, footY + 52)
   }
@@ -726,6 +728,44 @@ Graphic Era Hill University, Bhimtal Campus`
               )}
             </div>
 
+            {/* Theme Selector (Acc. To Website) */}
+            <div className="mb-3 p-2.5 rounded-xl bg-[#121828] border border-red-500/30 space-y-2">
+              <div className="flex items-center justify-between">
+                <label className="text-[10px] font-bold text-red-400 uppercase tracking-wider block">
+                  Diploma Theme:
+                </label>
+                <span className="text-[9px] font-mono text-gray-400">Authentic University</span>
+              </div>
+
+              <div className="grid grid-cols-2 gap-1.5 text-xs">
+                {Object.values(CERTIFICATE_THEMES).map(t => {
+                  const isSelected = t.id === templateTheme
+                  return (
+                    <button
+                      key={t.id}
+                      type="button"
+                      onClick={() => setTemplateTheme(t.id)}
+                      className={`p-2 rounded-lg text-left transition border cursor-pointer flex flex-col justify-between ${
+                        isSelected
+                          ? 'bg-red-950/70 border-red-500 shadow-sm ring-1 ring-red-500/50'
+                          : 'bg-[#0B0F1C] border-gray-800 hover:bg-[#141A2D] text-gray-300'
+                      }`}
+                    >
+                      <div className="flex items-center gap-1.5 mb-1">
+                        <span className="text-sm">{t.icon}</span>
+                        <span className="font-bold text-[11px] truncate text-white">{t.name}</span>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <span className="w-2.5 h-2.5 rounded-full border border-white/30" style={{ backgroundColor: t.primaryColor }} />
+                        <span className="w-2.5 h-2.5 rounded-full border border-white/30" style={{ backgroundColor: t.innerBorder }} />
+                        <span className="text-[9px] font-mono text-gray-400 truncate ml-0.5">{t.badge}</span>
+                      </div>
+                    </button>
+                  )
+                })}
+              </div>
+            </div>
+
             {/* Batch Quick Selectors Bar */}
             <div className="mb-2 flex items-center justify-between text-[11px] text-gray-400 border-b border-gray-800 pb-1.5">
               <span>{selectedEmails.size} Selected</span>
@@ -869,17 +909,39 @@ Graphic Era Hill University, Bhimtal Campus`
                 <div
                   ref={certificateRef}
                   id="spider-certificate-box"
-                  className="w-full max-w-3xl aspect-[1.414/1] bg-[#FCFBF7] text-[#1E293B] p-6 sm:p-10 rounded-2xl relative border-[8px] sm:border-[10px] border-[#7B1113] flex flex-col justify-between overflow-hidden shadow-2xl select-none"
-                  style={customBgImage ? { backgroundImage: `url(${customBgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' } : {}}
+                  className="w-full max-w-3xl aspect-[1.414/1] p-6 sm:p-10 rounded-2xl relative flex flex-col justify-between overflow-hidden shadow-2xl select-none transition-colors duration-300"
+                  style={
+                    customBgImage
+                      ? { backgroundImage: `url(${customBgImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }
+                      : {
+                          backgroundColor: currentTheme.bg,
+                          color: currentTheme.textColor,
+                          border: `9px solid ${currentTheme.outerBorder}`,
+                        }
+                  }
                 >
                   {/* Elegant Double Inset Gold Border */}
-                  <div className="absolute inset-2 sm:inset-3 border-2 border-[#C5A059] rounded-xl pointer-events-none" />
-                  <div className="absolute inset-3 sm:inset-4 border border-[#C5A059]/40 rounded-lg pointer-events-none" />
+                  <div
+                    className="absolute inset-2 sm:inset-3 rounded-xl pointer-events-none transition-colors duration-300"
+                    style={{ border: `2px solid ${currentTheme.innerBorder}` }}
+                  />
+                  <div
+                    className="absolute inset-3 sm:inset-4 rounded-lg pointer-events-none transition-opacity duration-300"
+                    style={{ border: `1px solid ${currentTheme.innerBorder}`, opacity: 0.4 }}
+                  />
 
                   {/* Subtle Graphic Era Watermark */}
                   {!customBgImage && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.04]">
-                      <img src="/logo.png?v=2" alt="Watermark" className="w-[340px] h-[340px] object-contain grayscale" />
+                    <div
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-300"
+                      style={{ opacity: currentTheme.watermarkOpacity || 0.04 }}
+                    >
+                      <img
+                        src="/logo.png?v=2"
+                        alt="Watermark"
+                        className="w-[340px] h-[340px] object-contain"
+                        style={{ filter: currentTheme.dark ? 'invert(1) opacity(0.3)' : 'grayscale(100%)' }}
+                      />
                     </div>
                   )}
 
@@ -888,15 +950,24 @@ Graphic Era Hill University, Bhimtal Campus`
                     <div className="flex items-center justify-center gap-3 mb-1">
                       <img src="/logo.png?v=2" alt="GEHU Logo" className="w-10 h-10 sm:w-12 sm:h-12 object-contain" />
                       <div>
-                        <h1 className="text-lg sm:text-2xl font-serif font-black tracking-wider text-[#7B1113] uppercase">
+                        <h1
+                          className="text-lg sm:text-2xl font-serif font-black tracking-wider uppercase transition-colors"
+                          style={{ color: currentTheme.primaryColor }}
+                        >
                           {customHeader}
                         </h1>
-                        <p className="text-[10px] sm:text-xs font-sans font-bold text-[#64748B] tracking-widest uppercase">
+                        <p
+                          className="text-[10px] sm:text-xs font-sans font-bold tracking-widest uppercase transition-colors"
+                          style={{ color: currentTheme.secondaryColor }}
+                        >
                           {customSubHeader}
                         </p>
                       </div>
                     </div>
-                    <p className="text-[9px] sm:text-[10px] font-sans text-gray-500 tracking-wider uppercase font-semibold">
+                    <p
+                      className="text-[9px] sm:text-[10px] font-sans tracking-wider uppercase font-semibold transition-colors"
+                      style={{ color: currentTheme.secondaryColor }}
+                    >
                       Department of Computer Science & Engineering
                     </p>
                   </div>
@@ -904,73 +975,161 @@ Graphic Era Hill University, Bhimtal Campus`
                   {/* Certificate Title */}
                   <div className="text-center relative z-10 my-1">
                     <div className="inline-block relative">
-                      <h2 className="text-xs sm:text-base font-serif font-bold text-[#7B1113] tracking-[0.2em] uppercase border-b border-[#C5A059] pb-1 px-4">
+                      <h2
+                        className="text-xs sm:text-base font-serif font-bold tracking-[0.2em] uppercase pb-1 px-4 transition-colors"
+                        style={{
+                          color: currentTheme.primaryColor,
+                          borderBottom: `1px solid ${currentTheme.accentLine}`,
+                        }}
+                      >
                         {certType === 'excellence' ? 'Certificate of Excellence' : certType === 'merit' ? 'Certificate of Merit' : 'Certificate of Participation'}
                       </h2>
-                      <p className="text-[10px] sm:text-xs font-serif italic text-gray-500 mt-2">
+                      <p
+                        className="text-[10px] sm:text-xs font-serif italic mt-2 transition-colors"
+                        style={{ color: currentTheme.secondaryColor }}
+                      >
                         This is to certify that
                       </p>
-                      <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#0F172A] tracking-wide mt-1">
+                      <h3
+                        className="text-2xl sm:text-3xl font-serif font-bold tracking-wide mt-1 transition-colors"
+                        style={{ color: currentTheme.textColor }}
+                      >
                         {currentParticipant.student_name}
                       </h3>
-                      <div className="w-48 mx-auto h-[1.5px] bg-[#C5A059] mt-1" />
+                      <div
+                        className="w-48 mx-auto h-[1.5px] mt-1 transition-colors"
+                        style={{ backgroundColor: currentTheme.accentLine }}
+                      />
                     </div>
                   </div>
 
                   {/* Citation Body Text */}
-                  <div className="text-center relative z-10 max-w-xl mx-auto px-2 space-y-1 text-xs sm:text-sm text-gray-700 leading-relaxed font-sans">
+                  <div
+                    className="text-center relative z-10 max-w-xl mx-auto px-2 space-y-1 text-xs sm:text-sm leading-relaxed font-sans transition-colors"
+                    style={{ color: currentTheme.textColor }}
+                  >
                     <p>
-                      of <strong className="text-gray-900">{currentParticipant.degree || 'B.Tech CSE'}</strong>, Roll Number{' '}
-                      <strong className="text-gray-900 font-mono">{currentParticipant.roll_no || 'GEHU-2024'}</strong>,{' '}
+                      of <strong style={{ color: currentTheme.textColor }}>{currentParticipant.degree || 'B.Tech CSE'}</strong>, Roll Number{' '}
+                      <strong className="font-mono" style={{ color: currentTheme.textColor }}>{currentParticipant.roll_no || 'GEHU-2024'}</strong>,{' '}
                       {certType === 'excellence' ? (
-                        <>has demonstrated outstanding performance and secured <strong className="text-[#7B1113]">{customRank}</strong> in</>
+                        <>has demonstrated outstanding performance and secured <strong style={{ color: currentTheme.primaryColor }}>{customRank}</strong> in</>
                       ) : certType === 'merit' ? (
                         <>has demonstrated exemplary technical innovation and brilliance in</>
                       ) : (
                         <>has successfully participated in the annual technical hackathon</>
                       )}
                     </p>
-                    <p className="font-serif font-bold text-[#7B1113] text-sm sm:text-base tracking-wide">
+                    <p
+                      className="font-serif font-bold text-sm sm:text-base tracking-wide transition-colors"
+                      style={{ color: currentTheme.primaryColor }}
+                    >
                       &quot;GRAPHITE 2026&quot;
                     </p>
-                    <p className="text-[10px] sm:text-[11px] text-gray-500 font-sans">
+                    <p
+                      className="text-[10px] sm:text-[11px] font-sans transition-colors"
+                      style={{ color: currentTheme.secondaryColor }}
+                    >
                       Organized by Graphic Era Hill University, Bhimtal Campus • Concluded on October 27, 2026
                     </p>
                   </div>
 
                   {/* Certificate Footer: Signatures & University Seal */}
-                  <div className="relative z-10 pt-2 flex items-end justify-between border-t border-gray-300 px-2 sm:px-6">
+                  <div
+                    className="relative z-10 pt-2 flex items-end justify-between px-2 sm:px-6 transition-colors"
+                    style={{ borderTop: `1px solid ${currentTheme.accentLine}` }}
+                  >
                     {/* Signee 1 */}
                     <div className="text-center">
-                      <div className="font-serif italic text-xs sm:text-sm text-gray-900 font-bold">
+                      <div
+                        className="font-serif italic text-xs sm:text-sm font-bold transition-colors"
+                        style={{ color: currentTheme.textColor }}
+                      >
                         {signee1Name}
                       </div>
-                      <div className="w-24 sm:w-32 border-t border-gray-400 mt-1 pt-0.5">
-                        <p className="text-[9px] font-sans font-bold text-gray-700 uppercase">{signee1Title}</p>
-                        <p className="text-[8px] font-sans text-gray-500">GEHU Bhimtal</p>
+                      <div
+                        className="w-24 sm:w-32 mt-1 pt-0.5 transition-colors"
+                        style={{ borderTop: `1px solid ${currentTheme.accentLine}` }}
+                      >
+                        <p
+                          className="text-[9px] font-sans font-bold uppercase transition-colors"
+                          style={{ color: currentTheme.textColor }}
+                        >
+                          {signee1Title}
+                        </p>
+                        <p
+                          className="text-[8px] font-sans transition-colors"
+                          style={{ color: currentTheme.secondaryColor }}
+                        >
+                          GEHU Bhimtal
+                        </p>
                       </div>
                     </div>
 
                     {/* Center Official Seal */}
                     <div className="flex flex-col items-center">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full border-2 border-[#C5A059] bg-[#FAF5EB] flex items-center justify-center p-1 text-center shadow-inner">
-                        <div className="w-full h-full rounded-full border border-dashed border-[#7B1113] flex flex-col items-center justify-center">
-                          <span className="text-[6px] font-sans text-[#7B1113] font-bold tracking-tight">GEHU</span>
-                          <span className="text-[9px] text-[#C5A059] font-serif font-bold">★ 2026 ★</span>
-                          <span className="text-[6px] font-sans text-[#7B1113] font-bold">BHIMTAL</span>
+                      <div
+                        className="w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center p-1 text-center shadow-inner transition-colors"
+                        style={{
+                          backgroundColor: currentTheme.sealBg,
+                          border: `2px solid ${currentTheme.sealBorder}`,
+                        }}
+                      >
+                        <div
+                          className="w-full h-full rounded-full border border-dashed flex flex-col items-center justify-center"
+                          style={{ borderColor: currentTheme.sealInner }}
+                        >
+                          <span
+                            className="text-[6px] font-sans font-bold tracking-tight transition-colors"
+                            style={{ color: currentTheme.sealInner }}
+                          >
+                            GEHU
+                          </span>
+                          <span
+                            className="text-[9px] font-serif font-bold transition-colors"
+                            style={{ color: currentTheme.sealBorder }}
+                          >
+                            ★ 2026 ★
+                          </span>
+                          <span
+                            className="text-[6px] font-sans font-bold transition-colors"
+                            style={{ color: currentTheme.sealInner }}
+                          >
+                            BHIMTAL
+                          </span>
                         </div>
                       </div>
-                      <span className="text-[8px] font-mono text-gray-500 mt-1">{certCode}</span>
+                      <span
+                        className="text-[8px] font-mono mt-1 transition-colors"
+                        style={{ color: currentTheme.secondaryColor }}
+                      >
+                        {certCode}
+                      </span>
                     </div>
 
                     {/* Signee 2 */}
                     <div className="text-center">
-                      <div className="font-serif italic text-xs sm:text-sm text-gray-900 font-bold">
+                      <div
+                        className="font-serif italic text-xs sm:text-sm font-bold transition-colors"
+                        style={{ color: currentTheme.textColor }}
+                      >
                         {signee2Name}
                       </div>
-                      <div className="w-24 sm:w-32 border-t border-gray-400 mt-1 pt-0.5">
-                        <p className="text-[9px] font-sans font-bold text-gray-700 uppercase">{signee2Title}</p>
-                        <p className="text-[8px] font-sans text-gray-500">Convener, Graphite 2026</p>
+                      <div
+                        className="w-24 sm:w-32 mt-1 pt-0.5 transition-colors"
+                        style={{ borderTop: `1px solid ${currentTheme.accentLine}` }}
+                      >
+                        <p
+                          className="text-[9px] font-sans font-bold uppercase transition-colors"
+                          style={{ color: currentTheme.textColor }}
+                        >
+                          {signee2Title}
+                        </p>
+                        <p
+                          className="text-[8px] font-sans transition-colors"
+                          style={{ color: currentTheme.secondaryColor }}
+                        >
+                          Convener, Graphite 2026
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -1005,6 +1164,93 @@ Graphic Era Hill University, Bhimtal Campus`
                         <span>💾</span>
                         <span>Export Template</span>
                       </button>
+                    </div>
+                  </div>
+
+                  {/* University Campus Diploma Themes Selector */}
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <label className="text-xs font-bold text-gray-200 block uppercase tracking-wider flex items-center gap-1.5">
+                        <span>🏛️</span>
+                        <span>Select Campus Diploma Theme (Authentic University Styles):</span>
+                      </label>
+                      <span className="text-[11px] text-amber-400 font-medium">
+                        Active: {currentTheme?.name || 'Academic Ivory'}
+                      </span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      {CERTIFICATE_THEMES.map((theme) => {
+                        const isSelected = templateTheme === theme.id;
+                        return (
+                          <button
+                            key={theme.id}
+                            type="button"
+                            onClick={() => setTemplateTheme(theme.id)}
+                            className={`p-3 rounded-xl border text-left transition-all cursor-pointer flex items-start gap-3 ${
+                              isSelected
+                                ? 'bg-[#172138] border-red-500 shadow-md ring-1 ring-red-500/50'
+                                : 'bg-[#121828] border-gray-700/80 hover:border-gray-600 hover:bg-[#161d30]'
+                            }`}
+                          >
+                            {/* Color Palette Mini-Preview */}
+                            <div
+                              className="w-12 h-12 rounded-lg border-2 flex items-center justify-center shrink-0 shadow-inner relative overflow-hidden"
+                              style={{
+                                backgroundColor: theme.bg,
+                                borderColor: theme.outerBorder,
+                              }}
+                            >
+                              <div
+                                className="w-6 h-6 rounded-full border flex items-center justify-center"
+                                style={{
+                                  backgroundColor: theme.sealBg,
+                                  borderColor: theme.sealBorder,
+                                }}
+                              >
+                                <span className="text-[7px] font-bold" style={{ color: theme.sealInner }}>★</span>
+                              </div>
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-1 mb-0.5">
+                                <span className="text-xs font-bold text-white truncate">
+                                  {theme.name}
+                                </span>
+                                {isSelected && (
+                                  <span className="px-1.5 py-0.5 rounded text-[9px] font-bold bg-red-600/30 text-red-400 border border-red-500/40">
+                                    Selected
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[10px] text-gray-400 line-clamp-1 mb-1.5">
+                                {theme.campus} • {theme.description}
+                              </p>
+                              {/* Swatches */}
+                              <div className="flex items-center gap-1.5">
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/40"
+                                  style={{ backgroundColor: theme.primaryColor }}
+                                  title={`Primary: ${theme.primaryColor}`}
+                                />
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/40"
+                                  style={{ backgroundColor: theme.outerBorder }}
+                                  title={`Border: ${theme.outerBorder}`}
+                                />
+                                <span
+                                  className="w-2.5 h-2.5 rounded-full border border-black/40"
+                                  style={{ backgroundColor: theme.accentLine }}
+                                  title={`Accent: ${theme.accentLine}`}
+                                />
+                                <span className="text-[9px] text-gray-500 font-mono">
+                                  {theme.dark ? 'Dark Mode' : 'Light Classic'}
+                                </span>
+                              </div>
+                            </div>
+                          </button>
+                        );
+                      })}
                     </div>
                   </div>
 
