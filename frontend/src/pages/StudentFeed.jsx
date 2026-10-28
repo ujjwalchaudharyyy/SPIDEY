@@ -38,6 +38,13 @@ export default function StudentFeed({ initialTab = 'radar' }) {
 
   const fetchCampusesAndEvents = async () => {
     setLoading(true)
+    let localCustomEvents = []
+    try {
+      localCustomEvents = JSON.parse(localStorage.getItem('spider_custom_events') || '[]')
+    } catch (e) {
+      localCustomEvents = []
+    }
+
     try {
       const [campusesRes, eventsRes, rsvpRes] = await Promise.all([
         axios.get('/api/events/campuses'),
@@ -45,7 +52,8 @@ export default function StudentFeed({ initialTab = 'radar' }) {
         axios.get('/api/rsvp/my', { headers })
       ])
       setCampuses(campusesRes.data)
-      setEvents(eventsRes.data)
+      const mergedEvents = [...localCustomEvents, ...(eventsRes.data || [])].filter((v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i)
+      setEvents(mergedEvents)
       setRsvpEvents(rsvpRes.data)
       setRsvpedIds(new Set(rsvpRes.data.map(e => e.id)))
 
@@ -56,7 +64,8 @@ export default function StudentFeed({ initialTab = 'radar' }) {
     } catch (err) {
       console.warn('Backend API offline or on Vercel static deployment - using offline multiverse grid:', err.message)
       setCampuses(DEFAULT_CAMPUSES)
-      setEvents(DEFAULT_EVENTS)
+      const mergedEvents = [...localCustomEvents, ...DEFAULT_EVENTS].filter((v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i)
+      setEvents(mergedEvents)
     }
     setLoading(false)
   }

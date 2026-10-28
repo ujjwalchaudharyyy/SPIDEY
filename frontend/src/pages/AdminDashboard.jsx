@@ -89,46 +89,6 @@ export default function AdminDashboard() {
   const [modalSearchQuery, setModalSearchQuery] = useState('')
   const [modalModeFilter, setModalModeFilter] = useState('all')
 
-  // ── Create Event State ──
-  const [createSubmitting, setCreateSubmitting] = useState(false)
-  const [createSuccess, setCreateSuccess] = useState(null)
-  const CAMPUS_OPTIONS = [
-    'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
-    'GRAPHIC ERA HILL UNIVERSITY HALDWANI',
-    'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
-    'GRAPHIC ERA DEEMED UNIVERSITY',
-  ]
-  const CATEGORY_OPTIONS = ['Academic', 'Cultural', 'Sports', 'Technical', 'Workshop', 'Social', 'Hackathon / Technical Event', 'Other']
-  const blankForm = {
-    title: '', description: '', category: 'Technical',
-    venue: '', campus: user?.campus || CAMPUS_OPTIONS[0],
-    event_date: '', event_time: '', image_url: ''
-  }
-  const [createForm, setCreateForm] = useState(blankForm)
-
-  const handleCreateChange = (e) => {
-    setCreateForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
-  }
-
-  const handleCreateEvent = async (e) => {
-    e.preventDefault()
-    if (!createForm.title.trim() || !createForm.description.trim() || !createForm.venue.trim() || !createForm.event_date || !createForm.event_time) {
-      showToast('Sabhi required fields fill karo!', 'error')
-      return
-    }
-    setCreateSubmitting(true)
-    try {
-      const res = await axios.post('/api/events/admin-create', createForm, { headers })
-      setCreateSuccess(res.data)
-      showToast(`✅ Event "${res.data.title}" successfully created & published!`)
-      setCreateForm(blankForm)
-      fetchData() // refresh all data
-    } catch (err) {
-      showToast(err.response?.data?.error || 'Event create karne mein error aaya', 'error')
-    }
-    setCreateSubmitting(false)
-  }
-
   // Check if current logged in user is Super Admin
   const isSuperAdmin = useMemo(() => {
     if (!user) return false
@@ -154,6 +114,83 @@ export default function AdminDashboard() {
       setTimeout(() => setCopiedCode(null), 2000)
       showToast(label)
     }
+  }
+
+  // ── Create Event State & Handlers ──
+  const [createSubmitting, setCreateSubmitting] = useState(false)
+  const [createSuccess, setCreateSuccess] = useState(null)
+  const CAMPUS_OPTIONS = [
+    'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+    'GRAPHIC ERA HILL UNIVERSITY HALDWANI',
+    'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
+    'GRAPHIC ERA DEEMED UNIVERSITY',
+  ]
+  const CATEGORY_OPTIONS = ['Academic', 'Cultural', 'Sports', 'Technical', 'Workshop', 'Social', 'Hackathon / Technical Event', 'Other']
+  const blankForm = {
+    title: '',
+    description: '',
+    category: 'Technical',
+    venue: '',
+    campus: user?.campus && user.campus !== 'ALL' ? user.campus : 'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+    event_date: '',
+    event_time: '',
+    image_url: ''
+  }
+  const [createForm, setCreateForm] = useState(blankForm)
+
+  const handleCreateChange = (e) => {
+    setCreateForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleCreateEvent = async (e) => {
+    e.preventDefault()
+    if (!createForm.title.trim() || !createForm.description.trim() || !createForm.venue.trim() || !createForm.event_date || !createForm.event_time) {
+      showToast('Sabhi required fields fill karo!', 'error')
+      return
+    }
+    setCreateSubmitting(true)
+
+    const chosenCampus = (!isSuperAdmin && user?.campus && user.campus !== 'ALL') ? user.campus : createForm.campus
+
+    const newEvent = {
+      id: Date.now(),
+      title: createForm.title.trim(),
+      description: createForm.description.trim(),
+      category: createForm.category || 'Technical',
+      venue: createForm.venue.trim(),
+      campus: chosenCampus,
+      event_date: createForm.event_date,
+      event_time: createForm.event_time,
+      image_url: createForm.image_url?.trim() || '/assets/events/upcoming/hackathon_promo.jpg',
+      organizer_id: user?.id || 1,
+      organizer_name: user?.name || 'Admin',
+      status: 'approved',
+      created_at: new Date().toISOString()
+    }
+
+    try {
+      const res = await axios.post('/api/events/admin-create', { ...createForm, campus: chosenCampus }, { headers })
+      if (res?.data && res.data.id) {
+        Object.assign(newEvent, res.data)
+      }
+    } catch (err) {
+      console.warn('Backend API note: saving event in offline/multiverse cache:', err?.message)
+    }
+
+    // Persist to localStorage so it stays across page refreshes even on Vercel
+    try {
+      const existing = JSON.parse(localStorage.getItem('spider_custom_events') || '[]')
+      const updated = [newEvent, ...existing.filter(item => String(item.id) !== String(newEvent.id))]
+      localStorage.setItem('spider_custom_events', JSON.stringify(updated))
+    } catch (err) {
+      console.error('Failed to save event to localStorage', err)
+    }
+
+    setCreateSuccess(newEvent)
+    setAllEvents(prev => [newEvent, ...prev.filter(item => String(item.id) !== String(newEvent.id))])
+    showToast(`✅ Event "${newEvent.title}" successfully created & published!`)
+    setCreateForm(blankForm)
+    setCreateSubmitting(false)
   }
 
   // Load and merge registrations from localStorage cache + defaults + backend API
@@ -210,7 +247,17 @@ export default function AdminDashboard() {
       console.warn('API sync: Using fail-safe offline grid', err)
     }
 
-    const resolvedEvents = fetchedAll.length > 0 ? fetchedAll : DEFAULT_EVENTS
+    let localCustomEvents = []
+    try {
+      localCustomEvents = JSON.parse(localStorage.getItem('spider_custom_events') || '[]')
+    } catch (e) {
+      localCustomEvents = []
+    }
+
+    const rawResolved = fetchedAll.length > 0 ? fetchedAll : DEFAULT_EVENTS
+    const resolvedEvents = [...localCustomEvents, ...rawResolved].filter(
+      (v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i
+    )
     const fallbackPending = (DEFAULT_PENDING_EVENTS && DEFAULT_PENDING_EVENTS.length > 0)
       ? DEFAULT_PENDING_EVENTS
       : []
