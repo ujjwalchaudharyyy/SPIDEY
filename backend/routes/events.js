@@ -271,7 +271,9 @@ router.put('/:id/reject', authenticateToken, (req, res) => {
 
 router.delete('/:id', authenticateToken, (req, res) => {
   const event = queryGet('SELECT * FROM events WHERE id = ?', [parseInt(req.params.id)]);
-  if (!event) return res.status(404).json({ error: 'Event not found' });
+  if (!event) {
+    return res.json({ message: 'Event already removed or not found' });
+  }
   if (req.user.role !== 'admin' && event.organizer_id !== req.user.id) {
     return res.status(403).json({ error: 'Not authorized to delete this event' });
   }

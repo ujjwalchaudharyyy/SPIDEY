@@ -45,6 +45,13 @@ export default function StudentFeed({ initialTab = 'radar' }) {
       localCustomEvents = []
     }
 
+    let deletedIds = []
+    try {
+      deletedIds = JSON.parse(localStorage.getItem('spider_deleted_event_ids') || '[]')
+    } catch (e) {
+      deletedIds = []
+    }
+
     try {
       const [campusesRes, eventsRes, rsvpRes] = await Promise.all([
         axios.get('/api/events/campuses'),
@@ -52,7 +59,9 @@ export default function StudentFeed({ initialTab = 'radar' }) {
         axios.get('/api/rsvp/my', { headers })
       ])
       setCampuses(campusesRes.data)
-      const mergedEvents = [...localCustomEvents, ...(eventsRes.data || [])].filter((v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i)
+      const mergedEvents = [...localCustomEvents, ...(eventsRes.data || [])]
+        .filter((v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i)
+        .filter(e => !deletedIds.includes(String(e.id)))
       setEvents(mergedEvents)
       setRsvpEvents(rsvpRes.data)
       setRsvpedIds(new Set(rsvpRes.data.map(e => e.id)))
@@ -64,10 +73,37 @@ export default function StudentFeed({ initialTab = 'radar' }) {
     } catch (err) {
       console.warn('Backend API offline or on Vercel static deployment - using offline multiverse grid:', err.message)
       setCampuses(DEFAULT_CAMPUSES)
-      const mergedEvents = [...localCustomEvents, ...DEFAULT_EVENTS].filter((v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i)
+      const mergedEvents = [...localCustomEvents, ...DEFAULT_EVENTS]
+        .filter((v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i)
+        .filter(e => !deletedIds.includes(String(e.id)))
       setEvents(mergedEvents)
     }
     setLoading(false)
+  }
+
+  const handleDeleteEvent = async (id) => {
+    if (!confirm('Are you sure you want to delete this event? This will remove it from the platform.')) return
+
+    try {
+      const existing = JSON.parse(localStorage.getItem('spider_custom_events') || '[]')
+      const updated = existing.filter(e => String(e.id) !== String(id))
+      localStorage.setItem('spider_custom_events', JSON.stringify(updated))
+    } catch (e) {}
+
+    try {
+      const deletedIds = JSON.parse(localStorage.getItem('spider_deleted_event_ids') || '[]')
+      if (!deletedIds.includes(String(id))) {
+        deletedIds.push(String(id))
+        localStorage.setItem('spider_deleted_event_ids', JSON.stringify(deletedIds))
+      }
+    } catch (e) {}
+
+    try {
+      await axios.delete(`/api/events/${id}`, { headers })
+    } catch (err) {}
+
+    setEvents(prev => prev.filter(e => String(e.id) !== String(id)))
+    showToast('🗑️ Event successfully removed!')
   }
 
   useEffect(() => {
@@ -213,6 +249,7 @@ export default function StudentFeed({ initialTab = 'radar' }) {
                 events={currentCampusEvents}
                 rsvpedIds={rsvpedIds}
                 onRsvp={handleRsvp}
+                onDelete={user?.role === 'admin' ? handleDeleteEvent : undefined}
               />
             )}
           </div>

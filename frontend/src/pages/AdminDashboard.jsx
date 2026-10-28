@@ -254,10 +254,17 @@ export default function AdminDashboard() {
       localCustomEvents = []
     }
 
+    let deletedIds = []
+    try {
+      deletedIds = JSON.parse(localStorage.getItem('spider_deleted_event_ids') || '[]')
+    } catch (e) {
+      deletedIds = []
+    }
+
     const rawResolved = fetchedAll.length > 0 ? fetchedAll : DEFAULT_EVENTS
-    const resolvedEvents = [...localCustomEvents, ...rawResolved].filter(
-      (v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i
-    )
+    const resolvedEvents = [...localCustomEvents, ...rawResolved]
+      .filter((v, i, a) => a.findIndex(t => String(t.id) === String(v.id)) === i)
+      .filter(e => !deletedIds.includes(String(e.id)))
     const fallbackPending = (DEFAULT_PENDING_EVENTS && DEFAULT_PENDING_EVENTS.length > 0)
       ? DEFAULT_PENDING_EVENTS
       : []
@@ -312,13 +319,35 @@ export default function AdminDashboard() {
   }
 
   const handleDelete = async (id) => {
-    if (!confirm('Are you sure you want to delete this event?')) return
+    if (!confirm('Are you sure you want to delete this event? This will remove it from the platform.')) return
+
+    // 1. Remove from localStorage custom events
+    try {
+      const existing = JSON.parse(localStorage.getItem('spider_custom_events') || '[]')
+      const updated = existing.filter(e => String(e.id) !== String(id))
+      localStorage.setItem('spider_custom_events', JSON.stringify(updated))
+    } catch (e) {}
+
+    // 2. Add to deleted IDs blacklist so it stays removed across page refreshes
+    try {
+      const deletedIds = JSON.parse(localStorage.getItem('spider_deleted_event_ids') || '[]')
+      if (!deletedIds.includes(String(id))) {
+        deletedIds.push(String(id))
+        localStorage.setItem('spider_deleted_event_ids', JSON.stringify(deletedIds))
+      }
+    } catch (e) {}
+
+    // 3. Call backend API
     try {
       await axios.delete(`/api/events/${id}`, { headers })
-    } catch (err) {}
-    setPendingEvents(prev => prev.filter(e => e.id !== id))
-    setAllEvents(prev => prev.filter(e => e.id !== id))
-    showToast('Event removed.')
+    } catch (err) {
+      console.warn('Backend delete note:', err?.message)
+    }
+
+    // 4. Update React states
+    setPendingEvents(prev => prev.filter(e => String(e.id) !== String(id)))
+    setAllEvents(prev => prev.filter(e => String(e.id) !== String(id)))
+    showToast('🗑️ Event successfully removed!')
   }
 
   const handleDeleteRegistration = (regId, ticketCode) => {
@@ -1516,6 +1545,15 @@ export default function AdminDashboard() {
                           >
                             ⚙️
                           </button>
+
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(ev.id)}
+                            className="p-1.5 rounded-lg bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 hover:text-white transition cursor-pointer text-xs"
+                            title="Delete this event from platform"
+                          >
+                            🗑️
+                          </button>
                         </div>
                       </div>
 
@@ -1686,6 +1724,14 @@ export default function AdminDashboard() {
                           >
                             ⚙️
                           </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(ev.id)}
+                            className="p-2 rounded-xl bg-red-950/70 hover:bg-red-900 border border-red-500/40 text-red-300 hover:text-white transition cursor-pointer text-xs"
+                            title="Delete this event from platform"
+                          >
+                            🗑️
+                          </button>
                         </div>
                       </div>
 
@@ -1850,18 +1896,28 @@ export default function AdminDashboard() {
                         showStatus={true}
                         onDelete={handleDelete}
                       />
-                      <div className="bg-[#121622] border border-gray-800 rounded-xl p-2.5 flex items-center justify-between">
+                      <div className="bg-[#121622] border border-gray-800 rounded-xl p-2.5 flex items-center justify-between gap-2">
                         <span className="text-[11px] font-mono text-gray-300">
                           📥 <span className="font-bold text-white">{evRegs.length}</span> registrations
                         </span>
-                        <button
-                          type="button"
-                          onClick={() => exportToCSV(event.title, evRegs)}
-                          className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow transition cursor-pointer"
-                          title="Download CSV for this event"
-                        >
-                          <span>📥 Download CSV</span>
-                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => exportToCSV(event.title, evRegs)}
+                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold flex items-center gap-1.5 shadow transition cursor-pointer"
+                            title="Download CSV for this event"
+                          >
+                            <span>📥 CSV</span>
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(event.id)}
+                            className="px-2.5 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-900 border border-red-500/50 text-red-300 hover:text-white text-xs font-semibold flex items-center gap-1 shadow transition cursor-pointer"
+                            title="Delete this event from platform"
+                          >
+                            <span>🗑️ Delete</span>
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )

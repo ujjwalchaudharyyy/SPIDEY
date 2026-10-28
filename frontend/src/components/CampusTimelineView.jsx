@@ -32,7 +32,7 @@ const THEME_ACCENTS = {
   }
 }
 
-export default function CampusTimelineView({ campus, events, rsvpedIds, onRsvp }) {
+export default function CampusTimelineView({ campus, events, rsvpedIds, onRsvp, onDelete }) {
   const [showPhotoModal, setShowPhotoModal] = useState(false)
   const todayStr = '2026-10-27'
 
@@ -186,6 +186,7 @@ export default function CampusTimelineView({ campus, events, rsvpedIds, onRsvp }
                 isStudent={true}
                 isRsvped={rsvpedIds.has(event.id)}
                 onRsvp={onRsvp}
+                onDelete={onDelete}
               />
             ))}
           </div>
@@ -220,6 +221,7 @@ export default function CampusTimelineView({ campus, events, rsvpedIds, onRsvp }
                 isStudent={true}
                 isRsvped={rsvpedIds.has(event.id)}
                 onRsvp={onRsvp}
+                onDelete={onDelete}
               />
             ))}
           </div>
@@ -253,6 +255,7 @@ export default function CampusTimelineView({ campus, events, rsvpedIds, onRsvp }
                 event={event}
                 isStudent={false}
                 showStatus={false}
+                onDelete={onDelete}
               />
             ))}
           </div>
