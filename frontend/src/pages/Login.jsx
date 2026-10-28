@@ -86,12 +86,7 @@ export default function Login() {
     navigate(pendingDestination || '/feed', { replace: true })
   }
 
-  if (isAuthenticated && !showSigninVideo && !pendingDestination) {
-    if (user.role === 'admin') navigate('/admin', { replace: true })
-    else if (user.role === 'organizer') navigate('/organizer', { replace: true })
-    else navigate('/feed', { replace: true })
-    return null
-  }
+
 
   const handleGoogleCredentialResponse = async (response) => {
     if (!response || !response.credential) {
@@ -541,6 +536,22 @@ export default function Login() {
             <div className="bg-red-950/80 border border-red-500 text-red-200 px-3 py-1.5 rounded-xl mb-2.5 text-[11px] font-mono flex items-center gap-2">
               <span>⚠️</span>
               <span className="truncate">{error}</span>
+            </div>
+          )}
+
+          {isAuthenticated && user && (
+            <div className="mb-3 p-2.5 bg-red-950/60 border border-red-500/50 rounded-xl flex items-center justify-between gap-2 shadow-inner">
+              <div className="min-w-0">
+                <p className="text-[11px] text-white font-semibold truncate">Active: {user.name || 'User'}</p>
+                <p className="text-[9px] text-red-300 font-mono capitalize">{user.role} • {user.campus?.split(' ')?.[3] || 'Campus'}</p>
+              </div>
+              <button
+                type="button"
+                onClick={() => navigate(user.role === 'admin' ? '/admin' : user.role === 'organizer' ? '/organizer' : '/feed')}
+                className="px-2.5 py-1 rounded-lg bg-red-600 hover:bg-red-500 text-white font-bold text-[10px] shrink-0 transition cursor-pointer active:scale-95"
+              >
+                Resume ➔
+              </button>
             </div>
           )}
 

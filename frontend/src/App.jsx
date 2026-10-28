@@ -14,18 +14,7 @@ import ProtectedRoute from './components/ProtectedRoute'
 import IntroVideoModal from './components/IntroVideoModal'
 
 function HomeRedirect() {
-  const { user, isAuthenticated, loading } = useAuth()
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-[#070913] flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-red-500 border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    )
-  }
-  if (!isAuthenticated) return <Navigate to="/login" replace />
-  if (user.role === 'admin') return <Navigate to="/admin" replace />
-  if (user.role === 'organizer') return <Navigate to="/organizer" replace />
-  return <Navigate to="/feed" replace />
+  return <Navigate to="/login" replace />
 }
 
 export default function App() {
