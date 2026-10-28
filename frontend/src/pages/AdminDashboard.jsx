@@ -68,7 +68,7 @@ const CAMPUSES = [
 
 export default function AdminDashboard() {
   const { user, token } = useAuth()
-  const [tab, setTab] = useState('registrations') // 'registrations', 'pending', 'all'
+  const [tab, setTab] = useState('registrations') // 'registrations', 'pending', 'all', 'create'
   const [pendingEvents, setPendingEvents] = useState([])
   const [allEvents, setAllEvents] = useState([])
   const [allRegistrations, setAllRegistrations] = useState([])
@@ -88,6 +88,46 @@ export default function AdminDashboard() {
   const [spreadsheetModalData, setSpreadsheetModalData] = useState(null)
   const [modalSearchQuery, setModalSearchQuery] = useState('')
   const [modalModeFilter, setModalModeFilter] = useState('all')
+
+  // ── Create Event State ──
+  const [createSubmitting, setCreateSubmitting] = useState(false)
+  const [createSuccess, setCreateSuccess] = useState(null)
+  const CAMPUS_OPTIONS = [
+    'GRAPHIC ERA HILL UNIVERSITY BHIMTAL',
+    'GRAPHIC ERA HILL UNIVERSITY HALDWANI',
+    'GRAPHIC ERA HILL UNIVERSITY DEHRADUN',
+    'GRAPHIC ERA DEEMED UNIVERSITY',
+  ]
+  const CATEGORY_OPTIONS = ['Academic', 'Cultural', 'Sports', 'Technical', 'Workshop', 'Social', 'Hackathon / Technical Event', 'Other']
+  const blankForm = {
+    title: '', description: '', category: 'Technical',
+    venue: '', campus: user?.campus || CAMPUS_OPTIONS[0],
+    event_date: '', event_time: '', image_url: ''
+  }
+  const [createForm, setCreateForm] = useState(blankForm)
+
+  const handleCreateChange = (e) => {
+    setCreateForm(prev => ({ ...prev, [e.target.name]: e.target.value }))
+  }
+
+  const handleCreateEvent = async (e) => {
+    e.preventDefault()
+    if (!createForm.title.trim() || !createForm.description.trim() || !createForm.venue.trim() || !createForm.event_date || !createForm.event_time) {
+      showToast('Sabhi required fields fill karo!', 'error')
+      return
+    }
+    setCreateSubmitting(true)
+    try {
+      const res = await axios.post('/api/events/admin-create', createForm, { headers })
+      setCreateSuccess(res.data)
+      showToast(`✅ Event "${res.data.title}" successfully created & published!`)
+      setCreateForm(blankForm)
+      fetchData() // refresh all data
+    } catch (err) {
+      showToast(err.response?.data?.error || 'Event create karne mein error aaya', 'error')
+    }
+    setCreateSubmitting(false)
+  }
 
   // Check if current logged in user is Super Admin
   const isSuperAdmin = useMemo(() => {
@@ -942,6 +982,18 @@ export default function AdminDashboard() {
                 {accessibleEvents.length}
               </span>
             </button>
+
+            {/* ── Create Event Tab Button ── */}
+            <button
+              onClick={() => { setTab('create'); setCreateSuccess(null) }}
+              className={`px-4 py-2 text-xs font-semibold rounded-lg transition-all cursor-pointer flex items-center gap-2 ${
+                tab === 'create'
+                  ? 'bg-emerald-600 text-white shadow-[0_0_16px_rgba(52,211,153,0.4)]'
+                  : 'text-emerald-400 hover:text-white hover:bg-emerald-900/40 border border-emerald-700/50'
+              }`}
+            >
+              <span>✏️ Create Event</span>
+            </button>
           </div>
 
           {/* View Mode Toggle when on Spreadsheets tab */}
@@ -1769,6 +1821,117 @@ export default function AdminDashboard() {
                 })}
               </div>
             )}
+          </div>
+        )}
+
+        {/* ── Tab 4: Create Event (Admin Direct Publish) ── */}
+        {tab === 'create' && (
+          <div className="max-w-2xl mx-auto">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 rounded-xl bg-emerald-900/60 border border-emerald-500/50 flex items-center justify-center text-xl shadow-[0_0_18px_rgba(52,211,153,0.25)]">
+                ✏️
+              </div>
+              <div>
+                <h3 className="text-base font-bold text-white">Create New Event</h3>
+                <p className="text-[11px] text-gray-400">
+                  Ye event directly <span className="text-emerald-400 font-semibold">Published</span> ho jayega — koi pending queue nahi
+                </p>
+              </div>
+            </div>
+
+            {createSuccess && (
+              <div className="mb-5 bg-emerald-950/70 border border-emerald-500/50 rounded-2xl p-4 flex items-start gap-3 shadow-[0_0_20px_rgba(52,211,153,0.2)]">
+                <div className="text-2xl mt-0.5">🎉</div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-emerald-300 font-bold text-sm">Event Successfully Published!</p>
+                  <p className="text-white font-semibold text-xs mt-0.5 truncate">{createSuccess.title}</p>
+                  <p className="text-emerald-400/80 text-[11px] mt-1">
+                    📍 {createSuccess.campus} &nbsp;·&nbsp; 📅 {createSuccess.event_date} {createSuccess.event_time} &nbsp;·&nbsp; Status: <span className="text-emerald-300 font-bold">APPROVED ✓</span>
+                  </p>
+                </div>
+                <button onClick={() => setCreateSuccess(null)} className="text-gray-400 hover:text-white text-lg font-bold cursor-pointer shrink-0">✕</button>
+              </div>
+            )}
+
+            <form onSubmit={handleCreateEvent} className="bg-[#121622]/90 border border-gray-700/60 rounded-2xl p-5 sm:p-6 space-y-4 shadow-2xl backdrop-blur-sm">
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Event Title <span className="text-red-400">*</span></label>
+                <input type="text" name="title" value={createForm.title} onChange={handleCreateChange}
+                  placeholder="e.g. INNOVATE 2.0 — AWS Ideathon" required
+                  className="w-full bg-[#090C12] border border-gray-700 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none transition" />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Description <span className="text-red-400">*</span></label>
+                <textarea name="description" value={createForm.description} onChange={handleCreateChange}
+                  placeholder="Event ke baare mein full detail likho — highlights, eligibility, prizes…" required rows={4}
+                  className="w-full bg-[#090C12] border border-gray-700 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none transition resize-none" />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1.5">Category <span className="text-red-400">*</span></label>
+                  <select name="category" value={createForm.category} onChange={handleCreateChange}
+                    className="w-full bg-[#090C12] border border-gray-700 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none transition cursor-pointer">
+                    {CATEGORY_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                    Campus <span className="text-red-400">*</span>
+                    {!isSuperAdmin && <span className="ml-1 text-[10px] text-amber-400">(Locked to your campus)</span>}
+                  </label>
+                  <select name="campus" value={createForm.campus} onChange={handleCreateChange} disabled={!isSuperAdmin}
+                    className={`w-full bg-[#090C12] border border-gray-700 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none transition ${!isSuperAdmin ? 'opacity-60 cursor-not-allowed' : 'cursor-pointer'}`}>
+                    {CAMPUS_OPTIONS.map(c => <option key={c} value={c}>{c}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Venue <span className="text-red-400">*</span></label>
+                <input type="text" name="venue" value={createForm.venue} onChange={handleCreateChange}
+                  placeholder="e.g. Main Auditorium, Block A Lab 301" required
+                  className="w-full bg-[#090C12] border border-gray-700 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none transition" />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1.5">Event Date <span className="text-red-400">*</span></label>
+                  <input type="date" name="event_date" value={createForm.event_date} onChange={handleCreateChange} required
+                    className="w-full bg-[#090C12] border border-gray-700 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none transition cursor-pointer" />
+                </div>
+                <div>
+                  <label className="block text-xs font-semibold text-gray-300 mb-1.5">Event Time <span className="text-red-400">*</span></label>
+                  <input type="time" name="event_time" value={createForm.event_time} onChange={handleCreateChange} required
+                    className="w-full bg-[#090C12] border border-gray-700 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-white text-sm focus:outline-none transition cursor-pointer" />
+                </div>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Event Poster / Image URL <span className="text-gray-500">(optional)</span></label>
+                <input type="url" name="image_url" value={createForm.image_url} onChange={handleCreateChange}
+                  placeholder="https://example.com/event-poster.jpg"
+                  className="w-full bg-[#090C12] border border-gray-700 focus:border-emerald-500 rounded-xl px-3.5 py-2.5 text-white text-sm placeholder-gray-600 focus:outline-none transition" />
+                <p className="text-[11px] text-gray-500 mt-1">Public image link paste karo. Blank rehne par default poster use hoga.</p>
+              </div>
+
+              <div className="flex items-start gap-2.5 bg-emerald-950/30 border border-emerald-700/30 rounded-xl p-3">
+                <span className="text-emerald-400 text-base mt-0.5">🛡️</span>
+                <p className="text-[11px] text-emerald-300/80 leading-relaxed">
+                  <strong className="text-emerald-300">Admin Direct Publish:</strong> Ye event create hone ke baad <strong>immediately live</strong> ho jayega campus radar pe — kisi approval ki zarurat nahi hai.
+                </p>
+              </div>
+
+              <button type="submit" disabled={createSubmitting}
+                className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed text-white text-sm font-bold flex items-center justify-center gap-2 transition shadow-[0_0_20px_rgba(52,211,153,0.3)] cursor-pointer active:scale-[0.98]">
+                {createSubmitting ? (
+                  <><div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /><span>Publishing Event…</span></>
+                ) : (
+                  <><span>✏️</span><span>Publish Event Now</span></>
+                )}
+              </button>
+            </form>
           </div>
         )}
 
