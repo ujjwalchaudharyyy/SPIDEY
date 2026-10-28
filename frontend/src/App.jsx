@@ -9,6 +9,7 @@ import AdminDashboard from './pages/AdminDashboard'
 import Placement from './pages/Placement'
 import VerifyPass from './pages/VerifyPass'
 import StudentDashboard from './pages/StudentDashboard'
+import CertificateView from './pages/CertificateView'
 import ProtectedRoute from './components/ProtectedRoute'
 import IntroVideoModal from './components/IntroVideoModal'
 
@@ -31,8 +32,8 @@ export default function App() {
   const location = useLocation()
   const { isAuthenticated } = useAuth()
 
-  // External verify routes (/verify?code=...) are pass verification scans — open directly
-  const isVerifyRoute = location.pathname.startsWith('/verify')
+  // External verify & certificate routes are direct access
+  const isVerifyRoute = location.pathname.startsWith('/verify') || location.pathname.startsWith('/certificate')
 
   // Always show intro video on initial page load / refresh
   const [showIntroVideo, setShowIntroVideo] = useState(!isVerifyRoute)
@@ -86,6 +87,7 @@ export default function App() {
       <Route path="/placements" element={<Placement />} />
       <Route path="/verify" element={<VerifyPass />} />
       <Route path="/verify/:code" element={<VerifyPass />} />
+      <Route path="/certificate" element={<CertificateView />} />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
