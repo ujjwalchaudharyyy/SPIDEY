@@ -12,6 +12,7 @@ import {
   copyForGoogleSheets,
   GOOGLE_APPS_SCRIPT_TEMPLATE
 } from '../utils/googleSheetsSync'
+import GraphiteCertificateModal from '../components/GraphiteCertificateModal'
 
 
 // Helper to match campuses reliably regardless of casing, abbreviation or formatting
@@ -88,6 +89,7 @@ export default function AdminDashboard() {
   const [spreadsheetModalData, setSpreadsheetModalData] = useState(null)
   const [modalSearchQuery, setModalSearchQuery] = useState('')
   const [modalModeFilter, setModalModeFilter] = useState('all')
+  const [showGraphiteCertModal, setShowGraphiteCertModal] = useState(false)
 
   // Check if current logged in user is Super Admin
   const isSuperAdmin = useMemo(() => {
@@ -432,6 +434,15 @@ export default function AdminDashboard() {
       isCampusMatch(r.event_campus || r.campus, user?.campus)
     )
   }, [allRegistrations, accessibleEvents, isSuperAdmin, selectedCampusFilter, user])
+
+  // Participants specifically for Graphite Bhimtal (for Certificate Generation)
+  const graphiteParticipants = useMemo(() => {
+    return allRegistrations.filter(r => {
+      const title = (r.event_title || '').toLowerCase()
+      const campus = (r.event_campus || r.campus || '').toLowerCase()
+      return (String(r.event_id) === '2' || title.includes('graphite')) && (campus.includes('bhimtal') || !campus || campus.includes('all'))
+    })
+  }, [allRegistrations])
 
   // Campus-wise summary statistics (for Super Admin)
   const campusSummary = useMemo(() => {
@@ -1010,6 +1021,21 @@ export default function AdminDashboard() {
                   <p className="text-[10px] text-gray-400 font-medium uppercase">Campuses</p>
                 </div>
               )}
+
+              {/* Quick Action Button for Graphite Certificates */}
+              <button
+                type="button"
+                onClick={() => setShowGraphiteCertModal(true)}
+                className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs flex items-center gap-2 shadow-[0_0_20px_rgba(245,158,11,0.35)] transition cursor-pointer active:scale-95 border border-amber-400/60 shrink-0"
+                title="Open Official Certificate Studio & Mailer for Graphite Bhimtal"
+              >
+                <span>🎓</span>
+                <span className="hidden sm:inline">Graphite Certificates</span>
+                <span className="sm:hidden">Certificates</span>
+                <span className="px-1.5 py-0.5 rounded-full bg-black/30 text-[10px] font-mono">
+                  {graphiteParticipants.length}
+                </span>
+              </button>
             </div>
           )}
         </div>
@@ -1500,6 +1526,18 @@ export default function AdminDashboard() {
 
                         {/* Event Spreadsheet Actions */}
                         <div className="flex flex-wrap items-center gap-2 shrink-0">
+                          {(String(ev.id) === '2' || (ev.title || '').toLowerCase().includes('graphite')) && (
+                            <button
+                              type="button"
+                              onClick={() => setShowGraphiteCertModal(true)}
+                              className="px-3 py-1.5 rounded-lg bg-gradient-to-r from-amber-600 to-yellow-600 hover:from-amber-500 hover:to-yellow-500 text-white font-bold text-xs flex items-center gap-1.5 shadow-[0_0_15px_rgba(245,158,11,0.35)] transition cursor-pointer active:scale-95 border border-amber-400/50"
+                              title="Generate & Email Official Certificates for Graphite Bhimtal"
+                            >
+                              <span>🎓</span>
+                              <span>Certificate Studio & Mailer</span>
+                            </button>
+                          )}
+
                           <button
                             type="button"
                             onClick={() => {
@@ -2037,6 +2075,14 @@ export default function AdminDashboard() {
             </form>
           </div>
         )}
+
+        {/* 🎓 Graphite Bhimtal Official Certificate Studio & Mailer Modal (Admin Exclusive) */}
+        <GraphiteCertificateModal
+          isOpen={showGraphiteCertModal}
+          onClose={() => setShowGraphiteCertModal(false)}
+          participants={graphiteParticipants}
+          user={user}
+        />
 
       </div>
     </div>
